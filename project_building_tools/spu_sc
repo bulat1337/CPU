@@ -1,0 +1,4 @@
+#!/bin/bash
+make clean
+make ../executables/SPU.out
+../executables/SPU.out

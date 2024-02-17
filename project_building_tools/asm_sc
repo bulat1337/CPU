@@ -1,0 +1,4 @@
+#!/bin/bash
+make clean
+make ../executables/assembler.out
+../executables/assembler.out
