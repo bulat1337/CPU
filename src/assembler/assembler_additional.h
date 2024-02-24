@@ -17,7 +17,7 @@ struct Labels_w_carriage
 
 struct JMP_pos
 {
-	char  *name;
+	char const *name;
 	int IP_pos;
 };
 
@@ -47,6 +47,7 @@ const char   IDENTIFIER_BYTE          =  1;
 const int    CMD_TYPE_ALIGNMENT_VALUE =  3;
 const size_t ALIGN_TO_INT             =  sizeof(int) - sizeof(char);
 const size_t ALIGN_TO_DOUBLE          =  sizeof(double) - sizeof(char);
+const char * const MAIN_JMP_NAME      = "main";
 
 struct Parse_human_code_result parse_human_code(const char *file_name);
 struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines);
@@ -54,7 +55,6 @@ error_t write_main_jmp(struct Buf_w_carriage_n_len *byte_code,
 					   JMP_poses_w_carriage *jmp_poses_w_carriage);
 error_t write_to_buf(struct Buf_w_carriage_n_len *byte_code,
 					 const void *value, size_t size);
-void print_binary(char *buf, size_t size, const char *buf_name);
 error_t align_buffer(struct Buf_w_carriage_n_len *buf, size_t amount_of_bytes);
 error_t write_char_w_alignment(struct Buf_w_carriage_n_len *byte_code,
 							   char value, size_t alignment_space);

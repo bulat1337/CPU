@@ -29,8 +29,8 @@ FLAGS = -D _DEBUG -ggdb3 \
 
 LINK_FLAGS = -fsanitize=address,alignment,bool,bounds,enum,float-cast-overflow,float-divide-by-zero,integer-divide-by-zero,nonnull-attribute,null,return,returns-nonnull-attribute,shift,signed-integer-overflow,undefined,unreachable,vla-bound,vptr
 
-$(TARGET_1): $(PREF_SPU_OBJ)SPU_main.o $(PREF_SPU_OBJ)SPU.o $(PREF_SPU_OBJ)SPU_additional.o $(PREF_GLOBAL_OBJ)secondary.o
-	@ $(CC) $(LINK_FLAGS) $(PREF_SPU_OBJ)SPU_main.o $(PREF_SPU_OBJ)SPU.o $(PREF_SPU_OBJ)SPU_additional.o $(PREF_GLOBAL_OBJ)secondary.o -o $(TARGET_1)
+$(TARGET_1): $(PREF_SPU_OBJ)SPU_main.o $(PREF_SPU_OBJ)SPU.o $(PREF_SPU_OBJ)SPU_additional.o $(PREF_GLOBAL_OBJ)secondary.o $(PREF_STK_OBJ)stack_additional.o $(PREF_STK_OBJ)stack.o
+	@ $(CC) $(LINK_FLAGS) $(PREF_SPU_OBJ)SPU_main.o $(PREF_SPU_OBJ)SPU.o $(PREF_SPU_OBJ)SPU_additional.o $(PREF_GLOBAL_OBJ)secondary.o $(PREF_STK_OBJ)stack_additional.o $(PREF_STK_OBJ)stack.o -o $(TARGET_1)
 
 $(PREF_SPU_OBJ)SPU_main.o: $(PREF_SPU)SPU_main.cpp
 	@ $(CC) -c $(PREF_SPU)SPU_main.cpp -o $(PREF_SPU_OBJ)SPU_main.o $(FLAGS)

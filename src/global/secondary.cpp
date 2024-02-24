@@ -23,6 +23,28 @@ void log(const char *file_name, const char *func_name, int line, const char *fmt
     va_end(args);
 }
 
+void print_binary(char *buf, size_t size, const char *buf_name)
+{
+	CPU_LOG("%s:\n", buf_name);
+    for (size_t ID = 0; ID < size; ID++)
+	{
+		if(ID % 8 == 0)
+		{
+			CPU_LOG("double[%lu] - %lf\n", ID / 8, *(double *)(buf + ID));
+		}
+
+        char cur_elem = buf[ID];
+		CPU_LOG("[%2.lu] - ", ID);
+
+        for (int bit_offset = 7; bit_offset >= 0; bit_offset--)
+		{
+            CPU_LOG("%d", (cur_elem >> bit_offset) & 1);
+        }
+
+        CPU_LOG("\n");
+    }
+}
+
 size_t get_file_length(FILE *file_ptr)
 {
     size_t length = 0;

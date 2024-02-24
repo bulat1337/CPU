@@ -17,7 +17,7 @@
 #ifdef DEBUG
 #define STACK_PUSH(stk, push_value) stack_push((stk), (push_value), __FILE__,\
 												__func__, __LINE__);
-#define STACK_POP(stk) stack_pop((stk), __FILE__, __func__, __LINE__);
+#define STACK_POP(stk) stack_pop((stk), __FILE__, __func__, __LINE__)
 #define STACK_CTOR(stk, starter_capacity) stack_ctor(  (stk), starter_capacity,\
 														__FILE__, __LINE__, __func__,\
 														#stk "_log");

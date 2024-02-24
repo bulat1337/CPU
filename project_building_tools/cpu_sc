@@ -1,0 +1,3 @@
+#!/bin/bash
+./asm_sc
+./spu_sc

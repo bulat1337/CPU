@@ -3,6 +3,7 @@
 
 #include "SPU.h"
 
-size_t get_file_length(FILE *file_ptr);
+error_t process(const char *file_name);
+error_t VM_ctor(struct VM *vm);
 
 #endif

@@ -280,7 +280,7 @@ struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines
 		else if(IS_COMMAND(":"))
 		{
 			CURRENT_LABEL.name   = commands[line_ID] + strlen(":");
-			CURRENT_LABEL.IP_pos = buf_carriage + 1;
+			CURRENT_LABEL.IP_pos = buf_carriage;
 
 			labels_w_carriage.carriage++;
 		}
@@ -309,11 +309,9 @@ error_t write_main_jmp(struct Buf_w_carriage_n_len *byte_code,
 
 	write_to_buf(byte_code, &POISON_JMP_POS, sizeof(int));
 
-	CURRENT_JMP_PTR.name   = "main";
+	CURRENT_JMP_PTR.name   = MAIN_JMP_NAME;
 	CURRENT_JMP_PTR.IP_pos = 0;
 	jmp_poses_w_carriage->carriage++;
-
-	LOG_BUFFER(byte_code->buf, byte_code->length);
 
 	return ASM_ALL_GOOD;
 }
@@ -333,28 +331,6 @@ error_t write_to_buf(struct Buf_w_carriage_n_len *byte_code,
 	}
 
 	return function_error;
-}
-
-void print_binary(char *buf, size_t size, const char *buf_name)
-{
-	CPU_LOG("%s:\n", buf_name);
-    for (size_t ID = 0; ID < size; ID++)
-	{
-		if(ID % 8 == 0)
-		{
-			CPU_LOG("double[%lu] - %lf\n", ID / 8, *(double *)(buf + ID));
-		}
-
-        char cur_elem = buf[ID];
-		CPU_LOG("[%2.lu] - ", ID);
-
-        for (int bit_offset = 7; bit_offset >= 0; bit_offset--)
-		{
-            CPU_LOG("%d", (cur_elem >> bit_offset) & 1);
-        }
-
-        CPU_LOG("\n");
-    }
 }
 
 error_t align_buffer(struct Buf_w_carriage_n_len *buf, size_t amount_of_bytes)
@@ -438,9 +414,18 @@ return_t arrange_labels(struct Cmds_process_result cmds_process_result)
 				label_found = true;
 
 				FIXED_BYTE_CODE.carriage = sizeof(double) *
-					CURRENT_JMP.IP_pos + sizeof(int);
+					(size_t)CURRENT_JMP.IP_pos + sizeof(int);
 
-				write_to_buf(&FIXED_BYTE_CODE, &CURRENT_LABEL.IP_pos, sizeof(int));
+
+				/* why sizeof(int) - 1 ???????????????????????????????????????????
+					почему то при записи без -1 затирается лишний байт
+					если записать sizeof(short) тоже записывается на один айт больше,
+					то есть от типа не зависит.
+					при использовании этой функции ранее проблем не возникало
+				*/
+				write_to_buf(&FIXED_BYTE_CODE, &CURRENT_LABEL.IP_pos, sizeof(int) - 1);
+
+				// LOG_BUFFER(FIXED_BYTE_CODE.buf, FIXED_BYTE_CODE.length);
 
 				break;
 			}

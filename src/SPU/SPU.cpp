@@ -1,26 +1,29 @@
+#include <stdio.h>
+
 #include "SPU_additional.h"
 #include "SPU.h"
 
-error_t execute(const char *file_name)
+return_t execute(const char *file_name)
 {
-	FILE *byte_code_file = fopen(file_name, "rb");
 
-	if(byte_code_file == NULL)
+
+	return_t result =
 	{
-		log("Unable to open %s\n", file_name);
+		.error_code = SPU_ALL_GOOD,
+		.second_arg.file_ptr = fopen("exeution_result.txt", "w"),
+	};
 
-		return SPU_UNABLE_TO_OPEN_FILE;
+	if(result.second_arg.file_ptr == NULL)
+	{
+		CPU_LOG("Unable to open execution_result.txt\n");
+		result.error_code = SPU_UNABLE_TO_OPEN_FILE;
+
+		return result;
 	}
 
-	size_t byte_code_size = get_file_length(byte_code_file);
-
-	printf("%lu\n", byte_code_size);
-	// struct Buf_w_carriage_n_len byte_code =
-	// {
-	// 	.carriage = 0,
-	// 	.length =
-	// };
+	process(file_name);
 
 
-	return SPU_ALL_GOOD;
+
+	return result;
 }
