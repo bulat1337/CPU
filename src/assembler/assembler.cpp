@@ -1,34 +1,72 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "assembler.h"
 #include "assembler_additional.h"
+
+#define CHECK_ERROR(result)\
+	if(result.error_code != ASM_ALL_GOOD)\
+		return result.error_code;
+
+#define FIXED_BYTE_CODE\
+	arrange_labels_result.second_arg.buf_w_info
+
+#define REDUCED_BYTE_CODE\
+	reduce_buffer_size_result.second_arg.buf_w_info
+
+#define FILE_PTR_CHECK(file_ptr)									\
+	if(file_ptr == NULL)											\
+	{																\
+		CPU_LOG("\nERROR: Unable to open "#file_ptr"\n");			\
+		return ASM_UNABLE_TO_OPEN_FILE;								\
+	}
 
 error_t compile(const char *file_name)
 {
 	struct Parse_human_code_result parse_human_code_result = parse_human_code(file_name);
 
-	if(parse_human_code_result.error_code != ASM_ALL_GOOD)
-	{
-		return parse_human_code_result.error_code;
-	}
+	CHECK_ERROR(parse_human_code_result);
+
+
 	struct Cmds_process_result cmds_process_result =
 		cmds_process(parse_human_code_result.strings,
 		             parse_human_code_result.amount_of_lines);
 
-	struct Buf_w_carriage_n_len byte_code_buf_w_info =
-		arrange_labels(cmds_process_result).second_arg.buf_w_info;
+	CHECK_ERROR(cmds_process_result);
+
+
+	free(parse_human_code_result.strings);
+
+	return_t arrange_labels_result =
+		arrange_labels(cmds_process_result);
+
+	CHECK_ERROR(arrange_labels_result);
+
+
+	free(parse_human_code_result.human_code_buffer.buf);
+	free(cmds_process_result.jmp_poses_w_carriage.JMP_poses);
+	free(cmds_process_result.labels_w_carriage.labels);
+
+	CPU_LOG("Byte_code size: %lu * 8 bytes\n", FIXED_BYTE_CODE.length / 8);
+
+	return_t reduce_buffer_size_result = reduce_buffer_size(FIXED_BYTE_CODE);
+	CHECK_ERROR(reduce_buffer_size_result);
 
 	FILE *byte_code = fopen("byte_code.bin", "wb");
-	if(byte_code == NULL)
-	{
-		CPU_LOG("Unable to open byte_code.bin");
+	FILE_PTR_CHECK(byte_code);
 
-		return ASM_UNABLE_TO_OPEN_FILE;
-	}
+	fwrite(REDUCED_BYTE_CODE.buf, sizeof(char), REDUCED_BYTE_CODE.length, byte_code);
 
-	fwrite(byte_code_buf_w_info.buf, sizeof(char), byte_code_buf_w_info.length, byte_code);
+	fclose(byte_code);
 
-	CPU_LOG("Byte_code size: %lu\n", byte_code_buf_w_info.length);
+	free(REDUCED_BYTE_CODE.buf);
+
+
 
 	return ASM_ALL_GOOD;
 }
+
+#undef CHECK_ERROR
+#undef FIXED_BYTE_CODE
+#undef FILE_PTR_CHECK
+#undef REDUCED_BYTE_CODE

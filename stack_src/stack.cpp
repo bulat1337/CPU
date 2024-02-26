@@ -7,6 +7,7 @@
 
 #include "stack.h"
 #include "stack_additional.h"
+#include "../src/global/secondary.h"
 
 enum Err_ID stack_ctor( Stack *stk, size_t starter_capacity
 					#ifdef DEBUG

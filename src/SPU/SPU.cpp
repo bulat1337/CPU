@@ -5,8 +5,6 @@
 
 return_t execute(const char *file_name)
 {
-
-
 	return_t result =
 	{
 		.error_code = SPU_ALL_GOOD,
@@ -21,9 +19,15 @@ return_t execute(const char *file_name)
 		return result;
 	}
 
-	process(file_name);
+	result.error_code = process(file_name);
+	if(result.error_code != SPU_ALL_GOOD)
+	{
+		CPU_LOG("\nERROR: code_%d\n", result.error_code);
 
+		return result;
+	}
 
+	fclose(result.second_arg.file_ptr);
 
 	return result;
 }

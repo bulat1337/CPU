@@ -2,6 +2,7 @@
 #define ASSEMBLER_ADDITIONAL
 
 #include "assembler.h"
+#include "file_parse.h"
 
 struct Label
 {
@@ -32,6 +33,7 @@ struct Parse_human_code_result
 	error_t error_code;
 	char * *strings;
 	size_t amount_of_lines;
+	struct Buffer_w_info human_code_buffer;
 };
 
 struct Cmds_process_result
@@ -61,5 +63,6 @@ error_t write_char_w_alignment(struct Buf_w_carriage_n_len *byte_code,
 error_t log_labels(struct Labels_w_carriage *labels_w_carriage);
 error_t log_jmps(struct JMP_poses_w_carriage *jmp_poses_w_carriage);
 return_t arrange_labels(struct Cmds_process_result cmds_process_result);
+return_t reduce_buffer_size(struct Buf_w_carriage_n_len buffer_w_info);
 
 #endif

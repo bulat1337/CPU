@@ -11,7 +11,7 @@ const size_t USER_RAM_SIZE       = 4000;
 struct RAM
 {
 	char *byte_code;
-	char user_RAM[USER_RAM_SIZE];
+	double user_RAM[USER_RAM_SIZE];
 };
 
 struct VM
@@ -28,6 +28,7 @@ enum Asm_err_ID
 	SPU_UNABLE_TO_OPEN_FILE = 1 << 0,
 	SPU_UNABLE_TO_ALLOCATE  = 1 << 1,
 	INVALID_FREAD           = 1 << 2,
+	INVALID_RAM_MODE        = 1 << 3,
 };
 
 typedef enum Asm_err_ID error_t;

@@ -10,6 +10,7 @@
 #include "../../stack_src/stack.h"
 
 #define LOG_BUFFER(buf, size)\
+	CPU_LOG("\nBuffer log from %s:\n", __func__);\
 	print_binary(buf, size, #buf)
 
 #define CURRENT_JMP_PTR\
@@ -17,6 +18,14 @@
 
 #define BYTE_CODE\
 	result.buf_w_info
+
+#define FILE_PTR_CHECK(file_ptr)									\
+	if(file_ptr == NULL)											\
+	{																\
+		CPU_LOG("\nERROR: Unable to open "#file_ptr"\n");			\
+		result.error_code = ASM_UNABLE_TO_OPEN_FILE;                \
+		return result;							  					\
+	}
 
 struct Parse_human_code_result parse_human_code(const char *file_name)
 {
@@ -26,30 +35,25 @@ struct Parse_human_code_result parse_human_code(const char *file_name)
 	};
 
 	FILE *human_code = fopen(file_name, "r");
-
-	if(human_code == NULL)
-	{
-		result.error_code = ASM_UNABLE_TO_OPEN_FILE;
-		return result;
-	}
+	FILE_PTR_CHECK(human_code);
 
 	size_t human_code_file_length = get_file_length(human_code);
-	struct Buffer_w_info human_code_buffer =
+	result.human_code_buffer =
 	{
 		.length = human_code_file_length,
 		.buf = (char *)calloc(human_code_file_length, sizeof(char)),
 	};
 
-	fread(human_code_buffer.buf, sizeof(char), human_code_buffer.length, human_code);
+	fread(result.human_code_buffer.buf, sizeof(char), result.human_code_buffer.length, human_code);
 
 	fclose(human_code);
 
-	result.amount_of_lines = count_file_lines(human_code_buffer);
+	result.amount_of_lines = count_file_lines(result.human_code_buffer);
 	CPU_LOG("amount of lines: %lu\n", result.amount_of_lines);
 
 	result.strings = (char * *)calloc(result.amount_of_lines, sizeof(char *));
 
-	ptr_arranger(result.strings, human_code_buffer);
+	ptr_arranger(result.strings, result.human_code_buffer);
 
 	return result;
 }
@@ -69,34 +73,35 @@ struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines
 		.length = byte_code_size,
 	};
 
-	struct Labels_w_carriage labels_w_carriage
+	result.labels_w_carriage =
 	{
 		.labels = (Label *)calloc(amount_of_lines, sizeof(Label)),
 		.carriage = 0,
 	};
-	struct JMP_poses_w_carriage jmp_poses_w_carriage =
+	result.jmp_poses_w_carriage =
 	{
 		.JMP_poses = (JMP_pos *)calloc(amount_of_lines, sizeof(JMP_pos)),
 		.carriage = 0,
 	};
 
-	write_main_jmp(&BYTE_CODE, &jmp_poses_w_carriage);
+	write_main_jmp(&BYTE_CODE, &(result.jmp_poses_w_carriage));
 
 	char cmd_type = (char)ZERO;
 	double argument_value = NAN;
 	char reg_type = 0;
+	unsigned int RAM_address = 0;
 
 	#define CURRENT_LABEL\
-		labels_w_carriage.labels[labels_w_carriage.carriage]
+		result.labels_w_carriage.labels[result.labels_w_carriage.carriage]
 
 	#define CURRENT_JMP\
-		jmp_poses_w_carriage.JMP_poses[jmp_poses_w_carriage.carriage]
+		result.jmp_poses_w_carriage.JMP_poses[result.jmp_poses_w_carriage.carriage]
 
 	#define GET_REG_TYPE(cmd)\
 		*(commands[line_ID] + strlen(cmd) + 1 + 1) - 'a'
 
 	#define IS_COMMAND(cmd)\
-		!strncmp(commands[line_ID], cmd, sizeof(cmd) / sizeof(char) - 1)
+		!strncmp(commands[line_ID], cmd, strlen(cmd))
 
 	size_t buf_carriage = 1;
 	for(size_t line_ID = 0; line_ID < amount_of_lines; line_ID++)
@@ -105,14 +110,28 @@ struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines
 		{
 			cmd_type = (char)PUSH;
 			write_to_buf(&BYTE_CODE, &cmd_type, sizeof(char));
-
-			if(sscanf(commands[line_ID] + strlen("push") ,"%lf", &argument_value) == 0)
+			if(*(commands[line_ID] + strlen("push")) == '[')
 			{
-				CPU_LOG("reg detected\n");
+				if(sscanf(commands[line_ID] + strlen("push") + 1, "%d", &RAM_address) == 0)
+				{
+					align_buffer(&BYTE_CODE, 1);
+					write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));
+					write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));
 
+					reg_type = GET_REG_TYPE("push");
+					write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);
+				}
+				else
+				{
+					write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));
+					align_buffer(&BYTE_CODE, 1);
+					write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));
 
-				CPU_LOG("reg type: %d\n", reg_type);
-
+					write_to_buf(&BYTE_CODE, &RAM_address, sizeof(int));
+				}
+			}
+			else if(sscanf(commands[line_ID] + strlen("push") ,"%lf", &argument_value) == 0)
+			{
 				align_buffer(&BYTE_CODE, 1);
 				write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));
 				align_buffer(&BYTE_CODE, 1);
@@ -135,10 +154,27 @@ struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines
 		}
 		else if(IS_COMMAND("pop"))
 		{
-			write_char_w_alignment(&BYTE_CODE, (char)POP, ALIGN_TO_INT);
+			cmd_type = (char)POP;
+			write_to_buf(&BYTE_CODE, &cmd_type, sizeof(char));
 
-			reg_type = GET_REG_TYPE("pop");
-			write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);
+			if(*(commands[line_ID] + strlen("pop")) == '[')
+			{
+				align_buffer(&BYTE_CODE, 2);
+				write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));
+
+				sscanf(commands[line_ID] + strlen("pop") + 1, "%d", &RAM_address);
+
+				write_to_buf(&BYTE_CODE, &RAM_address, sizeof(int));
+			}
+			else
+			{
+				align_buffer(&BYTE_CODE, 1);
+				write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));
+				align_buffer(&BYTE_CODE, 1);
+
+				reg_type = GET_REG_TYPE("pop");
+				write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);
+			}
 
 			buf_carriage++;
 		}
@@ -192,29 +228,7 @@ struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines
 			CURRENT_JMP.name = commands[line_ID] + strlen("jmp") + 1;
 			CURRENT_JMP.IP_pos = (int)buf_carriage;
 
-			jmp_poses_w_carriage.carriage++;
-			buf_carriage++;
-		}
-		else if(IS_COMMAND("ja"))
-		{
-			write_char_w_alignment(&BYTE_CODE, (char)JA, ALIGN_TO_INT);
-			write_to_buf(&BYTE_CODE, &POISON_JMP_POS, sizeof(int));
-
-			CURRENT_JMP.name = commands[line_ID] + strlen("ja") + 1;
-			CURRENT_JMP.IP_pos = (int)buf_carriage;
-
-			jmp_poses_w_carriage.carriage++;
-			buf_carriage++;
-		}
-		else if(IS_COMMAND("jb"))
-		{
-			write_char_w_alignment(&BYTE_CODE, (char)JB, ALIGN_TO_INT);
-			write_to_buf(&BYTE_CODE, &POISON_JMP_POS, sizeof(int));
-
-			CURRENT_JMP.name = commands[line_ID] + strlen("jb") + 1;
-			CURRENT_JMP.IP_pos = (int)buf_carriage;
-
-			jmp_poses_w_carriage.carriage++;
+			result.jmp_poses_w_carriage.carriage++;
 			buf_carriage++;
 		}
 		else if(IS_COMMAND("jae"))
@@ -225,7 +239,18 @@ struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines
 			CURRENT_JMP.name = commands[line_ID] + strlen("jae") + 1;
 			CURRENT_JMP.IP_pos = (int)buf_carriage;
 
-			jmp_poses_w_carriage.carriage++;
+			result.jmp_poses_w_carriage.carriage++;
+			buf_carriage++;
+		}
+		else if(IS_COMMAND("ja"))
+		{
+			write_char_w_alignment(&BYTE_CODE, (char)JA, ALIGN_TO_INT);
+			write_to_buf(&BYTE_CODE, &POISON_JMP_POS, sizeof(int));
+
+			CURRENT_JMP.name = commands[line_ID] + strlen("ja") + 1;
+			CURRENT_JMP.IP_pos = (int)buf_carriage;
+
+			result.jmp_poses_w_carriage.carriage++;
 			buf_carriage++;
 		}
 		else if(IS_COMMAND("jbe"))
@@ -236,7 +261,18 @@ struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines
 			CURRENT_JMP.name   = commands[line_ID] + strlen("jbe") + 1;
 			CURRENT_JMP.IP_pos = (int)buf_carriage;
 
-			jmp_poses_w_carriage.carriage++;
+			result.jmp_poses_w_carriage.carriage++;
+			buf_carriage++;
+		}
+		else if(IS_COMMAND("jb"))
+		{
+			write_char_w_alignment(&BYTE_CODE, (char)JB, ALIGN_TO_INT);
+			write_to_buf(&BYTE_CODE, &POISON_JMP_POS, sizeof(int));
+
+			CURRENT_JMP.name = commands[line_ID] + strlen("jb") + 1;
+			CURRENT_JMP.IP_pos = (int)buf_carriage;
+
+			result.jmp_poses_w_carriage.carriage++;
 			buf_carriage++;
 		}
 		else if(IS_COMMAND("je"))
@@ -247,7 +283,7 @@ struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines
 			CURRENT_JMP.name = commands[line_ID] + strlen("je") + 1;
 			CURRENT_JMP.IP_pos = (int)buf_carriage;
 
-			jmp_poses_w_carriage.carriage++;
+			result.jmp_poses_w_carriage.carriage++;
 			buf_carriage++;
 		}
 		else if(IS_COMMAND("jne"))
@@ -258,7 +294,7 @@ struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines
 			CURRENT_JMP.name = commands[line_ID] + strlen("jne") + 1;
 			CURRENT_JMP.IP_pos = (int)buf_carriage;
 
-			jmp_poses_w_carriage.carriage++;
+			result.jmp_poses_w_carriage.carriage++;
 			buf_carriage++;
 		}
 		else if(IS_COMMAND("call"))
@@ -269,7 +305,7 @@ struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines
 			CURRENT_JMP.name = commands[line_ID] + strlen("call") + 1;
 			CURRENT_JMP.IP_pos = (int)buf_carriage;
 
-			jmp_poses_w_carriage.carriage++;
+			result.jmp_poses_w_carriage.carriage++;
 			buf_carriage++;
 		}
 		else if(IS_COMMAND("hlt"))
@@ -282,16 +318,13 @@ struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines
 			CURRENT_LABEL.name   = commands[line_ID] + strlen(":");
 			CURRENT_LABEL.IP_pos = buf_carriage;
 
-			labels_w_carriage.carriage++;
+			result.labels_w_carriage.carriage++;
 		}
 	}
 
-	result.jmp_poses_w_carriage = jmp_poses_w_carriage;
-	result.labels_w_carriage = labels_w_carriage;
-
 	LOG_BUFFER(BYTE_CODE.buf, BYTE_CODE.length);
-	log_labels(&labels_w_carriage);
-	log_jmps(&jmp_poses_w_carriage);
+	log_labels(&(result.labels_w_carriage));
+	log_jmps(&(result.jmp_poses_w_carriage));
 
 
 	return result;
@@ -448,9 +481,66 @@ return_t arrange_labels(struct Cmds_process_result cmds_process_result)
 	return result;
 }
 
+#define CURRENT_CHUNK\
+	*(long *)(buffer_w_info.buf + carriage)
+#define REDUCED_BYTE_CODE\
+	result.second_arg.buf_w_info
+
+return_t reduce_buffer_size(struct Buf_w_carriage_n_len buffer_w_info)
+{
+	return_t result =
+	{
+		.error_code = ASM_ALL_GOOD,
+	};
+
+	bool non_zero_flag = true;
+	bool zero_flag     = false;
+	size_t tale   = 0;
+
+	if(*(long *)(buffer_w_info.buf + buffer_w_info.length - sizeof(double)) != 0)
+	{
+		tale = buffer_w_info.length;
+	}
+	else
+	{
+		for(size_t carriage = 0; carriage < buffer_w_info.length; carriage += sizeof(long))
+		{
+			if(CURRENT_CHUNK == 0)
+			{
+				zero_flag = true;
+			}
+			else
+			{
+				non_zero_flag = true;
+				zero_flag = false;
+			}
+
+			if(non_zero_flag && zero_flag)
+			{
+				tale = carriage;
+				non_zero_flag = false;
+				zero_flag = false;
+			}
+
+		}
+	}
+
+	// + 1 incase of push 0 as a last cmd
+	REDUCED_BYTE_CODE.length = tale + sizeof(double);
+
+	REDUCED_BYTE_CODE.buf =
+		(char *)realloc(buffer_w_info.buf, REDUCED_BYTE_CODE.length);
+
+	LOG_BUFFER(REDUCED_BYTE_CODE.buf, REDUCED_BYTE_CODE.length);
+	CPU_LOG("reduced length: %lu * 8 bytes\n", REDUCED_BYTE_CODE.length / 8);
+
+	return result;
+}
+
 #undef CURRENT_JMP
 #undef CURRENT_LABEL
 #undef FIXED_BYTE_CODE
 #undef LOG_BUFFER
 #undef CURRENT_JMP_PTR
 #undef BYTE_CODE
+#undef FILE_PTR_CHECK

@@ -11,6 +11,13 @@
 #define LOG_BUFFER(buf, size)\
 	print_binary(buf, size, #buf)
 
+#define UPDATE_BYTE_CODE_CARRIAGE											\
+	byte_code_carriage =													\
+		*(unsigned int *)(CURRENT_BYTE_CODE + sizeof(int)) * sizeof(double);
+
+#define MOVE_CARRIAGE\
+	byte_code_carriage += sizeof(double)
+
 error_t process(const char *file_name)
 {
 	FILE *byte_code_file = fopen(file_name, "rb");
@@ -25,7 +32,6 @@ error_t process(const char *file_name)
 	size_t byte_code_length = get_file_length(byte_code_file);
 
 
-
 	struct VM vm = {};
 	VM_ctor(&vm);
 
@@ -33,6 +39,8 @@ error_t process(const char *file_name)
 	BYTE_CODE = (char *)calloc(byte_code_length, sizeof(char));
 
 	size_t read_elems = fread(BYTE_CODE, sizeof(char), byte_code_length, byte_code_file);
+	fclose(byte_code_file);
+
 	if(read_elems != byte_code_length)
 	{
 		CPU_LOG("ERROR: read_elems != byte_code_length\n");
@@ -40,67 +48,106 @@ error_t process(const char *file_name)
 		return INVALID_FREAD;
 	}
 
-	LOG_BUFFER(BYTE_CODE, byte_code_length);
+
 
 	size_t byte_code_carriage = 0;
 	char command              = (char)ZERO;
-	int reg_type              = 0;
+	size_t reg_type           = 0;
 	double user_entered_value = NAN;
 	double value              = NAN;
 	double value_A            = NAN;
 	double value_B            = NAN;
+	int cmp_result            = 666;
+	unsigned int RAM_address  = 0;
 
 	#define CURRENT_BYTE_CODE\
 		(BYTE_CODE + byte_code_carriage)
 	while(byte_code_carriage < byte_code_length)
 	{
 		command = *(CURRENT_BYTE_CODE);
-		// printf("command code: %d\n", commaxnd);
 		switch(command)
 		{
 			case ZERO:
 			{
-				byte_code_carriage += sizeof(double);
+				MOVE_CARRIAGE;
 
 				break;
 			}
 			case PUSH:
 			{
-				if(*(char *)(CURRENT_BYTE_CODE + sizeof(char)) != 0) //сделать проверку маской
+				if(*(int *)(CURRENT_BYTE_CODE) & RAM_IDENTIFIER_MASK)
 				{
-					byte_code_carriage += sizeof(double);
+					if(*(int *)(CURRENT_BYTE_CODE) & CONSTANT_IDENTIFIER_MASK)
+					{
+						RAM_address = *(unsigned int *)(CURRENT_BYTE_CODE + sizeof(int));
+
+						value = vm.rand_access_mem.user_RAM[RAM_address];
+
+						STACK_PUSH(&(vm.user_stack), value);
+					}
+					else if(*(int *)(CURRENT_BYTE_CODE) & REGISTER_IDENTIFIER_MASK)
+					{
+						reg_type = *(unsigned int *)(CURRENT_BYTE_CODE + sizeof(int));
+
+						RAM_address = (unsigned int)vm.registers[reg_type];
+
+						value = vm.rand_access_mem.user_RAM[RAM_address];
+
+						STACK_PUSH(&(vm.user_stack), value);
+					}
+					else
+					{
+						return INVALID_RAM_MODE;
+					}
+				}
+				else if(*(int *)(CURRENT_BYTE_CODE) & CONSTANT_IDENTIFIER_MASK)
+				{
+					MOVE_CARRIAGE;
 
 					STACK_PUSH(&(vm.user_stack), *(double *)CURRENT_BYTE_CODE);
 				}
-				//сделать проверку маской
-				else if(*(CURRENT_BYTE_CODE + 2 * sizeof(char)) != 0)
+				else if(*(int *)(CURRENT_BYTE_CODE) & REGISTER_IDENTIFIER_MASK)
 				{
-					reg_type = (size_t)*(int *)(CURRENT_BYTE_CODE + sizeof(int)); // GET_REG_TYPE
+					reg_type = *(unsigned int *)(CURRENT_BYTE_CODE + sizeof(int));
 					STACK_PUSH(&(vm.user_stack), vm.registers[reg_type]);
 				}
 
-				byte_code_carriage += sizeof(double);
+				MOVE_CARRIAGE;
 
 				break;
 			}
 			case POP:
 			{
-				reg_type = (size_t)*(int *)(CURRENT_BYTE_CODE + sizeof(int));
-				vm.registers[reg_type] = 					//CURRENT_REGISTER
-					STACK_POP(&(vm.user_stack)).deleted_element;
+				if(*(int *)(CURRENT_BYTE_CODE) & RAM_IDENTIFIER_MASK)
+				{
+					RAM_address = *(unsigned int *)(CURRENT_BYTE_CODE + sizeof(int));
 
-				byte_code_carriage += sizeof(double);
+					vm.rand_access_mem.user_RAM[RAM_address] =
+						STACK_POP(&(vm.user_stack)).deleted_element;
+				}
+				else if(*(int *)(CURRENT_BYTE_CODE) & REGISTER_IDENTIFIER_MASK)
+				{
+					reg_type = *(unsigned int *)(CURRENT_BYTE_CODE + sizeof(int));
+
+					vm.registers[reg_type] =
+						STACK_POP(&(vm.user_stack)).deleted_element;
+				}
+
+
+				MOVE_CARRIAGE;
 
 				break;
 			}
 			case IN:
 			{
 				printf("Please enter value: ");
-				scanf(">\t%lf", &user_entered_value);
+
+				scanf("%lf", &user_entered_value);
+				clear_buffer();
 
 				STACK_PUSH(&(vm.user_stack), user_entered_value);
 
-				byte_code_carriage += sizeof(double);
+				MOVE_CARRIAGE;
 
 				break;
 			}
@@ -111,7 +158,7 @@ error_t process(const char *file_name)
 
 				STACK_PUSH(&(vm.user_stack), value_A + value_B);
 
-				byte_code_carriage += sizeof(double);
+				MOVE_CARRIAGE;
 
 				break;
 			}
@@ -122,7 +169,7 @@ error_t process(const char *file_name)
 
 				STACK_PUSH(&(vm.user_stack), value_A - value_B);
 
-				byte_code_carriage += sizeof(double);
+				MOVE_CARRIAGE;
 
 				break;
 			}
@@ -133,7 +180,7 @@ error_t process(const char *file_name)
 
 				STACK_PUSH(&(vm.user_stack), value_A * value_B);
 
-				byte_code_carriage += sizeof(double);
+				MOVE_CARRIAGE;
 
 				break;
 			}
@@ -144,7 +191,7 @@ error_t process(const char *file_name)
 
 				STACK_PUSH(&(vm.user_stack), value_A / value_B);
 
-				byte_code_carriage += sizeof(double);
+				MOVE_CARRIAGE;
 
 				break;
 			}
@@ -152,22 +199,21 @@ error_t process(const char *file_name)
 			{
 				value = STACK_POP(&(vm.user_stack)).deleted_element;
 
-				printf("RESULT: %lf\n", value);
+				printf("RESULT: %.3lf\n", value);
 
-				byte_code_carriage += sizeof(double);
+				MOVE_CARRIAGE;
 
 				break;
 			}
 			case RET:
 			{
-				byte_code_carriage = STACK_POP(&(vm.ret_stack)).deleted_element;
+				byte_code_carriage = (size_t)STACK_POP(&(vm.ret_stack)).deleted_element;
 
 				break;
 			}
 			case JMP:
 			{
-				byte_code_carriage =
-					(size_t)*(int *)(CURRENT_BYTE_CODE + sizeof(int)) * sizeof(double);
+				UPDATE_BYTE_CODE_CARRIAGE;
 
 				break;
 			}
@@ -176,14 +222,15 @@ error_t process(const char *file_name)
 				value_B = STACK_POP(&(vm.user_stack)).deleted_element;
 				value_A = STACK_POP(&(vm.user_stack)).deleted_element;
 
-				if(value_A > value_B)
+				cmp_result = cmp_double(value_A, value_B);
+
+				if(cmp_result == 1)
 				{
-					byte_code_carriage =
-						(size_t)*(int *)(CURRENT_BYTE_CODE + sizeof(int)) * sizeof(double);
+					UPDATE_BYTE_CODE_CARRIAGE;
 				}
 				else
 				{
-					byte_code_carriage += sizeof(double);
+					MOVE_CARRIAGE;
 				}
 
 				break;
@@ -193,14 +240,15 @@ error_t process(const char *file_name)
 				value_B = STACK_POP(&(vm.user_stack)).deleted_element;
 				value_A = STACK_POP(&(vm.user_stack)).deleted_element;
 
-				if(value_A < value_B)
+				cmp_result = cmp_double(value_A, value_B);
+
+				if(cmp_result == -1)
 				{
-					byte_code_carriage =
-						(size_t)*(int *)(CURRENT_BYTE_CODE + sizeof(int)) * sizeof(double);
+					UPDATE_BYTE_CODE_CARRIAGE;
 				}
 				else
 				{
-					byte_code_carriage += sizeof(double);
+					MOVE_CARRIAGE;
 				}
 
 				break;
@@ -210,14 +258,15 @@ error_t process(const char *file_name)
 				value_B = STACK_POP(&(vm.user_stack)).deleted_element;
 				value_A = STACK_POP(&(vm.user_stack)).deleted_element;
 
-				if(value_A >= value_B)
+				cmp_result = cmp_double(value_A, value_B);
+
+				if(cmp_result == 1 || cmp_result == 0)
 				{
-					byte_code_carriage =
-						(size_t)*(int *)(CURRENT_BYTE_CODE + sizeof(int)) * sizeof(double);
+					UPDATE_BYTE_CODE_CARRIAGE;
 				}
 				else
 				{
-					byte_code_carriage += sizeof(double);
+					MOVE_CARRIAGE;
 				}
 
 				break;
@@ -227,14 +276,15 @@ error_t process(const char *file_name)
 				value_B = STACK_POP(&(vm.user_stack)).deleted_element;
 				value_A = STACK_POP(&(vm.user_stack)).deleted_element;
 
-				if(value_A <= value_B)
+				cmp_result = cmp_double(value_A, value_B);
+
+				if(cmp_result == -1 || cmp_result == 0)
 				{
-					byte_code_carriage =
-						(size_t)*(int *)(CURRENT_BYTE_CODE + sizeof(int)) * sizeof(double);
+					UPDATE_BYTE_CODE_CARRIAGE;
 				}
 				else
 				{
-					byte_code_carriage += sizeof(double);
+					MOVE_CARRIAGE;
 				}
 
 				break;
@@ -244,14 +294,15 @@ error_t process(const char *file_name)
 				value_B = STACK_POP(&(vm.user_stack)).deleted_element;
 				value_A = STACK_POP(&(vm.user_stack)).deleted_element;
 
-				if(value_A == value_B)
+				cmp_result = cmp_double(value_A, value_B);
+
+				if(cmp_result == 0)
 				{
-					byte_code_carriage =
-						(size_t)*(int *)(CURRENT_BYTE_CODE + sizeof(int)) * sizeof(double);
+					UPDATE_BYTE_CODE_CARRIAGE;
 				}
 				else
 				{
-					byte_code_carriage += sizeof(double);
+					MOVE_CARRIAGE;
 				}
 
 				break;
@@ -261,14 +312,15 @@ error_t process(const char *file_name)
 				value_B = STACK_POP(&(vm.user_stack)).deleted_element;
 				value_A = STACK_POP(&(vm.user_stack)).deleted_element;
 
-				if(value_A != value_B)
+				cmp_result = cmp_double(value_A, value_B);
+
+				if(cmp_result != 0)
 				{
-					byte_code_carriage =
-						(size_t)*(int *)(CURRENT_BYTE_CODE + sizeof(int)) * sizeof(double);
+					UPDATE_BYTE_CODE_CARRIAGE;
 				}
 				else
 				{
-					byte_code_carriage += sizeof(double);
+					MOVE_CARRIAGE;
 				}
 
 				break;
@@ -277,8 +329,7 @@ error_t process(const char *file_name)
 			{
 				STACK_PUSH(&(vm.ret_stack), byte_code_carriage + sizeof(double));
 
-				byte_code_carriage =
-					(size_t)*(int *)(CURRENT_BYTE_CODE + sizeof(int)) * sizeof(double);
+				UPDATE_BYTE_CODE_CARRIAGE;
 
 				break;
 			}
@@ -286,7 +337,7 @@ error_t process(const char *file_name)
 			{
 				return SPU_ALL_GOOD;
 			}
-			deafult:
+			default:
 			{
 				printf("Unknown_command\n");
 			}
@@ -294,6 +345,8 @@ error_t process(const char *file_name)
 		}
 	}
 
+	free(BYTE_CODE);
+	VM_dtor(&vm);
 
 	return SPU_ALL_GOOD;
 }
@@ -305,3 +358,14 @@ error_t VM_ctor(struct VM *vm)
 
 	return SPU_ALL_GOOD;
 }
+
+error_t VM_dtor(struct VM *vm)
+{
+	stack_dtor(&(vm->user_stack));
+	stack_dtor(&(vm->ret_stack));
+
+	return SPU_ALL_GOOD;
+}
+
+#undef UPDATE_BYTE_CODE_CARRIAGE
+#undef MOVE_CARRIAGE

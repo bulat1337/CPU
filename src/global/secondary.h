@@ -9,5 +9,7 @@
 void log(const char *file_name, const char *func_name, int line, const char *fmt, ...);
 size_t get_file_length(FILE *file_ptr);
 void print_binary(char *buf, size_t size, const char *buf_name);
+int cmp_double(double first_double, double second_double);
+void clear_buffer(void);
 
 #endif
