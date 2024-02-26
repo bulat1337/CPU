@@ -24,7 +24,6 @@
 error_t compile(const char *file_name)
 {
 	struct Parse_human_code_result parse_human_code_result = parse_human_code(file_name);
-
 	CHECK_ERROR(parse_human_code_result);
 
 

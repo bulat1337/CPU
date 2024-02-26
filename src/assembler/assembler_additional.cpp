@@ -104,7 +104,7 @@ struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines
 		!strncmp(commands[line_ID], cmd, strlen(cmd))
 
 	size_t buf_carriage = 1;
-	for(size_t line_ID = 0; line_ID < amount_of_lines; line_ID++)
+	SAFE_FOR_START(size_t line_ID = 0; line_ID < amount_of_lines; line_ID++)
 	{
 		if(IS_COMMAND("push"))
 		{
@@ -320,6 +320,8 @@ struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines
 
 			result.labels_w_carriage.carriage++;
 		}
+
+		SAFE_FOR_END
 	}
 
 	LOG_BUFFER(BYTE_CODE.buf, BYTE_CODE.length);
@@ -355,12 +357,14 @@ error_t write_to_buf(struct Buf_w_carriage_n_len *byte_code,
 	error_t function_error = ASM_ALL_GOOD;
 	const char *byte_of_value = (const char *)value;
 
-	for(size_t ID = 0; ID < size; ID++)
+	SAFE_FOR_START(size_t ID = 0; ID < size; ID++)
 	{
 		snprintf(byte_code->buf + byte_code->carriage,
 				 sizeof(char) + 1, "%c", *(byte_of_value + ID));
 
 		byte_code->carriage++;
+
+		SAFE_FOR_END
 	}
 
 	return function_error;
@@ -369,9 +373,11 @@ error_t write_to_buf(struct Buf_w_carriage_n_len *byte_code,
 error_t align_buffer(struct Buf_w_carriage_n_len *buf, size_t amount_of_bytes)
 {
 	char value = 0;
-	for(size_t byte_ID = 0; byte_ID < amount_of_bytes; byte_ID++)
+	SAFE_FOR_START(size_t byte_ID = 0; byte_ID < amount_of_bytes; byte_ID++)
 	{
 		write_to_buf(buf, &value, sizeof(char));
+
+		SAFE_FOR_END
 	}
 
 	return ASM_ALL_GOOD;
@@ -390,11 +396,13 @@ error_t log_labels(struct Labels_w_carriage *labels_w_carriage)
 {
 	CPU_LOG("\nLABELS\n");
 	CPU_LOG("label_ID        IP_pos        name\n");
-	for(size_t label_ID = 0; label_ID < labels_w_carriage->carriage; label_ID++)
+	SAFE_FOR_START(size_t label_ID = 0; label_ID < labels_w_carriage->carriage; label_ID++)
 	{
 		CPU_LOG("%8.lu%14.lu        %s\n",
 			label_ID, labels_w_carriage->labels[label_ID].IP_pos,
 			labels_w_carriage->labels[label_ID].name);
+
+		SAFE_FOR_END
 	}
 
 	return ASM_ALL_GOOD;
@@ -404,11 +412,13 @@ error_t log_jmps(struct JMP_poses_w_carriage *jmp_poses_w_carriage)
 {
 	CPU_LOG("\nJMPS\n");
 	CPU_LOG("JMP_ID        IP_pos        name\n");
-	for(size_t JMP_ID = 0; JMP_ID < jmp_poses_w_carriage->carriage; JMP_ID++)
+	SAFE_FOR_START(size_t JMP_ID = 0; JMP_ID < jmp_poses_w_carriage->carriage; JMP_ID++)
 	{
 		CPU_LOG("%6.lu%14.lu        %s\n",
 			JMP_ID, jmp_poses_w_carriage->JMP_poses[JMP_ID].IP_pos,
 			jmp_poses_w_carriage->JMP_poses[JMP_ID].name);
+
+		SAFE_FOR_END
 	}
 
 	return ASM_ALL_GOOD;
@@ -433,11 +443,11 @@ return_t arrange_labels(struct Cmds_process_result cmds_process_result)
 	const size_t amount_of_labels = cmds_process_result.labels_w_carriage.carriage;
 	bool label_found = false;
 
-	for(size_t jmp_ID = 0; jmp_ID < amount_of_jmps; jmp_ID++)
+	SAFE_FOR_START(size_t jmp_ID = 0; jmp_ID < amount_of_jmps; jmp_ID++)
 	{
 		CPU_LOG("Working on %s...\n", CURRENT_JMP);
 
-		for(size_t label_ID = 0; label_ID < amount_of_labels; label_ID++)
+		SAFE_FOR_START(size_t label_ID = 0; label_ID < amount_of_labels; label_ID++)
 		{
 			CPU_LOG("\tIs it %s?\n", CURRENT_LABEL.name);
 			if(!strncmp(CURRENT_LABEL.name, CURRENT_JMP.name, strlen(CURRENT_JMP.name)))
@@ -466,6 +476,8 @@ return_t arrange_labels(struct Cmds_process_result cmds_process_result)
 			{
 				CPU_LOG("\t\tNo\n");
 			}
+
+			SAFE_FOR_END
 		}
 
 		if(!label_found)
@@ -474,6 +486,7 @@ return_t arrange_labels(struct Cmds_process_result cmds_process_result)
 			result.error_code = LABEL_DOESNT_EXIST;
 		}
 
+		SAFE_FOR_END
 	}
 
 	LOG_BUFFER(FIXED_BYTE_CODE.buf, FIXED_BYTE_CODE.length);
@@ -503,7 +516,7 @@ return_t reduce_buffer_size(struct Buf_w_carriage_n_len buffer_w_info)
 	}
 	else
 	{
-		for(size_t carriage = 0; carriage < buffer_w_info.length; carriage += sizeof(long))
+		SAFE_FOR_START(size_t carriage = 0; carriage < buffer_w_info.length; carriage += sizeof(long))
 		{
 			if(CURRENT_CHUNK == 0)
 			{
@@ -522,6 +535,7 @@ return_t reduce_buffer_size(struct Buf_w_carriage_n_len buffer_w_info)
 				zero_flag = false;
 			}
 
+			SAFE_FOR_END
 		}
 	}
 
