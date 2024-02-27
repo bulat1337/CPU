@@ -7,7 +7,7 @@ const int CONSTANT_IDENTIFIER_MASK = 1 << 8 * 1;
 const int REGISTER_IDENTIFIER_MASK = 1 << 8 * 2;
 const int RAM_IDENTIFIER_MASK      = 1 << 8 * 3;
 
-error_t process(const char *file_name);
+error_t process(FILE *input_file, FILE *output_file);
 error_t VM_ctor(struct VM *vm);
 error_t VM_dtor(struct VM *vm);
 
