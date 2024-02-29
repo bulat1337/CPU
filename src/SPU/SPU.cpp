@@ -29,8 +29,6 @@ return_t execute(const char *file_name)
 		return result;
 	}
 
-	result.second_arg.file_ptr = stdout; // temp
-
 	result.error_code = process(byte_code_file, result.second_arg.file_ptr);
 	if(result.error_code != SPU_ALL_GOOD)
 	{
