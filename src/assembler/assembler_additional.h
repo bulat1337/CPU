@@ -44,12 +44,16 @@ struct Cmds_process_result
 	struct JMP_poses_w_carriage jmp_poses_w_carriage;
 };
 
-const int    POISON_JMP_POS           = -1;
-const char   IDENTIFIER_BYTE          =  1;
-const int    CMD_TYPE_ALIGNMENT_VALUE =  3;
-const size_t ALIGN_TO_INT             =  sizeof(int) - sizeof(char);
-const size_t ALIGN_TO_DOUBLE          =  sizeof(double) - sizeof(char);
-const char * const MAIN_JMP_NAME      = "main";
+const int    POISON_JMP_POS            = -1;
+const char   IDENTIFIER_BYTE           =  1;
+const int    CMD_TYPE_ALIGNMENT_VALUE  =  3;
+const size_t ALIGN_TO_INT              =  sizeof(int) - sizeof(char);
+const size_t ALIGN_TO_DOUBLE           =  sizeof(double) - sizeof(char);
+const char * const MAIN_JMP_NAME       = "main";
+const unsigned char SPACE_SKIP         = 1;
+const unsigned char LETTER_SKIP        = 1;
+const unsigned char SIX_BYTE_ALIGNMENT = 6;
+const unsigned char ONE_BYTE_ALIGNMENT = 1;
 
 struct Parse_human_code_result parse_human_code(const char *file_name);
 struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines);

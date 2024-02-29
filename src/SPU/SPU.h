@@ -6,7 +6,7 @@
 #include "../../stack_src/stack.h"
 
 const size_t AMOUNT_OF_REGISTERS = 4;
-const size_t USER_RAM_SIZE       = 4000;
+const size_t USER_RAM_SIZE       = 400;
 
 struct RAM
 {

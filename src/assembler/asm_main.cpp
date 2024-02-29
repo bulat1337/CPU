@@ -4,7 +4,7 @@
 
 int main()
 {
-	error_t error = compile("human_code");
+	error_t error = compile("fibonacci_algorithm");
 
 	if(error != ASM_ALL_GOOD)
 	{

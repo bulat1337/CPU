@@ -59,144 +59,147 @@ struct Parse_human_code_result parse_human_code(const char *file_name)
 }
 
 
-#define TYPE_1(cmd_name, num)																\
-	if(IS_COMMAND(#cmd_name))\
-	{\
-		cmd_type = (char)num;\
-		write_to_buf(&BYTE_CODE, &cmd_type, sizeof(char));\
-		if(*(commands[line_ID] + strlen(#cmd_name)) == '[')\
-		{\
-			if(sscanf(commands[line_ID] + strlen(#cmd_name) + 1, "%d", &RAM_address) == 0)\
-			{\
-				align_buffer(&BYTE_CODE, 1);\
-				write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));\
-				write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));\
-\
-				reg_type = GET_REG_TYPE(#cmd_name);\
-				write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);\
-			}\
-			else\
-			{\
-				write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));\
-				align_buffer(&BYTE_CODE, 1);\
-				write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));\
-\
-				write_to_buf(&BYTE_CODE, &RAM_address, sizeof(int));\
-			}\
-		}\
-		else if(sscanf(commands[line_ID] + strlen(#cmd_name) ,"%lf", &argument_value) == 0)\
-		{\
-			align_buffer(&BYTE_CODE, 1);\
-			write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));\
-			align_buffer(&BYTE_CODE, 1);\
-\
-			reg_type = GET_REG_TYPE(#cmd_name);\
-			write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);\
-\
-			buf_carriage++;\
-		}\
-		else\
-		{\
-			write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));\
-			align_buffer(&BYTE_CODE, 6);\
-			buf_carriage++;\
-\
-			write_to_buf(&BYTE_CODE, &argument_value, sizeof(double));\
-\
-			buf_carriage++;\
-		}\
+#define TYPE_1(cmd_name, num)												\
+	if(IS_COMMAND(#cmd_name))												\
+	{																		\
+		cmd_type = (char)num;												\
+		write_to_buf(&BYTE_CODE, &cmd_type, sizeof(char));					\
+		if(*(commands[line_ID] + strlen(#cmd_name)) == '[')					\
+		{																	\
+			if(sscanf(commands[line_ID] + strlen(#cmd_name) + SPACE_SKIP, 	\
+					  "%d", &RAM_address) == 0)								\
+			{																\
+				align_buffer(&BYTE_CODE, ONE_BYTE_ALIGNMENT);				\
+				write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));	\
+				write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));	\
+																			\
+				reg_type = GET_REG_TYPE(#cmd_name);							\
+				write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);	\
+			}																\
+			else															\
+			{																\
+				write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));	\
+				align_buffer(&BYTE_CODE, ONE_BYTE_ALIGNMENT);				\
+				write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));	\
+																			\
+				write_to_buf(&BYTE_CODE, &RAM_address, sizeof(int));		\
+			}																\
+		}																	\
+		else if(sscanf(commands[line_ID] + strlen(#cmd_name),				\
+				"%lf", &argument_value) == 0)								\
+		{																	\
+			align_buffer(&BYTE_CODE, ONE_BYTE_ALIGNMENT);					\
+			write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));		\
+			align_buffer(&BYTE_CODE, ONE_BYTE_ALIGNMENT);					\
+																			\
+			reg_type = GET_REG_TYPE(#cmd_name);								\
+			write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);		\
+																			\
+			buf_carriage++;													\
+		}																	\
+		else																\
+		{																	\
+			write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));		\
+			align_buffer(&BYTE_CODE, SIX_BYTE_ALIGNMENT);					\
+			buf_carriage++;													\
+																			\
+			write_to_buf(&BYTE_CODE, &argument_value, sizeof(double));		\
+																			\
+			buf_carriage++;													\
+		}																	\
 	}
 
-	#define TYPE_2(cmd_name, num)\
-	if(IS_COMMAND(#cmd_name))\
-	{\
-		cmd_type = (char)num;\
-		write_to_buf(&BYTE_CODE, &cmd_type, sizeof(char));\
-\
-		if(*(commands[line_ID] + strlen(#cmd_name)) == '[')\
-		{\
-			align_buffer(&BYTE_CODE, 2);\
-			write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));\
-\
-			sscanf(commands[line_ID] + strlen(#cmd_name) + 1, "%d", &RAM_address);\
-\
-			write_to_buf(&BYTE_CODE, &RAM_address, sizeof(int));\
-		}\
-		else\
-		{\
-			align_buffer(&BYTE_CODE, 1);\
-			write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));\
-			align_buffer(&BYTE_CODE, 1);\
-\
-			reg_type = GET_REG_TYPE(#cmd_name);\
-			write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);\
-		}\
-\
-		buf_carriage++;\
+	#define TYPE_2(cmd_name, num)											\
+	if(IS_COMMAND(#cmd_name))												\
+	{																		\
+		cmd_type = (char)num;												\
+		write_to_buf(&BYTE_CODE, &cmd_type, sizeof(char));					\
+																			\
+		if(*(commands[line_ID] + strlen(#cmd_name)) == '[')					\
+		{																	\
+			align_buffer(&BYTE_CODE, 2);									\
+			write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));		\
+																			\
+			sscanf(commands[line_ID] + strlen(#cmd_name) + SPACE_SKIP,		\
+					"%d", &RAM_address);									\
+																			\
+			write_to_buf(&BYTE_CODE, &RAM_address, sizeof(int));			\
+		}																	\
+		else																\
+		{																	\
+			align_buffer(&BYTE_CODE, ONE_BYTE_ALIGNMENT);					\
+			write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));		\
+			align_buffer(&BYTE_CODE, ONE_BYTE_ALIGNMENT);					\
+																			\
+			reg_type = GET_REG_TYPE(#cmd_name);								\
+			write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);		\
+		}																	\
+																			\
+		buf_carriage++;														\
 	}
 
-	#define TYPE_3(cmd_name, num)\
-	if(IS_COMMAND(#cmd_name))\
-	{\
-		write_char_w_alignment(&BYTE_CODE, (char)num, ALIGN_TO_DOUBLE);\
-\
-		buf_carriage++;\
+	#define TYPE_3(cmd_name, num)											\
+	if(IS_COMMAND(#cmd_name))												\
+	{																		\
+		write_char_w_alignment(&BYTE_CODE, (char)num, ALIGN_TO_DOUBLE);		\
+																			\
+		buf_carriage++;														\
 	}
 
-	#define TYPE_4(cmd_name, num)\
-	if(IS_COMMAND(#cmd_name))\
-	{\
-		write_char_w_alignment(&BYTE_CODE, (char)num, ALIGN_TO_INT);\
-		write_to_buf(&BYTE_CODE, &POISON_JMP_POS, sizeof(int));\
-\
-		CURRENT_JMP.name = commands[line_ID] + strlen(#cmd_name) + 1;\
-		CURRENT_JMP.IP_pos = (int)buf_carriage;\
-\
-		result.jmp_poses_w_carriage.carriage++;\
-		buf_carriage++;\
+	#define TYPE_4(cmd_name, num)											\
+	if(IS_COMMAND(#cmd_name))												\
+	{																		\
+		write_char_w_alignment(&BYTE_CODE, (char)num, ALIGN_TO_INT);		\
+		write_to_buf(&BYTE_CODE, &POISON_JMP_POS, sizeof(int));				\
+																			\
+		CURRENT_JMP.name = commands[line_ID] + strlen(#cmd_name) + 1;		\
+		CURRENT_JMP.IP_pos = (int)buf_carriage;								\
+																			\
+		result.jmp_poses_w_carriage.carriage++;								\
+		buf_carriage++;														\
 	}
 
-	#define TYPE_5(cmd_name, num)\
-	if(IS_COMMAND(#cmd_name))\
-	{\
-		CURRENT_LABEL.name   = commands[line_ID] + strlen(":");\
-		CURRENT_LABEL.IP_pos = buf_carriage;\
-\
-		result.labels_w_carriage.carriage++;\
-	}\
+	#define TYPE_5(cmd_name, num)											\
+	if(IS_COMMAND(#cmd_name))												\
+	{																		\
+		CURRENT_LABEL.name   = commands[line_ID] + strlen(":");				\
+		CURRENT_LABEL.IP_pos = buf_carriage;								\
+																			\
+		result.labels_w_carriage.carriage++;								\
+	}																		\
 
-#define DEF_CMD(name, num, type, ...)\
-	switch(type)\
-	{\
-		case 1:\
-		{\
-			TYPE_1(name, num)\
-			break;\
-		}\
-		case 2:\
-		{\
-			TYPE_2(name, num)\
-			break;\
-		}\
-		case 3:\
-		{\
-			TYPE_3(name, num)\
-			break;\
-		}\
-		case 4:\
-		{\
-			TYPE_4(name, num)\
-			break;\
-		}\
-		case 5:\
-		{\
-			TYPE_5(name, num)\
-			break;\
-		}\
-		default:\
-		{\
-			;\
-		}\
+#define DEF_CMD(name, num, type, ...)										\
+	switch(type)															\
+	{																		\
+		case 1:																\
+		{																	\
+			TYPE_1(name, num)												\
+			break;															\
+		}																	\
+		case 2:																\
+		{																	\
+			TYPE_2(name, num)												\
+			break;															\
+		}																	\
+		case 3:																\
+		{																	\
+			TYPE_3(name, num)												\
+			break;															\
+		}																	\
+		case 4:																\
+		{																	\
+			TYPE_4(name, num)												\
+			break;															\
+		}																	\
+		case 5:																\
+		{																	\
+			TYPE_5(name, num)												\
+			break;															\
+		}																	\
+		default:															\
+		{																	\
+			;																\
+		}																	\
 	}
 
 
@@ -207,7 +210,7 @@ struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines
 		.error_code = ASM_ALL_GOOD,
 	};
 
-	size_t byte_code_size = amount_of_lines * sizeof(double) * 2; // how to optimize?
+	size_t byte_code_size = amount_of_lines * sizeof(double) * 2;
 	result.buf_w_info =
 	{
 		.buf = (char *)calloc(byte_code_size, sizeof(char)),
@@ -240,7 +243,7 @@ struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines
 		result.jmp_poses_w_carriage.JMP_poses[result.jmp_poses_w_carriage.carriage]
 
 	#define GET_REG_TYPE(cmd)\
-		*(commands[line_ID] + strlen(cmd) + 1 + 1) - 'a'
+		*(commands[line_ID] + strlen(cmd) + SPACE_SKIP + LETTER_SKIP) - 'a'
 
 	#define IS_COMMAND(cmd)\
 		!strncmp(commands[line_ID], cmd, strlen(cmd))

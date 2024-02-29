@@ -228,6 +228,21 @@ DEF_CMD(hlt, HLT, 3,
 		return SPU_ALL_GOOD;
 		)
 
+DEF_CMD(draw, DRAW, 3,
+
+		for(size_t address = 0; address < USER_RAM_SIZE; address++)
+		{
+			fprintf(output_file, "%c ", (char)vm.rand_access_mem.user_RAM[address]);
+
+			if((address + 1) % 20 == 0)
+			{
+				fprintf(output_file, "\n");
+			}
+		}
+
+		MOVE_CARRIAGE;
+		)
+
 DEF_CMD(:, ZERO, 5,
 		;
 		)

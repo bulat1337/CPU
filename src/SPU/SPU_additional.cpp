@@ -18,11 +18,11 @@
 #define MOVE_CARRIAGE\
 	byte_code_carriage += sizeof(double)
 
-#define DEF_CMD(name, num, type, ...)\
-	case num:\
-	{\
-		__VA_ARGS__\
-		break;\
+#define DEF_CMD(name, num, type, ...)	\
+	case num:							\
+	{									\
+		__VA_ARGS__						\
+		break;							\
 	}
 
 error_t process(FILE *input_file, FILE *output_file)
