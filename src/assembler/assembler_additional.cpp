@@ -9,6 +9,12 @@
 #include "file_parse.h"
 #include "../../stack_src/stack.h"
 
+/**
+ * @def LOG_BUFFER
+ * @brief Macro to log buffer contents.
+ * @param buf Pointer to the buffer.
+ * @param size Size of the buffer.
+ */
 #define LOG_BUFFER(buf, size)\
 	CPU_LOG("\nBuffer log from %s:\n", __func__);\
 	print_binary(buf, size, #buf)

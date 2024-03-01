@@ -5,25 +5,47 @@
 
 #include "SPU_additional.h"
 
-#define BYTE_CODE\
-	vm.rand_access_mem.byte_code
+/**
+ * @def BYTE_CODE
+ * @brief Macro representing the byte code of the Virtual Machine.
+ */
+#define BYTE_CODE vm.rand_access_mem.byte_code
 
-#define LOG_BUFFER(buf, size)\
-	print_binary(buf, size, #buf)
+/**
+ * @def LOG_BUFFER(buf, size)
+ * @brief Macro for logging the buffer content.
+ * @param buf Pointer to the buffer.
+ * @param size Size of the buffer.
+ */
+#define LOG_BUFFER(buf, size) print_binary(buf, size, #buf)
 
-#define UPDATE_BYTE_CODE_CARRIAGE											\
-	byte_code_carriage =													\
-		*(unsigned int *)(CURRENT_BYTE_CODE + sizeof(int)) * sizeof(double);
+/**
+ * @def UPDATE_BYTE_CODE_CARRIAGE
+ * @brief Macro for updating the byte code carriage position.
+ */
+#define UPDATE_BYTE_CODE_CARRIAGE \
+    byte_code_carriage = *(unsigned int *)(CURRENT_BYTE_CODE + sizeof(int)) * sizeof(double);
 
-#define MOVE_CARRIAGE\
-	byte_code_carriage += sizeof(double)
+/**
+ * @def MOVE_CARRIAGE
+ * @brief Macro for moving the byte code carriage.
+ */
+#define MOVE_CARRIAGE byte_code_carriage += sizeof(double)
 
-#define DEF_CMD(name, num, type, ...)	\
-	case num:							\
-	{									\
-		__VA_ARGS__						\
-		break;							\
-	}
+/**
+ * @def DEF_CMD(name, num, type, ...)
+ * @brief Macro for defining a command in the byte code processing switch-case statement.
+ * @param name Name of the command.
+ * @param num Numeric representation of the command.
+ * @param type Type of the command for assembler.
+ * @param ... Code block representing the action of the command.
+ */
+#define DEF_CMD(name, num, type, ...) \
+    case num:                          \
+    {                                  \
+        __VA_ARGS__                    \
+        break;                         \
+    }
 
 error_t process(FILE *input_file, FILE *output_file)
 {

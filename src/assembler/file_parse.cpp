@@ -16,7 +16,7 @@ size_t count_file_lines(struct Buffer_w_info buf_n_len)
 	return amount_of_lines;
 }
 
-void ptr_arranger(char * *str_ptrs, struct Buffer_w_info buf_n_len)
+error_t ptr_arranger(char * *str_ptrs, struct Buffer_w_info buf_n_len)
 {
 	str_ptrs[0] = buf_n_len.buf;
 	size_t line_ID = 1;
@@ -32,5 +32,7 @@ void ptr_arranger(char * *str_ptrs, struct Buffer_w_info buf_n_len)
 			}
         }
     }
+
+	return ASM_ALL_GOOD;
 }
 

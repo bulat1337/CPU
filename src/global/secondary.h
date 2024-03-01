@@ -19,12 +19,17 @@
 		break;																			\
 	}
 static size_t GLOBAL_CYCLE_COUNTER = 0;
-const size_t CYCLE_LIMIT = 1000;
+const  size_t CYCLE_LIMIT          = 1000;
 
-void log(const char *file_name, const char *func_name, int line, const char *fmt, ...);
+void   log            (const char *file_name, const char *func_name,
+                       int line, const char *fmt, ...);
+
+void   print_binary   (char *buf, size_t size, const char *buf_name);
+
+void   clear_buffer   (void);
+
 size_t get_file_length(FILE *file_ptr);
-void print_binary(char *buf, size_t size, const char *buf_name);
-int cmp_double(double first_double, double second_double);
-void clear_buffer(void);
+
+int    cmp_double     (double first_double, double second_double);
 
 #endif
