@@ -1,9 +1,18 @@
 #ifndef COMMANDS_H
 #define COMMANDS_H
 
+enum Byte_code_type
+{
+	CMD_W_8_BYTE_ARG = 1,
+	CMD_W_4_BYTE_ARG = 2,
+	CMD_W_NO_ARG     = 3,
+	CMD_W_LABEL_ARG  = 4,
+	LABEL            = 5,
+};
+
 enum Command
 {
-	ZERO = 0,
+	VOID = 0,
 	PUSH = 1,
 	ADD  = 2,
 	SUB  = 3,
@@ -22,6 +31,7 @@ enum Command
 	CALL = 16,
 	RET  = 17,
 	DRAW = 18,
+	SQRT = 19,
 	HLT  = -1,
 };
 

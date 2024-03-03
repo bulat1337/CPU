@@ -8,9 +8,9 @@
 
 #include "SPU.h"
 
-const int CONSTANT_IDENTIFIER_MASK = 1 << 8 * 1;
-const int REGISTER_IDENTIFIER_MASK = 1 << 8 * 2;
-const int RAM_IDENTIFIER_MASK      = 1 << 8 * 3;
+const int CONSTANT_IDENTIFIER_MASK = 1 << sizeof(double) * 1;
+const int REGISTER_IDENTIFIER_MASK = 1 << sizeof(double) * 2;
+const int RAM_IDENTIFIER_MASK      = 1 << sizeof(double) * 3;
 
 /**
  * @brief Processes the input file and performs operations based on the byte code.

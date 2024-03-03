@@ -1,4 +1,4 @@
 #!/bin/bash
 make clean
 make ../executables/SPU.out
-../executables/SPU.out
+../executables/SPU.out square_solver_byte_code.bin

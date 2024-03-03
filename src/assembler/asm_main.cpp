@@ -4,7 +4,7 @@
 
 int main()
 {
-	error_t error = compile("fibonacci_algorithm");
+	error_t error = compile("square_solver");
 
 	if(error != ASM_ALL_GOOD)
 	{

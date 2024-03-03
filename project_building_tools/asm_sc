@@ -1,4 +1,4 @@
 #!/bin/bash
 make clean
 make ../executables/assembler.out
-../executables/assembler.out
+../executables/assembler.out square_solver

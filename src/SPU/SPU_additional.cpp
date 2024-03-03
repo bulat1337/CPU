@@ -68,7 +68,7 @@ error_t process(FILE *input_file, FILE *output_file)
 	}
 
 	size_t byte_code_carriage = 0;
-	char command              = (char)ZERO;
+	char command              = (char)VOID;
 	size_t reg_type           = 0;
 	double user_entered_value = NAN;
 	double value              = NAN;

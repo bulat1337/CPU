@@ -66,7 +66,8 @@ error_t compile(const char *file_name)
 	free(cmds_process_result.jmp_poses_w_carriage.JMP_poses);
 	free(cmds_process_result.labels_w_carriage.labels);
 
-	CPU_LOG("Byte_code size: %lu * 8 bytes\n", FIXED_BYTE_CODE.length / 8);
+	CPU_LOG("Byte_code size: %lu * sizeof(double) bytes\n",
+			FIXED_BYTE_CODE.length / sizeof(double));
 
 	return_t reduce_buffer_size_result = reduce_buffer_size(FIXED_BYTE_CODE);
 	CHECK_ERROR(reduce_buffer_size_result);

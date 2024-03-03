@@ -29,9 +29,9 @@ void print_binary(char *buf, size_t size, const char *buf_name)
 	CPU_LOG("%s:\n", buf_name);
     for (size_t ID = 0; ID < size; ID++)
 	{
-		if(ID % 8 == 0)
+		if(ID % sizeof(double) == 0)
 		{
-			CPU_LOG("double[%lu] - %lf\n", ID / 8, *(double *)(buf + ID));
+			CPU_LOG("double[%lu] - %lf\n", ID / sizeof(double), *(double *)(buf + ID));
 		}
 
         char cur_elem = buf[ID];

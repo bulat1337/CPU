@@ -12,26 +12,52 @@
 /**
  * @def LOG_BUFFER
  * @brief Macro to log buffer contents.
+ *
+ * This macro logs the contents of a buffer using the CPU_LOG macro. It prints the buffer
+ * contents along with the function name where the log is called.
+ *
  * @param buf Pointer to the buffer.
  * @param size Size of the buffer.
  */
 #define LOG_BUFFER(buf, size)\
-	CPU_LOG("\nBuffer log from %s:\n", __func__);\
-	print_binary(buf, size, #buf)
+    CPU_LOG("\nBuffer log from %s:\n", __func__);\
+    print_binary(buf, size, #buf)
 
+/**
+ * @def CURRENT_JMP_PTR
+ * @brief Macro to get the current jump pointer.
+ *
+ * This macro retrieves the current jump pointer from the 'jmp_poses_w_carriage' structure.
+ */
 #define CURRENT_JMP_PTR\
-	jmp_poses_w_carriage->JMP_poses[jmp_poses_w_carriage->carriage]
+    jmp_poses_w_carriage->JMP_poses[jmp_poses_w_carriage->carriage]
 
+/**
+ * @def BYTE_CODE
+ * @brief Macro representing the byte code buffer.
+ *
+ * This macro represents the byte code buffer stored in the 'result' structure.
+ */
 #define BYTE_CODE\
-	result.buf_w_info
+    result.buf_w_info
 
-#define FILE_PTR_CHECK(file_ptr)									\
-	if(file_ptr == NULL)											\
-	{																\
-		CPU_LOG("\nERROR: Unable to open "#file_ptr"\n");			\
-		result.error_code = ASM_UNABLE_TO_OPEN_FILE;                \
-		return result;							  					\
-	}
+/**
+ * @def FILE_PTR_CHECK
+ * @brief Macro to check if a file pointer is valid.
+ *
+ * This macro checks if a file pointer is valid (i.e., not NULL). If the file pointer is NULL,
+ * it logs an error message and sets the error code in the 'result' structure to indicate the
+ * inability to open the file.
+ *
+ * @param file_ptr Pointer to the file.
+ */
+#define FILE_PTR_CHECK(file_ptr)                                    \
+    if(file_ptr == NULL)                                            \
+    {                                                               \
+        CPU_LOG("\nERROR: Unable to open "#file_ptr"\n");           \
+        result.error_code = ASM_UNABLE_TO_OPEN_FILE;                \
+        return result;                                              \
+    }
 
 struct Parse_human_code_result parse_human_code(const char *file_name)
 {
@@ -64,8 +90,18 @@ struct Parse_human_code_result parse_human_code(const char *file_name)
 	return result;
 }
 
-
-#define TYPE_1(cmd_name, num)												\
+/**
+ * @def WRITE_CMD_W_8_BYTE_ARG
+ * @brief Macro to write a command with an 8-byte argument to the byte code buffer.
+ *
+ * This macro writes a command with an 8-byte argument to the byte code buffer.
+ * Depending on the command type, it writes the argument, and any additional
+ * information to the byte code buffer.
+ *
+ * @param cmd_name The name of the command.
+ * @param num The numerical representation of the command.
+ */
+#define WRITE_CMD_W_8_BYTE_ARG(cmd_name, num)								\
 	if(IS_COMMAND(#cmd_name))												\
 	{																		\
 		cmd_type = (char)num;												\
@@ -115,7 +151,17 @@ struct Parse_human_code_result parse_human_code(const char *file_name)
 		}																	\
 	}
 
-	#define TYPE_2(cmd_name, num)											\
+/**
+ * @def WRITE_CMD_W_4_BYTE_ARG
+ * @brief Macro to write a command with a 4-byte argument to the byte code buffer.
+ *
+ * This macro writes a command with a 4-byte argument to the byte code buffer. Depending
+ * on the command type, it writes and any additional information to the byte code buffer.
+ *
+ * @param cmd_name The name of the command.
+ * @param num The numerical representation of the command.
+ */
+#define WRITE_CMD_W_4_BYTE_ARG(cmd_name, num)								\
 	if(IS_COMMAND(#cmd_name))												\
 	{																		\
 		cmd_type = (char)num;												\
@@ -144,7 +190,17 @@ struct Parse_human_code_result parse_human_code(const char *file_name)
 		buf_carriage++;														\
 	}
 
-	#define TYPE_3(cmd_name, num)											\
+/**
+ * @def WRITE_CMD_W_NO_ARG
+ * @brief Macro to write a command with no argument to the byte code buffer.
+ *
+ * This macro writes a command with no argument to the byte code buffer. Depending
+ * on the command type, it writes the command type to the byte code buffer.
+ *
+ * @param cmd_name The name of the command.
+ * @param num The numerical representation of the command.
+ */
+#define WRITE_CMD_W_NO_ARG(cmd_name, num)									\
 	if(IS_COMMAND(#cmd_name))												\
 	{																		\
 		write_char_w_alignment(&BYTE_CODE, (char)num, ALIGN_TO_DOUBLE);		\
@@ -152,7 +208,18 @@ struct Parse_human_code_result parse_human_code(const char *file_name)
 		buf_carriage++;														\
 	}
 
-	#define TYPE_4(cmd_name, num)											\
+/**
+ * @def WRITE_CMD_W_LABEL_ARG
+ * @brief Macro to write a command with a label argument to the byte code buffer.
+ *
+ * This macro writes a command with a label argument to the byte code buffer. Depending
+ * on the command type, it writes the command type, the label argument, and any additional
+ * information to the byte code buffer.
+ *
+ * @param cmd_name The name of the command.
+ * @param num The numerical representation of the command.
+ */
+#define WRITE_CMD_W_LABEL_ARG(cmd_name, num)								\
 	if(IS_COMMAND(#cmd_name))												\
 	{																		\
 		write_char_w_alignment(&BYTE_CODE, (char)num, ALIGN_TO_INT);		\
@@ -165,7 +232,17 @@ struct Parse_human_code_result parse_human_code(const char *file_name)
 		buf_carriage++;														\
 	}
 
-	#define TYPE_5(cmd_name, num)											\
+/**
+ * @def WRITE_LABEL
+ * @brief Macro to write a label to the byte code buffer.
+ *
+ * This macro writes a label to the byte code buffer. It then writes
+ * the label name and its position to the byte code buffer.
+ *
+ * @param cmd_name The name of the command.
+ * @param num The numerical representation of the command.
+ */
+#define WRITE_LABEL(cmd_name, num)											\
 	if(IS_COMMAND(#cmd_name))												\
 	{																		\
 		CURRENT_LABEL.name   = commands[line_ID] + strlen(":");				\
@@ -174,32 +251,44 @@ struct Parse_human_code_result parse_human_code(const char *file_name)
 		result.labels_w_carriage.carriage++;								\
 	}																		\
 
+/**
+ * @def DEF_CMD
+ * @brief Macro to define a command with different argument types.
+ *
+ * This macro defines a command with different argument types. It switches based on the
+ * command type and calls the appropriate macro to write the command to the byte code buffer.
+ *
+ * @param name The name of the command.
+ * @param num The numerical representation of the command.
+ * @param type The type of the command (e.g., CMD_W_8_BYTE_ARG).
+ * @param ... Additional arguments.
+ */
 #define DEF_CMD(name, num, type, ...)										\
 	switch(type)															\
 	{																		\
-		case 1:																\
+		case CMD_W_8_BYTE_ARG:												\
 		{																	\
-			TYPE_1(name, num)												\
+			WRITE_CMD_W_8_BYTE_ARG(name, num)								\
 			break;															\
 		}																	\
-		case 2:																\
+		case CMD_W_4_BYTE_ARG:												\
 		{																	\
-			TYPE_2(name, num)												\
+			WRITE_CMD_W_4_BYTE_ARG(name, num)								\
 			break;															\
 		}																	\
-		case 3:																\
+		case CMD_W_NO_ARG:													\
 		{																	\
-			TYPE_3(name, num)												\
+			WRITE_CMD_W_NO_ARG(name, num)									\
 			break;															\
 		}																	\
-		case 4:																\
+		case CMD_W_LABEL_ARG:												\
 		{																	\
-			TYPE_4(name, num)												\
+			WRITE_CMD_W_LABEL_ARG(name, num)								\
 			break;															\
 		}																	\
-		case 5:																\
+		case LABEL:															\
 		{																	\
-			TYPE_5(name, num)												\
+			WRITE_LABEL(name, num)											\
 			break;															\
 		}																	\
 		default:															\
@@ -237,7 +326,7 @@ struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines
 
 	write_main_jmp(&BYTE_CODE, &(result.jmp_poses_w_carriage));
 
-	char cmd_type = (char)ZERO;
+	char cmd_type = (char)VOID;
 	double argument_value = NAN;
 	char reg_type = 0;
 	unsigned int RAM_address = 0;
@@ -270,11 +359,11 @@ struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines
 	return result;
 }
 
-#undef TYPE_1
-#undef TYPE_2
-#undef TYPE_3
-#undef TYPE_4
-#undef TYPE_5
+#undef WRITE_CMD_W_8_BYTE_ARG
+#undef WRITE_CMD_W_4_BYTE_ARG
+#undef WRITE_CMD_W_NO_ARG
+#undef WRITE_CMD_W_LABEL_ARG
+#undef WRITE_LABEL
 #undef CMD_DEF
 #undef CURRENT_LABEL
 #undef GET_REG_TYPE
@@ -490,7 +579,8 @@ return_t reduce_buffer_size(struct Buf_w_carriage_n_len buffer_w_info)
 		(char *)realloc(buffer_w_info.buf, REDUCED_BYTE_CODE.length);
 
 	LOG_BUFFER(REDUCED_BYTE_CODE.buf, REDUCED_BYTE_CODE.length);
-	CPU_LOG("reduced length: %lu * 8 bytes\n", REDUCED_BYTE_CODE.length / 8);
+	CPU_LOG("reduced length: %lu * sizeof(double) bytes\n",
+			REDUCED_BYTE_CODE.length / sizeof(double));
 
 	return result;
 }

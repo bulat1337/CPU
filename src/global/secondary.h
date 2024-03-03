@@ -1,15 +1,39 @@
 #ifndef SECONDARY_H
 #define SECONDARY_H
 
+/**
+ * @file secondary.h
+ * @brief Header file containing declarations of secondary functions.
+ */
+
 #include <stdarg.h>
 
+/**
+ * @brief Macro to log messages to a file.
+ *
+ * This macro simplifies logging by automatically passing file name, function name, and line number.
+ * Usage: CPU_LOG("Message to log");
+ */
 #define CPU_LOG(...)\
 	log(__FILE__, __func__, __LINE__, __VA_ARGS__);
 
+/**
+ * @brief Macro to start a loop with safety check.
+ *
+ * This macro initializes a global loop counter and starts a loop with a safety check against excessive iterations.
+ * Usage: SAFE_FOR_START { ... } SAFE_FOR_END
+ */
 #define SAFE_FOR_START			\
 	GLOBAL_CYCLE_COUNTER = 0;	\
 	for
 
+/**
+ * @brief Macro to end a loop with a safety check against excessive iterations.
+ *
+ * This macro increments the loop counter and checks if it exceeds a predefined limit.
+ * If the limit is reached, it prints an error message and breaks the loop.
+ * Usage: SAFE_FOR_START { ... } SAFE_FOR_END
+ */
 #define SAFE_FOR_END																	\
 	GLOBAL_CYCLE_COUNTER++;																\
 	if(GLOBAL_CYCLE_COUNTER >= CYCLE_LIMIT)												\
@@ -18,18 +42,60 @@
 				__func__, __LINE__);													\
 		break;																			\
 	}
-static size_t GLOBAL_CYCLE_COUNTER = 0;
-const  size_t CYCLE_LIMIT          = 1000;
 
-void   log            (const char *file_name, const char *func_name,
-                       int line, const char *fmt, ...);
+static size_t GLOBAL_CYCLE_COUNTER = 0; /**< Global counter for loop iterations. */
+const  size_t CYCLE_LIMIT          = 1000; /**< Limit for loop iterations. */
 
-void   print_binary   (char *buf, size_t size, const char *buf_name);
+/**
+ * @brief Logs a message to a file.
+ *
+ * Logs a message to a file named "log.txt" with the specified format and additional information.
+ *
+ * @param file_name The name of the file where the log message originates.
+ * @param func_name The name of the function where the log message originates.
+ * @param line The line number in the source file where the log message originates.
+ * @param fmt The format string for the log message.
+ * @param ... Additional arguments to be formatted according to the format string.
+ */
+void log(const char *file_name, const char *func_name, int line, const char *fmt, ...);
 
-void   clear_buffer   (void);
+/**
+ * @brief Prints the binary representation of a buffer.
+ *
+ * Prints the binary representation of the specified buffer, interpreting its contents as individual bytes.
+ *
+ * @param buf Pointer to the buffer.
+ * @param size Size of the buffer.
+ * @param buf_name Name of the buffer for identification purposes.
+ */
+void print_binary(char *buf, size_t size, const char *buf_name);
 
+/**
+ * @brief Gets the length of a file.
+ *
+ * Determines the length of the specified file in bytes.
+ *
+ * @param file_ptr Pointer to the file.
+ * @return The length of the file.
+ */
 size_t get_file_length(FILE *file_ptr);
 
-int    cmp_double     (double first_double, double second_double);
+/**
+ * @brief Compares two double-precision floating-point numbers.
+ *
+ * Compares two double-precision floating-point numbers with a small epsilon tolerance.
+ *
+ * @param first_double The first double to compare.
+ * @param second_double The second double to compare.
+ * @return 0 if the two numbers are considered equal, 1 if the first is greater, -1 if the second is greater.
+ */
+int cmp_double(double first_double, double second_double);
+
+/**
+ * @brief Clears the input buffer.
+ *
+ * Clears the input buffer by reading and discarding characters until a newline character is encountered.
+ */
+void clear_buffer(void);
 
 #endif
