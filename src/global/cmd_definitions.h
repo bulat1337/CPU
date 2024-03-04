@@ -31,7 +31,7 @@ DEF_CMD
 	{
 		MOVE_CARRIAGE;
 
-		STACK_PUSH(&(vm.user_stack), *(double *)CURRENT_BYTE_CODE);
+		STACK_PUSH(&(vm.user_stack), *(elem_t *)CURRENT_BYTE_CODE);
 	}
 	else if(*(int *)(CURRENT_BYTE_CODE) & REGISTER_IDENTIFIER_MASK)
 	{

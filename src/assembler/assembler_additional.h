@@ -73,16 +73,17 @@ struct Cmds_process_result
     struct JMP_poses_w_carriage jmp_poses_w_carriage; /**< Structure containing jumps with carriage information. */
 };
 
-const int           POISON_JMP_POS           = -1;
-const char          IDENTIFIER_BYTE          =  1;
-const int           CMD_TYPE_ALIGNMENT_VALUE =  3;
-const size_t        ALIGN_TO_INT             =  sizeof(int) - sizeof(char);
-const size_t        ALIGN_TO_DOUBLE          =  sizeof(double) - sizeof(char);
-const char * const  MAIN_JMP_NAME            = "main";
-const unsigned char SPACE_SKIP               = 1;
-const unsigned char LETTER_SKIP              = 1;
-const unsigned char SIX_BYTE_ALIGNMENT       = 6;
-const unsigned char ONE_BYTE_ALIGNMENT       = 1;
+const int           POISON_JMP_POS                 = -1;
+const char          IDENTIFIER_BYTE                =  1;
+const int           CMD_TYPE_ALIGNMENT_VALUE       =  3;
+const size_t        ALIGN_TO_INT                   =  sizeof(int) - sizeof(char);
+const size_t        ALIGN_TO_DOUBLE                =  sizeof(double) - sizeof(char);
+const char * const  MAIN_JMP_NAME                  = "main";
+const unsigned char SPACE_SKIP                     = 1;
+const unsigned char LETTER_SKIP                    = 1;
+const unsigned char SIX_BYTE_ALIGNMENT             = 6;
+const unsigned char ONE_BYTE_ALIGNMENT             = 1;
+const unsigned char ADDITIONAL_CONCATENATION_SPACE = 2;
 
 /**
  * @brief Parses human-readable code.
@@ -187,5 +188,15 @@ return_t arrange_labels(struct Cmds_process_result cmds_process_result);
  * @return Result of buffer size reduction including error code and updated buffer.
  */
 return_t reduce_buffer_size(struct Buf_w_carriage_n_len buffer_w_info);
+
+/**
+ * @brief Creates byte codes file name.
+ *
+ * Creates byte codes file name by concatenating human readable codes file name and "_byte_code.bin".
+ *
+ * @param file_name Name of the human readable code file.
+ * @return Byte codes file name.
+ */
+char *create_byte_code_file_name(const char *file_name);
 
 #endif

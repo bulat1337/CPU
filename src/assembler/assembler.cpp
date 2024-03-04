@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "assembler.h"
 #include "assembler_additional.h"
@@ -72,8 +73,12 @@ error_t compile(const char *file_name)
 	return_t reduce_buffer_size_result = reduce_buffer_size(FIXED_BYTE_CODE);
 	CHECK_ERROR(reduce_buffer_size_result);
 
-	FILE *byte_code = fopen("byte_code.bin", "wb");
+	char *byte_code_file_name = create_byte_code_file_name(file_name);
+
+	FILE *byte_code = fopen(byte_code_file_name, "wb");
 	FILE_PTR_CHECK(byte_code);
+
+	free(byte_code_file_name);
 
 	fwrite(REDUCED_BYTE_CODE.buf, sizeof(char), REDUCED_BYTE_CODE.length, byte_code);
 

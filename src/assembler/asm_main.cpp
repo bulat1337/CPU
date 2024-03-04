@@ -1,10 +1,17 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "assembler.h"
 
-int main()
+int main(int argc, char *argv[])
 {
-	error_t error = compile("square_solver");
+	if(argc > 2)
+	{
+		fprintf(stderr, "ERROR: invalid amount of main function arguments(argc = %d)\n", argc);
+
+		return EXIT_FAILURE;
+	}
+	error_t error = compile(argv[1]);
 
 	if(error != ASM_ALL_GOOD)
 	{

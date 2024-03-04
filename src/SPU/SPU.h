@@ -20,7 +20,7 @@ const size_t USER_RAM_SIZE       = 400; /**< Size of user-accessible RAM in the 
 struct RAM
 {
     char  *byte_code; /**< Pointer to the byte code stored in RAM. */
-    double user_RAM[USER_RAM_SIZE]; /**< Array representing user-accessible RAM. */
+    elem_t user_RAM[USER_RAM_SIZE]; /**< Array representing user-accessible RAM. */
 };
 
 /**
@@ -29,7 +29,7 @@ struct RAM
  */
 struct VM
 {
-    double registers[AMOUNT_OF_REGISTERS]; /**< Array representing registers in the SPU VM. */
+    elem_t registers[AMOUNT_OF_REGISTERS]; /**< Array representing registers in the SPU VM. */
     struct Stack user_stack; /**< Stack for user-defined operations. */
     struct Stack ret_stack; /**< Stack for return addresses. */
     RAM    rand_access_mem; /**< Random access memory in the SPU VM. */

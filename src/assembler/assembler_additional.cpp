@@ -145,7 +145,7 @@ struct Parse_human_code_result parse_human_code(const char *file_name)
 			align_buffer(&BYTE_CODE, SIX_BYTE_ALIGNMENT);					\
 			buf_carriage++;													\
 																			\
-			write_to_buf(&BYTE_CODE, &argument_value, sizeof(double));		\
+			write_to_buf(&BYTE_CODE, &argument_value, sizeof(elem_t));		\
 																			\
 			buf_carriage++;													\
 		}																	\
@@ -327,7 +327,7 @@ struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines
 	write_main_jmp(&BYTE_CODE, &(result.jmp_poses_w_carriage));
 
 	char cmd_type = (char)VOID;
-	double argument_value = NAN;
+	elem_t argument_value = NAN;
 	char reg_type = 0;
 	unsigned int RAM_address = 0;
 
@@ -583,6 +583,19 @@ return_t reduce_buffer_size(struct Buf_w_carriage_n_len buffer_w_info)
 			REDUCED_BYTE_CODE.length / sizeof(double));
 
 	return result;
+}
+
+char *create_byte_code_file_name(const char *file_name)
+{
+	size_t byte_code_file_name_size =
+		strlen("byte_code.bin") + strlen(file_name) + ADDITIONAL_CONCATENATION_SPACE;
+
+	char *byte_code_file_name =
+		(char *)calloc(byte_code_file_name_size, sizeof(char));
+
+	snprintf(byte_code_file_name, byte_code_file_name_size, "%s_byte_code.bin", file_name);
+
+	return byte_code_file_name;
 }
 
 #undef CURRENT_JMP
