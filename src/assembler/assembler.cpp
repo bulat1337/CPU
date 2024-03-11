@@ -16,13 +16,6 @@
 		return result.error_code;
 
 /**
- * @def FIXED_BYTE_CODE
- * @brief Macro representing the fixed byte code after label arrangement.
- */
-#define FIXED_BYTE_CODE\
-	arrange_labels_result.second_arg.buf_w_info
-
-/**
  * @def REDUCED_BYTE_CODE
  * @brief Macro representing the reduced byte code after buffer size reduction.
  */
@@ -43,7 +36,7 @@
 	}
 
 error_t compile(const char *file_name)
-{
+{	// web_scraper::parse(), asm::parse()
 	struct Parse_human_code_result parse_human_code_result = parse_human_code(file_name);
 	CHECK_ERROR(parse_human_code_result);
 
@@ -60,6 +53,13 @@ error_t compile(const char *file_name)
 	return_t arrange_labels_result =
 		arrange_labels(cmds_process_result);
 
+	/**
+	* @def FIXED_BYTE_CODE
+	* @brief Macro representing the fixed byte code after label arrangement.
+	*/
+	#define FIXED_BYTE_CODE\
+		arrange_labels_result.second_arg.buf_w_info
+
 	CHECK_ERROR(arrange_labels_result);
 
 
@@ -73,7 +73,7 @@ error_t compile(const char *file_name)
 	return_t reduce_buffer_size_result = reduce_buffer_size(FIXED_BYTE_CODE);
 	CHECK_ERROR(reduce_buffer_size_result);
 
-	char *byte_code_file_name = create_byte_code_file_name(file_name);
+	char *byte_code_file_name = create_byte_code_file_name(file_name); //const
 
 	FILE *byte_code = fopen(byte_code_file_name, "wb");
 	FILE_PTR_CHECK(byte_code);

@@ -5,9 +5,9 @@
 #include <string.h>
 
 #include "assembler_additional.h"
-#include "../global/commands.h"
+#include "commands.h"
 #include "file_parse.h"
-#include "../../stack_src/stack.h"
+#include "stack.h"
 
 /**
  * @def LOG_BUFFER
@@ -66,6 +66,16 @@ struct Parse_human_code_result parse_human_code(const char *file_name)
 		.error_code = ASM_ALL_GOOD,
 	};
 
+/*
+with_open("ma.txt", "r", f_ptr,
+	read(f_ptr);
+);
+
+{
+	File(123);
+}
+*/
+
 	FILE *human_code = fopen(file_name, "r");
 	FILE_PTR_CHECK(human_code);
 
@@ -84,8 +94,8 @@ struct Parse_human_code_result parse_human_code(const char *file_name)
 	CPU_LOG("amount of lines: %lu\n", result.amount_of_lines);
 
 	result.strings = (char * *)calloc(result.amount_of_lines, sizeof(char *));
-
-	ptr_arranger(result.strings, result.human_code_buffer);
+	//check calloc
+	ptr_arranger(result.strings, result.human_code_buffer); //rename
 
 	return result;
 }
@@ -255,47 +265,13 @@ struct Parse_human_code_result parse_human_code(const char *file_name)
  * @def DEF_CMD
  * @brief Macro to define a command with different argument types.
  *
- * This macro defines a command with different argument types. It switches based on the
- * command type and calls the appropriate macro to write the command to the byte code buffer.
- *
  * @param name The name of the command.
  * @param num The numerical representation of the command.
- * @param type The type of the command (e.g., CMD_W_8_BYTE_ARG).
+ * @param type The type of the command (e.g., WRITE_CMD_W_8_BYTE_ARG).
  * @param ... Additional arguments.
  */
-#define DEF_CMD(name, num, type, ...)										\
-	switch(type)															\
-	{																		\
-		case CMD_W_8_BYTE_ARG:												\
-		{																	\
-			WRITE_CMD_W_8_BYTE_ARG(name, num)								\
-			break;															\
-		}																	\
-		case CMD_W_4_BYTE_ARG:												\
-		{																	\
-			WRITE_CMD_W_4_BYTE_ARG(name, num)								\
-			break;															\
-		}																	\
-		case CMD_W_NO_ARG:													\
-		{																	\
-			WRITE_CMD_W_NO_ARG(name, num)									\
-			break;															\
-		}																	\
-		case CMD_W_LABEL_ARG:												\
-		{																	\
-			WRITE_CMD_W_LABEL_ARG(name, num)								\
-			break;															\
-		}																	\
-		case LABEL:															\
-		{																	\
-			WRITE_LABEL(name, num)											\
-			break;															\
-		}																	\
-		default:															\
-		{																	\
-			;																\
-		}																	\
-	}
+#define DEF_CMD(name, num, type, ...)	\
+	type(name, num);
 
 
 struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines)

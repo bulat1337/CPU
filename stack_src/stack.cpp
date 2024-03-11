@@ -470,8 +470,6 @@ void stack_dump(const Stack *stk, const char *stk_name, enum Err_ID error_code)
 			fprintf(log_file, "\n");\
 		}\
 
-	const enum Err_ID error_code_v = error_code;
-
 		// switch(SIZE_ZERO)
 		// {
 		// 	case (SIZE_ZERO):

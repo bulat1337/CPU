@@ -6,9 +6,9 @@
  * @brief Header file containing function declarations for the SPU program.
  */
 
-#include "../global/secondary.h"
-#include "../global/commands.h"
-#include "../../stack_src/stack.h"
+#include "secondary.h"
+#include "commands.h"
+#include "stack.h"
 
 const size_t AMOUNT_OF_REGISTERS = 4; /**< Number of registers in the SPU VM. */
 const size_t USER_RAM_SIZE       = 400; /**< Size of user-accessible RAM in the SPU VM. */
@@ -39,15 +39,14 @@ struct VM
  * @enum Asm_err_ID
  * @brief Enumeration of error codes for the SPU program.
  */
-enum Asm_err_ID
+typedef enum
 {
     SPU_ALL_GOOD            = 0, /**< No errors occurred. */
     SPU_UNABLE_TO_OPEN_FILE = 1 << 0, /**< Unable to open file error. */
     SPU_UNABLE_TO_ALLOCATE  = 1 << 1, /**< Memory allocation error. */
     INVALID_FREAD           = 1 << 2, /**< Invalid read operation error. */
     INVALID_RAM_MODE        = 1 << 3, /**< Invalid RAM access mode error. */
-};
-typedef enum Asm_err_ID error_t; /**< Typedef for error codes. */
+} error_t;
 
 /**
  * @struct Buf_w_carriage_n_len
@@ -73,12 +72,11 @@ union Second_arg
  * @struct Universal_ret
  * @brief Structure representing the universal return type for SPU functions.
  */
-struct Universal_ret
+typedef struct
 {
     error_t          error_code; /**< Error code indicating the status of the operation. */
     union Second_arg second_arg; /**< Second argument for SPU functions. */
-};
-typedef struct Universal_ret return_t; /**< Typedef for the universal return type. */
+} return_t;
 
 /**
  * @brief Executes the SPU program.

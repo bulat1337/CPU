@@ -49,6 +49,13 @@ struct JMP_poses_w_carriage
     size_t   carriage; /**< Carriage position of the jumps. */
 };
 
+//////////////////////////////////
+/*
+	Buffer: data, len
+
+	Iterator: pos, buffer
+*/
+
 /**
  * @struct Parse_human_code_result
  * @brief Structure representing the result of parsing human-readable code.
@@ -76,7 +83,7 @@ struct Cmds_process_result
 const int           POISON_JMP_POS                 = -1;
 const char          IDENTIFIER_BYTE                =  1;
 const int           CMD_TYPE_ALIGNMENT_VALUE       =  3;
-const size_t        ALIGN_TO_INT                   =  sizeof(int) - sizeof(char);
+const size_t        ALIGN_TO_INT                   =  sizeof(int)    - sizeof(char);
 const size_t        ALIGN_TO_DOUBLE                =  sizeof(double) - sizeof(char);
 const char * const  MAIN_JMP_NAME                  = "main";
 const unsigned char SPACE_SKIP                     = 1;

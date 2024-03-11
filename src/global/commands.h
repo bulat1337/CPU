@@ -1,14 +1,14 @@
 #ifndef COMMANDS_H
 #define COMMANDS_H
 
-enum Byte_code_type
-{
-	CMD_W_8_BYTE_ARG = 1,
-	CMD_W_4_BYTE_ARG = 2,
-	CMD_W_NO_ARG     = 3,
-	CMD_W_LABEL_ARG  = 4,
-	LABEL            = 5,
-};
+// enum Byte_code_type
+// {
+// 	CMD_W_8_BYTE_ARG = 1,
+// 	CMD_W_4_BYTE_ARG = 2,
+// 	CMD_W_NO_ARG     = 3,
+// 	CMD_W_LABEL_ARG  = 4,
+// 	LABEL            = 5,
+// };
 
 enum Command
 {

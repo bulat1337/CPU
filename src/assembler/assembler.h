@@ -6,21 +6,20 @@
  * @brief Header file containing declarations for the assembler program.
  */
 
-#include "../global/secondary.h"
+#include "secondary.h"
 
 /**
  * @enum Asm_err_ID
  * @brief Enumeration of error codes for the assembler program.
  */
-enum Asm_err_ID
+typedef enum
 {
     ASM_ALL_GOOD            = 0, /**< No errors occurred. */
     ASM_UNABLE_TO_OPEN_FILE = 1 << 0, /**< Unable to open file error. */
     ASM_UNABLE_TO_ALLOCATE  = 1 << 1, /**< Memory allocation error. */
     LABEL_DOESNT_EXIST      = 1 << 2, /**< Label does not exist error. */
-};
+} error_t;
 
-typedef enum Asm_err_ID error_t; /**< Typedef for error codes. */
 
 /**
  * @struct Buf_w_carriage_n_len
@@ -50,12 +49,11 @@ union Second_arg
  * @struct Universal_ret
  * @brief Structure representing the universal return type for assembler functions.
  */
-struct Universal_ret
+typedef struct
 {
     error_t          error_code; /**< Error code indicating the status of the operation. */
     union Second_arg second_arg; /**< Second argument for assembler functions. */
-};
-typedef struct Universal_ret return_t; /**< Typedef for the universal return type. */
+} return_t;
 
 /**
  * @brief Compiles the human-readable code into machine code.

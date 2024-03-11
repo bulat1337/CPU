@@ -1,6 +1,6 @@
 DEF_CMD
 (
-	push, PUSH, CMD_W_8_BYTE_ARG,
+	push, PUSH, WRITE_CMD_W_8_BYTE_ARG,
 
 	if(*(int *)(CURRENT_BYTE_CODE) & RAM_IDENTIFIER_MASK)
 	{
@@ -44,7 +44,7 @@ DEF_CMD
 
 DEF_CMD
 (
-	pop, POP, CMD_W_4_BYTE_ARG,
+	pop, POP, WRITE_CMD_W_4_BYTE_ARG,
 
 	if(*(int *)(CURRENT_BYTE_CODE) & RAM_IDENTIFIER_MASK)
 	{
@@ -67,7 +67,7 @@ DEF_CMD
 
 DEF_CMD
 (
-	in, IN, CMD_W_NO_ARG,
+	in, IN, WRITE_CMD_W_NO_ARG,
 
 	printf("Please enter value: ");
 
@@ -81,7 +81,7 @@ DEF_CMD
 
 DEF_CMD
 (
-	add, ADD, CMD_W_NO_ARG,
+	add, ADD, WRITE_CMD_W_NO_ARG,
 
 	value_B = STACK_POP(&(vm.user_stack)).deleted_element;
 	value_A = STACK_POP(&(vm.user_stack)).deleted_element;
@@ -93,7 +93,7 @@ DEF_CMD
 
 DEF_CMD
 (
-	sub, SUB, CMD_W_NO_ARG,
+	sub, SUB, WRITE_CMD_W_NO_ARG,
 
 	value_B = STACK_POP(&(vm.user_stack)).deleted_element;
 	value_A = STACK_POP(&(vm.user_stack)).deleted_element;
@@ -105,7 +105,7 @@ DEF_CMD
 
 DEF_CMD
 (
-	mul, MUL, CMD_W_NO_ARG,
+	mul, MUL, WRITE_CMD_W_NO_ARG,
 
 	value_B = STACK_POP(&(vm.user_stack)).deleted_element;
 	value_A = STACK_POP(&(vm.user_stack)).deleted_element;
@@ -117,7 +117,7 @@ DEF_CMD
 
 DEF_CMD
 (
-	div, DIV, CMD_W_NO_ARG,
+	div, DIV, WRITE_CMD_W_NO_ARG,
 
 	value_B = STACK_POP(&(vm.user_stack)).deleted_element;
 	value_A = STACK_POP(&(vm.user_stack)).deleted_element;
@@ -129,7 +129,7 @@ DEF_CMD
 
 DEF_CMD
 (
-	out, OUT, CMD_W_NO_ARG,
+	out, OUT, WRITE_CMD_W_NO_ARG,
 
 	value = STACK_POP(&(vm.user_stack)).deleted_element;
 
@@ -140,21 +140,21 @@ DEF_CMD
 
 DEF_CMD
 (
-	ret, RET, CMD_W_NO_ARG,
+	ret, RET, WRITE_CMD_W_NO_ARG,
 
 	byte_code_carriage = (size_t)STACK_POP(&(vm.ret_stack)).deleted_element;
 )
 
 DEF_CMD
 (
-	jmp, JMP, CMD_W_LABEL_ARG,
+	jmp, JMP, WRITE_CMD_W_LABEL_ARG,
 
 	UPDATE_BYTE_CODE_CARRIAGE;
 )
 
 DEF_CMD
 (
-	jae, JAE, CMD_W_LABEL_ARG,
+	jae, JAE, WRITE_CMD_W_LABEL_ARG,
 
 	value_B = STACK_POP(&(vm.user_stack)).deleted_element;
 	value_A = STACK_POP(&(vm.user_stack)).deleted_element;
@@ -173,7 +173,7 @@ DEF_CMD
 
 DEF_CMD
 (
-	ja, JA, CMD_W_LABEL_ARG,
+	ja, JA, WRITE_CMD_W_LABEL_ARG,
 
 	value_B = STACK_POP(&(vm.user_stack)).deleted_element;
 	value_A = STACK_POP(&(vm.user_stack)).deleted_element;
@@ -192,7 +192,7 @@ DEF_CMD
 
 DEF_CMD
 (
-	jbe, JBE, CMD_W_LABEL_ARG,
+	jbe, JBE, WRITE_CMD_W_LABEL_ARG,
 
 	value_B = STACK_POP(&(vm.user_stack)).deleted_element;
 	value_A = STACK_POP(&(vm.user_stack)).deleted_element;
@@ -211,7 +211,7 @@ DEF_CMD
 
 DEF_CMD
 (
-	jb, JB, CMD_W_LABEL_ARG,
+	jb, JB, WRITE_CMD_W_LABEL_ARG,
 
 	value_B = STACK_POP(&(vm.user_stack)).deleted_element;
 	value_A = STACK_POP(&(vm.user_stack)).deleted_element;
@@ -230,7 +230,7 @@ DEF_CMD
 
 DEF_CMD
 (
-	je, JE, CMD_W_LABEL_ARG,
+	je, JE, WRITE_CMD_W_LABEL_ARG,
 
 	value_B = STACK_POP(&(vm.user_stack)).deleted_element;
 	value_A = STACK_POP(&(vm.user_stack)).deleted_element;
@@ -249,7 +249,7 @@ DEF_CMD
 
 DEF_CMD
 (
-	jne, JNE, CMD_W_LABEL_ARG,
+	jne, JNE, WRITE_CMD_W_LABEL_ARG,
 
 	value_B = STACK_POP(&(vm.user_stack)).deleted_element;
 	value_A = STACK_POP(&(vm.user_stack)).deleted_element;
@@ -268,7 +268,7 @@ DEF_CMD
 
 DEF_CMD
 (
-	call, CALL, CMD_W_LABEL_ARG,
+	call, CALL, WRITE_CMD_W_LABEL_ARG,
 
 	STACK_PUSH(&(vm.ret_stack), byte_code_carriage + sizeof(double));
 
@@ -277,16 +277,16 @@ DEF_CMD
 
 DEF_CMD
 (
-	hlt, HLT, CMD_W_NO_ARG,
+	hlt, HLT, WRITE_CMD_W_NO_ARG,
 
 	return SPU_ALL_GOOD;
 )
 
 DEF_CMD
 (
-	draw, DRAW, CMD_W_NO_ARG,
+	draw, DRAW, WRITE_CMD_W_NO_ARG,
 
-	for(size_t address = 0; address < USER_RAM_SIZE; address++)
+	SAFE_FOR_START(size_t address = 0; address < USER_RAM_SIZE; address++)
 	{
 		fprintf(output_file, "%c ", (char)vm.rand_access_mem.user_RAM[address]);
 
@@ -294,6 +294,8 @@ DEF_CMD
 		{
 			fprintf(output_file, "\n");
 		}
+
+		SAFE_FOR_END
 	}
 
 	MOVE_CARRIAGE;
@@ -301,7 +303,7 @@ DEF_CMD
 
 DEF_CMD
 (
-	sqrt, SQRT, CMD_W_NO_ARG,
+	sqrt, SQRT, WRITE_CMD_W_NO_ARG,
 
 	value = STACK_POP(&(vm.user_stack)).deleted_element;
 
@@ -312,7 +314,7 @@ DEF_CMD
 
 DEF_CMD
 (
-	:, VOID, LABEL,
+	:, VOID, WRITE_LABEL,
 
 	;
 )

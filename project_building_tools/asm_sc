@@ -1,4 +1,4 @@
 #!/bin/bash
-make clean
-make ../executables/assembler.out
+make clean_asm
+make asm
 ../executables/assembler.out square_solver
