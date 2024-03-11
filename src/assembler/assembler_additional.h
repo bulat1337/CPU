@@ -80,6 +80,21 @@ struct Cmds_process_result
     struct JMP_poses_w_carriage jmp_poses_w_carriage; /**< Structure containing jumps with carriage information. */
 };
 
+struct Strings
+{
+    char * *tokens; /**< Array of strings representing parsed commands. */
+	size_t  amount; /**< Amount of strings. */
+};
+
+struct Compile_manager
+{
+    struct Strings       strings;
+	Buffer_w_info        human_code_buffer; /**< Buffer with carriage and length information for human-readable code. */
+	Labels_w_carriage    labels_w_carriage; /**< Structure containing labels with carriage information. */
+    JMP_poses_w_carriage jmp_poses_w_carriage; /**< Structure containing jumps with carriage information. */
+	Buf_w_carriage_n_len byte_code; /**< Buffer with carriage and length information for bytecode. */
+};
+
 const int           POISON_JMP_POS                 = -1;
 const char          IDENTIFIER_BYTE                =  1;
 const int           CMD_TYPE_ALIGNMENT_VALUE       =  3;
@@ -92,26 +107,11 @@ const unsigned char SIX_BYTE_ALIGNMENT             = 6;
 const unsigned char ONE_BYTE_ALIGNMENT             = 1;
 const unsigned char ADDITIONAL_CONCATENATION_SPACE = 2;
 
-/**
- * @brief Parses human-readable code.
- *
- * Parses the given human-readable code file and returns the parsed result.
- *
- * @param file_name Name of the file containing human-readable code.
- * @return Parsed result including error code, human code buffer, etc.
- */
-struct Parse_human_code_result parse_human_code(const char *file_name);
+//doxy
+error_t parse_human_code(Compile_manager *manager, const char *file_name);
 
-/**
- * @brief Processes commands.
- *
- * Processes commands of the given human-readable code.
- *
- * @param commands Array of command strings.
- * @param amount_of_lines Number of lines in the code.
- * @return Result of command processing including bytecode, labels, jumps, etc.
- */
-struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines);
+//doxy
+error_t cmds_process(Compile_manager *manager);
 
 /**
  * @brief Writes main jump instruction.
@@ -176,15 +176,8 @@ error_t log_labels(struct Labels_w_carriage *labels_w_carriage);
  */
 error_t log_jmps(struct JMP_poses_w_carriage *jmp_poses_w_carriage);
 
-/**
- * @brief Arranges labels.
- *
- * Arranges labels in the bytecode based on their positions.
- *
- * @param cmds_process_result Result of command processing including bytecode, labels, jumps, etc.
- * @return Result of label arrangement including error code and updated bytecode.
- */
-return_t arrange_labels(struct Cmds_process_result cmds_process_result);
+//doxy
+error_t arrange_labels(Compile_manager *manager);
 
 /**
  * @brief Reduces buffer size.
@@ -192,9 +185,9 @@ return_t arrange_labels(struct Cmds_process_result cmds_process_result);
  * Reduces the size of the buffer to remove trailing zeros.
  *
  * @param buffer_w_info Buffer with carriage and length information.
- * @return Result of buffer size reduction including error code and updated buffer.
+ * @return Error code indicating the success or failure of the operation.
  */
-return_t reduce_buffer_size(struct Buf_w_carriage_n_len buffer_w_info);
+error_t reduce_buffer_size(Buf_w_carriage_n_len *buffer_w_info);
 
 /**
  * @brief Creates byte codes file name.
@@ -205,5 +198,11 @@ return_t reduce_buffer_size(struct Buf_w_carriage_n_len buffer_w_info);
  * @return Byte codes file name.
  */
 char *create_byte_code_file_name(const char *file_name);
+
+//doxy
+error_t create_bin(Compile_manager *manager, const char *file_name);
+
+//doxy
+error_t manager_dtor(Compile_manager *manager);
 
 #endif

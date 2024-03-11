@@ -11,9 +11,9 @@
  * @param result The result structure to check for errors.
  * @return Returns the error code if an error occurred, otherwise continues execution.
  */
-#define CHECK_ERROR(result)\
-	if(result.error_code != ASM_ALL_GOOD)\
-		return result.error_code;
+#define CHECK_ERROR\
+	if(error_code != ASM_ALL_GOOD)\
+		return error_code;
 
 /**
  * @def REDUCED_BYTE_CODE
@@ -35,63 +35,30 @@
 		return ASM_UNABLE_TO_OPEN_FILE;								\
 	}
 
+#define CALL(...)				\
+	error_code = __VA_ARGS__;	\
+	CHECK_ERROR;
+
 error_t compile(const char *file_name)
-{	// web_scraper::parse(), asm::parse()
-	struct Parse_human_code_result parse_human_code_result = parse_human_code(file_name);
-	CHECK_ERROR(parse_human_code_result);
+{
+	Compile_manager manager = {};
+	error_t error_code = ASM_ALL_GOOD;
 
+	CALL(parse_human_code(&manager, file_name))
 
-	struct Cmds_process_result cmds_process_result =
-		cmds_process(parse_human_code_result.strings,
-		             parse_human_code_result.amount_of_lines);
+	CALL(cmds_process(&manager))
 
-	CHECK_ERROR(cmds_process_result);
+	CALL(arrange_labels(&manager))
 
+	CALL(reduce_buffer_size(&(manager.byte_code)))
 
-	free(parse_human_code_result.strings);
+	CALL(create_bin(&manager, file_name))
 
-	return_t arrange_labels_result =
-		arrange_labels(cmds_process_result);
-
-	/**
-	* @def FIXED_BYTE_CODE
-	* @brief Macro representing the fixed byte code after label arrangement.
-	*/
-	#define FIXED_BYTE_CODE\
-		arrange_labels_result.second_arg.buf_w_info
-
-	CHECK_ERROR(arrange_labels_result);
-
-
-	free(parse_human_code_result.human_code_buffer.buf);
-	free(cmds_process_result.jmp_poses_w_carriage.JMP_poses);
-	free(cmds_process_result.labels_w_carriage.labels);
-
-	CPU_LOG("Byte_code size: %lu * sizeof(double) bytes\n",
-			FIXED_BYTE_CODE.length / sizeof(double));
-
-	return_t reduce_buffer_size_result = reduce_buffer_size(FIXED_BYTE_CODE);
-	CHECK_ERROR(reduce_buffer_size_result);
-
-	char *byte_code_file_name = create_byte_code_file_name(file_name); //const
-
-	FILE *byte_code = fopen(byte_code_file_name, "wb");
-	FILE_PTR_CHECK(byte_code);
-
-	free(byte_code_file_name);
-
-	fwrite(REDUCED_BYTE_CODE.buf, sizeof(char), REDUCED_BYTE_CODE.length, byte_code);
-
-	fclose(byte_code);
-
-	free(REDUCED_BYTE_CODE.buf);
-
-
+	manager_dtor(&manager);
 
 	return ASM_ALL_GOOD;
 }
 
 #undef CHECK_ERROR
-#undef FIXED_BYTE_CODE
 #undef FILE_PTR_CHECK
 #undef REDUCED_BYTE_CODE

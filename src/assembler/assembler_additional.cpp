@@ -9,6 +9,14 @@
 #include "file_parse.h"
 #include "stack.h"
 
+#define ALLOCATION_CHECK(ptr)										\
+	if(ptr == NULL)													\
+	{																\
+		CPU_LOG("Unable to allocate manager->strings.tokens\n");	\
+																	\
+		return ASM_UNABLE_TO_ALLOCATE;								\
+	}																\
+
 /**
  * @def LOG_BUFFER
  * @brief Macro to log buffer contents.
@@ -36,18 +44,13 @@
  * @def BYTE_CODE
  * @brief Macro representing the byte code buffer.
  *
- * This macro represents the byte code buffer stored in the 'result' structure.
  */
 #define BYTE_CODE\
-    result.buf_w_info
+    manager->byte_code
 
 /**
  * @def FILE_PTR_CHECK
  * @brief Macro to check if a file pointer is valid.
- *
- * This macro checks if a file pointer is valid (i.e., not NULL). If the file pointer is NULL,
- * it logs an error message and sets the error code in the 'result' structure to indicate the
- * inability to open the file.
  *
  * @param file_ptr Pointer to the file.
  */
@@ -55,17 +58,11 @@
     if(file_ptr == NULL)                                            \
     {                                                               \
         CPU_LOG("\nERROR: Unable to open "#file_ptr"\n");           \
-        result.error_code = ASM_UNABLE_TO_OPEN_FILE;                \
-        return result;                                              \
+        return ASM_UNABLE_TO_OPEN_FILE;								\
     }
 
-struct Parse_human_code_result parse_human_code(const char *file_name)
+error_t parse_human_code(Compile_manager *manager, const char *file_name)
 {
-	struct Parse_human_code_result result =
-	{
-		.error_code = ASM_ALL_GOOD,
-	};
-
 /*
 with_open("ma.txt", "r", f_ptr,
 	read(f_ptr);
@@ -80,25 +77,35 @@ with_open("ma.txt", "r", f_ptr,
 	FILE_PTR_CHECK(human_code);
 
 	size_t human_code_file_length = get_file_length(human_code);
-	result.human_code_buffer =
+	manager->human_code_buffer =
 	{
 		.length = human_code_file_length,
 		.buf = (char *)calloc(human_code_file_length, sizeof(char)),
 	};
 
-	fread(result.human_code_buffer.buf, sizeof(char), result.human_code_buffer.length, human_code);
+	fread(manager->human_code_buffer.buf, sizeof(char),
+		  manager->human_code_buffer.length, human_code);
 
 	fclose(human_code);
 
-	result.amount_of_lines = count_file_lines(result.human_code_buffer);
-	CPU_LOG("amount of lines: %lu\n", result.amount_of_lines);
+	manager->strings.amount = count_file_lines(manager->human_code_buffer);
+	CPU_LOG("amount of lines: %lu\n", manager->strings.amount);
 
-	result.strings = (char * *)calloc(result.amount_of_lines, sizeof(char *));
-	//check calloc
-	ptr_arranger(result.strings, result.human_code_buffer); //rename
+	manager->strings.tokens = (char * *)calloc(manager->strings.amount, sizeof(char *));
+	if(manager->strings.tokens == NULL)
+	{
+		CPU_LOG("Unable to allocate manager->strings.tokens\n");
 
-	return result;
+		return ASM_UNABLE_TO_ALLOCATE;
+	}
+
+	ptr_arranger(manager->strings.tokens, manager->human_code_buffer); //rename
+
+	return ASM_ALL_GOOD;
 }
+
+#define COMMANDS\
+	manager->strings.tokens
 
 /**
  * @def WRITE_CMD_W_8_BYTE_ARG
@@ -116,9 +123,9 @@ with_open("ma.txt", "r", f_ptr,
 	{																		\
 		cmd_type = (char)num;												\
 		write_to_buf(&BYTE_CODE, &cmd_type, sizeof(char));					\
-		if(*(commands[line_ID] + strlen(#cmd_name)) == '[')					\
+		if(*(COMMANDS[line_ID] + strlen(#cmd_name)) == '[')					\
 		{																	\
-			if(sscanf(commands[line_ID] + strlen(#cmd_name) + SPACE_SKIP, 	\
+			if(sscanf(COMMANDS[line_ID] + strlen(#cmd_name) + SPACE_SKIP, 	\
 					  "%d", &RAM_address) == 0)								\
 			{																\
 				align_buffer(&BYTE_CODE, ONE_BYTE_ALIGNMENT);				\
@@ -137,7 +144,7 @@ with_open("ma.txt", "r", f_ptr,
 				write_to_buf(&BYTE_CODE, &RAM_address, sizeof(int));		\
 			}																\
 		}																	\
-		else if(sscanf(commands[line_ID] + strlen(#cmd_name),				\
+		else if(sscanf(COMMANDS[line_ID] + strlen(#cmd_name),				\
 				"%lf", &argument_value) == 0)								\
 		{																	\
 			align_buffer(&BYTE_CODE, ONE_BYTE_ALIGNMENT);					\
@@ -177,12 +184,12 @@ with_open("ma.txt", "r", f_ptr,
 		cmd_type = (char)num;												\
 		write_to_buf(&BYTE_CODE, &cmd_type, sizeof(char));					\
 																			\
-		if(*(commands[line_ID] + strlen(#cmd_name)) == '[')					\
+		if(*(COMMANDS[line_ID] + strlen(#cmd_name)) == '[')					\
 		{																	\
 			align_buffer(&BYTE_CODE, 2);									\
 			write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));		\
 																			\
-			sscanf(commands[line_ID] + strlen(#cmd_name) + SPACE_SKIP,		\
+			sscanf(COMMANDS[line_ID] + strlen(#cmd_name) + SPACE_SKIP,		\
 					"%d", &RAM_address);									\
 																			\
 			write_to_buf(&BYTE_CODE, &RAM_address, sizeof(int));			\
@@ -235,10 +242,10 @@ with_open("ma.txt", "r", f_ptr,
 		write_char_w_alignment(&BYTE_CODE, (char)num, ALIGN_TO_INT);		\
 		write_to_buf(&BYTE_CODE, &POISON_JMP_POS, sizeof(int));				\
 																			\
-		CURRENT_JMP.name = commands[line_ID] + strlen(#cmd_name) + 1;		\
+		CURRENT_JMP.name = COMMANDS[line_ID] + strlen(#cmd_name) + 1;		\
 		CURRENT_JMP.IP_pos = (int)buf_carriage;								\
 																			\
-		result.jmp_poses_w_carriage.carriage++;								\
+		manager->jmp_poses_w_carriage.carriage++;								\
 		buf_carriage++;														\
 	}
 
@@ -255,10 +262,10 @@ with_open("ma.txt", "r", f_ptr,
 #define WRITE_LABEL(cmd_name, num)											\
 	if(IS_COMMAND(#cmd_name))												\
 	{																		\
-		CURRENT_LABEL.name   = commands[line_ID] + strlen(":");				\
+		CURRENT_LABEL.name   = COMMANDS[line_ID] + strlen(":");				\
 		CURRENT_LABEL.IP_pos = buf_carriage;								\
 																			\
-		result.labels_w_carriage.carriage++;								\
+		manager->labels_w_carriage.carriage++;								\
 	}																		\
 
 /**
@@ -274,33 +281,32 @@ with_open("ma.txt", "r", f_ptr,
 	type(name, num);
 
 
-struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines)
+error_t cmds_process(Compile_manager *manager)
 {
-	struct Cmds_process_result result =
-	{
-		.error_code = ASM_ALL_GOOD,
-	};
+	size_t amount_of_lines = manager->strings.amount;
 
 	size_t byte_code_size = amount_of_lines * sizeof(double) * 2;
-	result.buf_w_info =
-	{
-		.buf = (char *)calloc(byte_code_size, sizeof(char)),
-		.carriage = 0,
-		.length = byte_code_size,
-	};
 
-	result.labels_w_carriage =
+	manager->byte_code.buf = (char *)calloc(byte_code_size, sizeof(char));
+	ALLOCATION_CHECK(manager->byte_code.buf);
+	manager->byte_code.carriage = 0;
+	manager->byte_code.length = byte_code_size;
+
+	manager->labels_w_carriage =
 	{
 		.labels = (Label *)calloc(amount_of_lines, sizeof(Label)),
 		.carriage = 0,
 	};
-	result.jmp_poses_w_carriage =
+	ALLOCATION_CHECK(manager->labels_w_carriage.labels);
+
+	manager->jmp_poses_w_carriage =
 	{
 		.JMP_poses = (JMP_pos *)calloc(amount_of_lines, sizeof(JMP_pos)),
 		.carriage = 0,
 	};
+	ALLOCATION_CHECK(manager->jmp_poses_w_carriage.JMP_poses);
 
-	write_main_jmp(&BYTE_CODE, &(result.jmp_poses_w_carriage));
+	write_main_jmp(&BYTE_CODE, &(manager->jmp_poses_w_carriage));
 
 	char cmd_type = (char)VOID;
 	elem_t argument_value = NAN;
@@ -308,16 +314,16 @@ struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines
 	unsigned int RAM_address = 0;
 
 	#define CURRENT_LABEL\
-		result.labels_w_carriage.labels[result.labels_w_carriage.carriage]
+		manager->labels_w_carriage.labels[manager->labels_w_carriage.carriage]
 
 	#define CURRENT_JMP\
-		result.jmp_poses_w_carriage.JMP_poses[result.jmp_poses_w_carriage.carriage]
+		manager->jmp_poses_w_carriage.JMP_poses[manager->jmp_poses_w_carriage.carriage]
 
 	#define GET_REG_TYPE(cmd)\
-		*(commands[line_ID] + strlen(cmd) + SPACE_SKIP + LETTER_SKIP) - 'a'
+		*(COMMANDS[line_ID] + strlen(cmd) + SPACE_SKIP + LETTER_SKIP) - 'a'
 
 	#define IS_COMMAND(cmd)\
-		!strncmp(commands[line_ID], cmd, strlen(cmd))
+		!strncmp(COMMANDS[line_ID], cmd, strlen(cmd))
 
 	size_t buf_carriage = 1;
 	SAFE_FOR_START(size_t line_ID = 0; line_ID < amount_of_lines; line_ID++)
@@ -328,11 +334,10 @@ struct Cmds_process_result cmds_process(char * *commands, size_t amount_of_lines
 	}
 
 	LOG_BUFFER(BYTE_CODE.buf, BYTE_CODE.length);
-	log_labels(&(result.labels_w_carriage));
-	log_jmps(&(result.jmp_poses_w_carriage));
+	log_labels(&(manager->labels_w_carriage));
+	log_jmps(&(manager->jmp_poses_w_carriage));
 
-
-	return result;
+	return ASM_ALL_GOOD;
 }
 
 #undef WRITE_CMD_W_8_BYTE_ARG
@@ -434,22 +439,19 @@ error_t log_jmps(struct JMP_poses_w_carriage *jmp_poses_w_carriage)
 }
 
 #define CURRENT_JMP\
-	cmds_process_result.jmp_poses_w_carriage.JMP_poses[jmp_ID]
+	manager->jmp_poses_w_carriage.JMP_poses[jmp_ID]
 #define CURRENT_LABEL\
-	cmds_process_result.labels_w_carriage.labels[label_ID]
+	manager->labels_w_carriage.labels[label_ID]
 #define FIXED_BYTE_CODE\
-	result.second_arg.buf_w_info
+	manager->byte_code
 
-return_t arrange_labels(struct Cmds_process_result cmds_process_result)
+error_t arrange_labels(Compile_manager *manager)
 {
-	return_t result =
-	{
-		.error_code            = ASM_ALL_GOOD,
-		.second_arg.buf_w_info = cmds_process_result.buf_w_info,
-	};
+	error_t error_code = ASM_ALL_GOOD;
 
-	const size_t amount_of_jmps   = cmds_process_result.jmp_poses_w_carriage.carriage;
-	const size_t amount_of_labels = cmds_process_result.labels_w_carriage.carriage;
+	const size_t amount_of_jmps   = manager->jmp_poses_w_carriage.carriage;
+	const size_t amount_of_labels = manager->labels_w_carriage.carriage;
+
 	bool label_found = false;
 
 	SAFE_FOR_START(size_t jmp_ID = 0; jmp_ID < amount_of_jmps; jmp_ID++)
@@ -492,7 +494,7 @@ return_t arrange_labels(struct Cmds_process_result cmds_process_result)
 		if(!label_found)
 		{
 			CPU_LOG("label for %s jmp doesn't exists\n", CURRENT_JMP.name);
-			result.error_code = LABEL_DOESNT_EXIST;
+			error_code = LABEL_DOESNT_EXIST;
 		}
 
 		SAFE_FOR_END
@@ -500,32 +502,28 @@ return_t arrange_labels(struct Cmds_process_result cmds_process_result)
 
 	LOG_BUFFER(FIXED_BYTE_CODE.buf, FIXED_BYTE_CODE.length);
 
-	return result;
+	CPU_LOG("Byte_code size: %lu * sizeof(double) bytes\n",
+			 manager->byte_code.length / sizeof(double));
+
+	return error_code;
 }
 
 #define CURRENT_CHUNK\
-	*(long *)(buffer_w_info.buf + carriage)
-#define REDUCED_BYTE_CODE\
-	result.second_arg.buf_w_info
+	*(long *)(buffer_w_info->buf + carriage)
 
-return_t reduce_buffer_size(struct Buf_w_carriage_n_len buffer_w_info)
+error_t reduce_buffer_size(Buf_w_carriage_n_len *buffer_w_info)
 {
-	return_t result =
-	{
-		.error_code = ASM_ALL_GOOD,
-	};
-
 	bool non_zero_flag = true;
 	bool zero_flag     = false;
 	size_t tale   = 0;
 
-	if(*(long *)(buffer_w_info.buf + buffer_w_info.length - sizeof(double)) != 0)
+	if(*(long *)(buffer_w_info->buf + buffer_w_info->length - sizeof(double)) != 0)
 	{
-		tale = buffer_w_info.length;
+		tale = buffer_w_info->length;
 	}
 	else
 	{
-		SAFE_FOR_START(size_t carriage = 0; carriage < buffer_w_info.length; carriage += sizeof(long))
+		SAFE_FOR_START(size_t carriage = 0; carriage < buffer_w_info->length; carriage += sizeof(long))
 		{
 			if(CURRENT_CHUNK == 0)
 			{
@@ -549,16 +547,17 @@ return_t reduce_buffer_size(struct Buf_w_carriage_n_len buffer_w_info)
 	}
 
 	// + 1 incase of push 0 as a last cmd
-	REDUCED_BYTE_CODE.length = tale + sizeof(double);
+	buffer_w_info->length = tale + sizeof(double);
 
-	REDUCED_BYTE_CODE.buf =
-		(char *)realloc(buffer_w_info.buf, REDUCED_BYTE_CODE.length);
+	buffer_w_info->buf =
+		(char *)realloc(buffer_w_info->buf, buffer_w_info->length);
+	ALLOCATION_CHECK(buffer_w_info->buf);
 
-	LOG_BUFFER(REDUCED_BYTE_CODE.buf, REDUCED_BYTE_CODE.length);
+	LOG_BUFFER(buffer_w_info->buf, buffer_w_info->length);
 	CPU_LOG("reduced length: %lu * sizeof(double) bytes\n",
-			REDUCED_BYTE_CODE.length / sizeof(double));
+			buffer_w_info->length / sizeof(double));
 
-	return result;
+	return ASM_ALL_GOOD;
 }
 
 char *create_byte_code_file_name(const char *file_name)
@@ -572,6 +571,48 @@ char *create_byte_code_file_name(const char *file_name)
 	snprintf(byte_code_file_name, byte_code_file_name_size, "%s_byte_code.bin", file_name);
 
 	return byte_code_file_name;
+}
+
+error_t create_bin(Compile_manager *manager, const char *file_name)
+{
+	char *byte_code_file_name = create_byte_code_file_name(file_name); //const
+
+	FILE *byte_code = fopen(byte_code_file_name, "wb");
+	FILE_PTR_CHECK(byte_code);
+
+	free(byte_code_file_name);
+
+	size_t written_elems =
+		fwrite(manager->byte_code.buf, sizeof(char), manager->byte_code.length, byte_code);
+
+	if(written_elems != manager->byte_code.length)
+	{
+		CPU_LOG("ERROR INVALID_FWRITE\n");
+
+		return ASM_INVALID_FWRITE;
+	}
+
+	fclose(byte_code);
+
+	return ASM_INVALID_FWRITE;
+}
+
+error_t manager_dtor(Compile_manager *manager)
+{
+	free(manager->byte_code.buf);
+	free(manager->human_code_buffer.buf);
+	free(manager->jmp_poses_w_carriage.JMP_poses);
+	free(manager->labels_w_carriage.labels);
+	free(manager->strings.tokens);
+
+	manager->byte_code.carriage 			= 0;
+	manager->byte_code.length 				= 0;
+	manager->human_code_buffer.length 		= 0;
+	manager->jmp_poses_w_carriage.carriage 	= 0;
+	manager->labels_w_carriage.carriage 	= 0;
+	manager->strings.amount 				= 0;
+
+	return ASM_ALL_GOOD;
 }
 
 #undef CURRENT_JMP
