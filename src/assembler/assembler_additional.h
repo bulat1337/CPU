@@ -105,6 +105,7 @@ const unsigned char SPACE_SKIP                     = 1;
 const unsigned char LETTER_SKIP                    = 1;
 const unsigned char SIX_BYTE_ALIGNMENT             = 6;
 const unsigned char ONE_BYTE_ALIGNMENT             = 1;
+const unsigned char TWO_BYTE_ALIGNMENT             = 2;
 const unsigned char ADDITIONAL_CONCATENATION_SPACE = 2;
 
 //doxy
@@ -204,5 +205,7 @@ error_t create_bin(Compile_manager *manager, const char *file_name);
 
 //doxy
 error_t manager_dtor(Compile_manager *manager);
+
+error_t mask_buffer(Buf_w_carriage_n_len *byte_code, const char mask);
 
 #endif

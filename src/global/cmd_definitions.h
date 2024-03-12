@@ -2,9 +2,9 @@ DEF_CMD
 (
 	push, PUSH, WRITE_CMD_W_8_BYTE_ARG,
 
-	if(*(int *)(CURRENT_BYTE_CODE) & RAM_IDENTIFIER_MASK)
+	if(*(CURRENT_BYTE_CODE + sizeof(char)) & RAM_MASK)
 	{
-		if(*(int *)(CURRENT_BYTE_CODE) & CONSTANT_IDENTIFIER_MASK)
+		if(*(CURRENT_BYTE_CODE + sizeof(char)) & IMM_MASK)
 		{
 			RAM_address = *(unsigned int *)(CURRENT_BYTE_CODE + sizeof(int));
 
@@ -12,7 +12,7 @@ DEF_CMD
 
 			STACK_PUSH(&(vm.user_stack), value);
 		}
-		else if(*(int *)(CURRENT_BYTE_CODE) & REGISTER_IDENTIFIER_MASK)
+		else if(*(CURRENT_BYTE_CODE + sizeof(char)) & REG_MASK)
 		{
 			reg_type = *(unsigned int *)(CURRENT_BYTE_CODE + sizeof(int));
 
@@ -27,13 +27,13 @@ DEF_CMD
 			return INVALID_RAM_MODE;
 		}
 	}
-	else if(*(int *)(CURRENT_BYTE_CODE) & CONSTANT_IDENTIFIER_MASK)
+	else if(*(CURRENT_BYTE_CODE + sizeof(char)) & IMM_MASK)
 	{
 		MOVE_CARRIAGE;
 
 		STACK_PUSH(&(vm.user_stack), *(elem_t *)CURRENT_BYTE_CODE);
 	}
-	else if(*(int *)(CURRENT_BYTE_CODE) & REGISTER_IDENTIFIER_MASK)
+	else if(*(CURRENT_BYTE_CODE + sizeof(char)) & REG_MASK)
 	{
 		reg_type = *(unsigned int *)(CURRENT_BYTE_CODE + sizeof(int));
 		STACK_PUSH(&(vm.user_stack), vm.registers[reg_type]);
@@ -46,14 +46,26 @@ DEF_CMD
 (
 	pop, POP, WRITE_CMD_W_4_BYTE_ARG,
 
-	if(*(int *)(CURRENT_BYTE_CODE) & RAM_IDENTIFIER_MASK)
+	if(*(CURRENT_BYTE_CODE + sizeof(char)) & RAM_MASK)
 	{
-		RAM_address = *(unsigned int *)(CURRENT_BYTE_CODE + sizeof(int));
+		if(*(CURRENT_BYTE_CODE + sizeof(char)) & IMM_MASK)
+		{
+			RAM_address = *(unsigned int *)(CURRENT_BYTE_CODE + sizeof(int));
 
-		vm.rand_access_mem.user_RAM[RAM_address] =
-			STACK_POP(&(vm.user_stack)).deleted_element;
+			vm.rand_access_mem.user_RAM[RAM_address] =
+				STACK_POP(&(vm.user_stack)).deleted_element;
+		}
+		else if(*(CURRENT_BYTE_CODE + sizeof(char)) & REG_MASK)
+		{
+			reg_type = *(unsigned int *)(CURRENT_BYTE_CODE + sizeof(int));
+
+			RAM_address = (unsigned int)vm.registers[reg_type];
+
+			vm.rand_access_mem.user_RAM[RAM_address] =
+				STACK_POP(&(vm.user_stack)).deleted_element;
+		}
 	}
-	else if(*(int *)(CURRENT_BYTE_CODE) & REGISTER_IDENTIFIER_MASK)
+	else if(*(CURRENT_BYTE_CODE + sizeof(char)) & REG_MASK)
 	{
 		reg_type = *(unsigned int *)(CURRENT_BYTE_CODE + sizeof(int));
 

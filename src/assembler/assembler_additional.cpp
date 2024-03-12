@@ -124,32 +124,29 @@ with_open("ma.txt", "r", f_ptr,
 		cmd_type = (char)num;												\
 		write_to_buf(&BYTE_CODE, &cmd_type, sizeof(char));					\
 		if(*(COMMANDS[line_ID] + strlen(#cmd_name)) == '[')					\
-		{																	\
+		{/* RAM */															\
 			if(sscanf(COMMANDS[line_ID] + strlen(#cmd_name) + SPACE_SKIP, 	\
 					  "%d", &RAM_address) == 0)								\
-			{																\
-				align_buffer(&BYTE_CODE, ONE_BYTE_ALIGNMENT);				\
-				write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));	\
-				write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));	\
+			{/* RAM w REG */												\
+				mask_buffer(&(manager->byte_code), RAM_MASK | REG_MASK);	\
+				align_buffer(&BYTE_CODE, TWO_BYTE_ALIGNMENT);				\
 																			\
 				reg_type = GET_REG_TYPE(#cmd_name);							\
 				write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);	\
 			}																\
 			else															\
-			{																\
-				write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));	\
-				align_buffer(&BYTE_CODE, ONE_BYTE_ALIGNMENT);				\
-				write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));	\
+			{/* RAM w IMM*/													\
+				mask_buffer(&(manager->byte_code), RAM_MASK | IMM_MASK);	\
+				align_buffer(&BYTE_CODE, TWO_BYTE_ALIGNMENT);				\
 																			\
 				write_to_buf(&BYTE_CODE, &RAM_address, sizeof(int));		\
 			}																\
 		}																	\
 		else if(sscanf(COMMANDS[line_ID] + strlen(#cmd_name),				\
 				"%lf", &argument_value) == 0)								\
-		{																	\
-			align_buffer(&BYTE_CODE, ONE_BYTE_ALIGNMENT);					\
-			write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));		\
-			align_buffer(&BYTE_CODE, ONE_BYTE_ALIGNMENT);					\
+		{/* REG */															\
+			mask_buffer(&(manager->byte_code), REG_MASK);					\
+			align_buffer(&BYTE_CODE, TWO_BYTE_ALIGNMENT);					\
 																			\
 			reg_type = GET_REG_TYPE(#cmd_name);								\
 			write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);		\
@@ -157,8 +154,8 @@ with_open("ma.txt", "r", f_ptr,
 			buf_carriage++;													\
 		}																	\
 		else																\
-		{																	\
-			write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));		\
+		{/* IMM */															\
+			mask_buffer(&(manager->byte_code), IMM_MASK);					\
 			align_buffer(&BYTE_CODE, SIX_BYTE_ALIGNMENT);					\
 			buf_carriage++;													\
 																			\
@@ -185,20 +182,29 @@ with_open("ma.txt", "r", f_ptr,
 		write_to_buf(&BYTE_CODE, &cmd_type, sizeof(char));					\
 																			\
 		if(*(COMMANDS[line_ID] + strlen(#cmd_name)) == '[')					\
-		{																	\
-			align_buffer(&BYTE_CODE, 2);									\
-			write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));		\
+		{/* RAM */															\
+			if(sscanf(COMMANDS[line_ID] + strlen(#cmd_name) + SPACE_SKIP, 	\
+					  "%d", &RAM_address) == 0)								\
+			{/* RAM w REG */\
+				mask_buffer(&(manager->byte_code), RAM_MASK | REG_MASK);	\
+				align_buffer(&BYTE_CODE, TWO_BYTE_ALIGNMENT);				\
 																			\
-			sscanf(COMMANDS[line_ID] + strlen(#cmd_name) + SPACE_SKIP,		\
-					"%d", &RAM_address);									\
-																			\
-			write_to_buf(&BYTE_CODE, &RAM_address, sizeof(int));			\
+				reg_type = GET_REG_TYPE(#cmd_name);							\
+				write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);	\
+			}\
+			else\
+			{/* RAM w IMM */\
+				mask_buffer(&(manager->byte_code), RAM_MASK | IMM_MASK);	\
+				align_buffer(&BYTE_CODE, TWO_BYTE_ALIGNMENT);				\
+																				\
+																				\
+				write_to_buf(&BYTE_CODE, &RAM_address, sizeof(int));			\
+			}\
 		}																	\
 		else																\
 		{																	\
-			align_buffer(&BYTE_CODE, ONE_BYTE_ALIGNMENT);					\
-			write_to_buf(&BYTE_CODE, &IDENTIFIER_BYTE, sizeof(char));		\
-			align_buffer(&BYTE_CODE, ONE_BYTE_ALIGNMENT);					\
+			mask_buffer(&(manager->byte_code), REG_MASK);	\
+			align_buffer(&BYTE_CODE, TWO_BYTE_ALIGNMENT);				\
 																			\
 			reg_type = GET_REG_TYPE(#cmd_name);								\
 			write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);		\
@@ -611,6 +617,15 @@ error_t manager_dtor(Compile_manager *manager)
 	manager->jmp_poses_w_carriage.carriage 	= 0;
 	manager->labels_w_carriage.carriage 	= 0;
 	manager->strings.amount 				= 0;
+
+	return ASM_ALL_GOOD;
+}
+
+error_t mask_buffer(Buf_w_carriage_n_len *byte_code, const char mask)
+{
+	*(byte_code->buf + byte_code->carriage) |= mask;
+
+	byte_code->carriage++;
 
 	return ASM_ALL_GOOD;
 }

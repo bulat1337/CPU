@@ -43,8 +43,11 @@
 		break;																			\
 	}
 
-static size_t GLOBAL_CYCLE_COUNTER = 0; /**< Global counter for loop iterations. */
-const  size_t CYCLE_LIMIT          = 1000; /**< Limit for loop iterations. */
+static size_t  GLOBAL_CYCLE_COUNTER      = 0; /**< Global counter for loop iterations. */
+const  size_t  CYCLE_LIMIT               = 1000; /**< Limit for loop iterations. */
+const  char    RAM_MASK                  = (const char)1 << 7;
+const  char    REG_MASK                  = (const char)1 << 6;
+const  char    IMM_MASK                  = (const char)1 << 5;
 
 /**
  * @brief Logs a message to a file.
