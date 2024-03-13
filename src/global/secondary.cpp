@@ -84,3 +84,4 @@ void clear_buffer(void)
 {
     while(getchar() != '\n');
 }
+

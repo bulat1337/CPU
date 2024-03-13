@@ -8,6 +8,9 @@
 
 #include "SPU.h"
 
+const size_t STD_USER_STACK_SIZE = 10;
+const size_t STD_RET_STACK_SIZE  = 2;
+
 /**
  * @brief Processes the input file and performs operations based on the byte code.
  * @param input_file Pointer to the input file.

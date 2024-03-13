@@ -8,6 +8,17 @@
 
 #include <stdarg.h>
 
+#define WITH_OPEN(file_name, mode, file_ptr, ...)	\
+	FILE *file_ptr = fopen(file_name, mode);		\
+	FILE_PTR_CHECK(file_ptr);						\
+													\
+	__VA_ARGS__										\
+													\
+	fclose(file_ptr);
+
+#define LEN(token)\
+	sizeof(token) / sizeof(char)
+
 /**
  * @brief Macro to log messages to a file.
  *

@@ -3,7 +3,7 @@
 
 #include "assembler.h"
 
-int main(int argc, char *argv[]) //const
+int main(int argc, const char *argv[])
 {
 	if(argc > 2)
 	{

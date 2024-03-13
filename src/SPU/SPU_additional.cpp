@@ -103,8 +103,8 @@ error_t process(FILE *input_file, FILE *output_file)
 
 error_t VM_ctor(struct VM *vm)
 {
-	STACK_CTOR(&(vm->user_stack), 10);
-	STACK_CTOR(&(vm->ret_stack), 2);
+	STACK_CTOR(&(vm->user_stack), STD_USER_STACK_SIZE);
+	STACK_CTOR(&(vm->ret_stack),  STD_RET_STACK_SIZE);
 
 	return SPU_ALL_GOOD;
 }

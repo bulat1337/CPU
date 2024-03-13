@@ -63,30 +63,20 @@
 
 error_t parse_human_code(Compile_manager *manager, const char *file_name)
 {
-/*
-with_open("ma.txt", "r", f_ptr,
-	read(f_ptr);
-);
+	WITH_OPEN
+	(
+		file_name, "r", human_code,
 
-{
-	File(123);
-}
-*/
+		size_t human_code_file_length = get_file_length(human_code);
+		manager->human_code_buffer =
+		{
+			.length = human_code_file_length,
+			.buf = (char *)calloc(human_code_file_length, sizeof(char)),
+		};
 
-	FILE *human_code = fopen(file_name, "r");
-	FILE_PTR_CHECK(human_code);
-
-	size_t human_code_file_length = get_file_length(human_code);
-	manager->human_code_buffer =
-	{
-		.length = human_code_file_length,
-		.buf = (char *)calloc(human_code_file_length, sizeof(char)),
-	};
-
-	fread(manager->human_code_buffer.buf, sizeof(char),
-		  manager->human_code_buffer.length, human_code);
-
-	fclose(human_code);
+		fread(manager->human_code_buffer.buf, sizeof(char),
+			manager->human_code_buffer.length, human_code);
+	)
 
 	manager->strings.amount = count_file_lines(manager->human_code_buffer);
 	CPU_LOG("amount of lines: %lu\n", manager->strings.amount);
@@ -107,6 +97,16 @@ with_open("ma.txt", "r", f_ptr,
 #define COMMANDS\
 	manager->strings.tokens
 
+
+#define WRITE_BYTE(ptr)\
+	write_to_buf(&BYTE_CODE, ptr, sizeof(char));
+
+#define WRITE_INT(ptr)\
+	write_to_buf(&BYTE_CODE, ptr, sizeof(int));
+
+#define ALIGN_BUF(amount)\
+	align_buffer(&BYTE_CODE, amount);
+
 /**
  * @def WRITE_CMD_W_8_BYTE_ARG
  * @brief Macro to write a command with an 8-byte argument to the byte code buffer.
@@ -122,14 +122,14 @@ with_open("ma.txt", "r", f_ptr,
 	if(IS_COMMAND(#cmd_name))												\
 	{																		\
 		cmd_type = (char)num;												\
-		write_to_buf(&BYTE_CODE, &cmd_type, sizeof(char));					\
-		if(*(COMMANDS[line_ID] + strlen(#cmd_name)) == '[')					\
+		WRITE_BYTE(&cmd_type);												\
+		if(*(COMMANDS[line_ID] + LEN(#cmd_name)) == '[')					\
 		{/* RAM */															\
-			if(sscanf(COMMANDS[line_ID] + strlen(#cmd_name) + SPACE_SKIP, 	\
+			if(sscanf(COMMANDS[line_ID] + LEN(#cmd_name) + SPACE_SKIP, 	\
 					  "%d", &RAM_address) == 0)								\
 			{/* RAM w REG */												\
 				mask_buffer(&(manager->byte_code), RAM_MASK | REG_MASK);	\
-				align_buffer(&BYTE_CODE, TWO_BYTE_ALIGNMENT);				\
+				ALIGN_BUF(TWO_BYTE_ALIGNMENT);								\
 																			\
 				reg_type = GET_REG_TYPE(#cmd_name);							\
 				write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);	\
@@ -137,16 +137,16 @@ with_open("ma.txt", "r", f_ptr,
 			else															\
 			{/* RAM w IMM*/													\
 				mask_buffer(&(manager->byte_code), RAM_MASK | IMM_MASK);	\
-				align_buffer(&BYTE_CODE, TWO_BYTE_ALIGNMENT);				\
+				ALIGN_BUF(TWO_BYTE_ALIGNMENT);								\
 																			\
-				write_to_buf(&BYTE_CODE, &RAM_address, sizeof(int));		\
+				WRITE_INT(&RAM_address);									\
 			}																\
 		}																	\
-		else if(sscanf(COMMANDS[line_ID] + strlen(#cmd_name),				\
+		else if(sscanf(COMMANDS[line_ID] + LEN(#cmd_name),				\
 				"%lf", &argument_value) == 0)								\
 		{/* REG */															\
 			mask_buffer(&(manager->byte_code), REG_MASK);					\
-			align_buffer(&BYTE_CODE, TWO_BYTE_ALIGNMENT);					\
+			ALIGN_BUF(TWO_BYTE_ALIGNMENT);									\
 																			\
 			reg_type = GET_REG_TYPE(#cmd_name);								\
 			write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);		\
@@ -156,7 +156,7 @@ with_open("ma.txt", "r", f_ptr,
 		else																\
 		{/* IMM */															\
 			mask_buffer(&(manager->byte_code), IMM_MASK);					\
-			align_buffer(&BYTE_CODE, SIX_BYTE_ALIGNMENT);					\
+			ALIGN_BUF(SIX_BYTE_ALIGNMENT);									\
 			buf_carriage++;													\
 																			\
 			write_to_buf(&BYTE_CODE, &argument_value, sizeof(elem_t));		\
@@ -179,32 +179,32 @@ with_open("ma.txt", "r", f_ptr,
 	if(IS_COMMAND(#cmd_name))												\
 	{																		\
 		cmd_type = (char)num;												\
-		write_to_buf(&BYTE_CODE, &cmd_type, sizeof(char));					\
+		WRITE_BYTE(&cmd_type);												\
 																			\
-		if(*(COMMANDS[line_ID] + strlen(#cmd_name)) == '[')					\
+		if(*(COMMANDS[line_ID] + LEN(#cmd_name)) == '[')					\
 		{/* RAM */															\
-			if(sscanf(COMMANDS[line_ID] + strlen(#cmd_name) + SPACE_SKIP, 	\
+			if(sscanf(COMMANDS[line_ID] + LEN(#cmd_name) + SPACE_SKIP, 	\
 					  "%d", &RAM_address) == 0)								\
-			{/* RAM w REG */\
+			{/* RAM w REG */												\
 				mask_buffer(&(manager->byte_code), RAM_MASK | REG_MASK);	\
-				align_buffer(&BYTE_CODE, TWO_BYTE_ALIGNMENT);				\
+				ALIGN_BUF(TWO_BYTE_ALIGNMENT);								\
 																			\
 				reg_type = GET_REG_TYPE(#cmd_name);							\
 				write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);	\
-			}\
-			else\
-			{/* RAM w IMM */\
+			}																\
+			else															\
+			{/* RAM w IMM */												\
 				mask_buffer(&(manager->byte_code), RAM_MASK | IMM_MASK);	\
-				align_buffer(&BYTE_CODE, TWO_BYTE_ALIGNMENT);				\
-																				\
-																				\
-				write_to_buf(&BYTE_CODE, &RAM_address, sizeof(int));			\
-			}\
+				ALIGN_BUF(TWO_BYTE_ALIGNMENT);								\
+																			\
+																			\
+				WRITE_INT(&RAM_address);									\
+			}																\
 		}																	\
 		else																\
 		{																	\
-			mask_buffer(&(manager->byte_code), REG_MASK);	\
-			align_buffer(&BYTE_CODE, TWO_BYTE_ALIGNMENT);				\
+			mask_buffer(&(manager->byte_code), REG_MASK);					\
+			ALIGN_BUF(TWO_BYTE_ALIGNMENT);									\
 																			\
 			reg_type = GET_REG_TYPE(#cmd_name);								\
 			write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);		\
@@ -246,12 +246,12 @@ with_open("ma.txt", "r", f_ptr,
 	if(IS_COMMAND(#cmd_name))												\
 	{																		\
 		write_char_w_alignment(&BYTE_CODE, (char)num, ALIGN_TO_INT);		\
-		write_to_buf(&BYTE_CODE, &POISON_JMP_POS, sizeof(int));				\
+		WRITE_INT(&POISON_JMP_POS);											\
 																			\
-		CURRENT_JMP.name = COMMANDS[line_ID] + strlen(#cmd_name) + 1;		\
+		CURRENT_JMP.name = COMMANDS[line_ID] + LEN(#cmd_name) + 1;		\
 		CURRENT_JMP.IP_pos = (int)buf_carriage;								\
 																			\
-		manager->jmp_poses_w_carriage.carriage++;								\
+		manager->jmp_poses_w_carriage.carriage++;							\
 		buf_carriage++;														\
 	}
 
@@ -268,7 +268,7 @@ with_open("ma.txt", "r", f_ptr,
 #define WRITE_LABEL(cmd_name, num)											\
 	if(IS_COMMAND(#cmd_name))												\
 	{																		\
-		CURRENT_LABEL.name   = COMMANDS[line_ID] + strlen(":");				\
+		CURRENT_LABEL.name   = COMMANDS[line_ID] + LEN(":");				\
 		CURRENT_LABEL.IP_pos = buf_carriage;								\
 																			\
 		manager->labels_w_carriage.carriage++;								\
@@ -326,10 +326,10 @@ error_t cmds_process(Compile_manager *manager)
 		manager->jmp_poses_w_carriage.JMP_poses[manager->jmp_poses_w_carriage.carriage]
 
 	#define GET_REG_TYPE(cmd)\
-		*(COMMANDS[line_ID] + strlen(cmd) + SPACE_SKIP + LETTER_SKIP) - 'a'
+		*(COMMANDS[line_ID] + LEN(cmd) + SPACE_SKIP + LETTER_SKIP) - 'a'
 
 	#define IS_COMMAND(cmd)\
-		!strncmp(COMMANDS[line_ID], cmd, strlen(cmd))
+		!strncmp(COMMANDS[line_ID], cmd, LEN(cmd))
 
 	size_t buf_carriage = 1;
 	SAFE_FOR_START(size_t line_ID = 0; line_ID < amount_of_lines; line_ID++)
@@ -569,7 +569,7 @@ error_t reduce_buffer_size(Buf_w_carriage_n_len *buffer_w_info)
 char *create_byte_code_file_name(const char *file_name)
 {
 	size_t byte_code_file_name_size =
-		strlen("byte_code.bin") + strlen(file_name) + ADDITIONAL_CONCATENATION_SPACE;
+		LEN("byte_code.bin") + strlen(file_name) + ADDITIONAL_CONCATENATION_SPACE;
 
 	char *byte_code_file_name =
 		(char *)calloc(byte_code_file_name_size, sizeof(char));
@@ -583,22 +583,23 @@ error_t create_bin(Compile_manager *manager, const char *file_name)
 {
 	char *byte_code_file_name = create_byte_code_file_name(file_name); //const
 
-	FILE *byte_code = fopen(byte_code_file_name, "wb");
-	FILE_PTR_CHECK(byte_code);
+	WITH_OPEN
+	(
+		byte_code_file_name, "wb", byte_code,
 
-	free(byte_code_file_name);
+		free(byte_code_file_name);
 
-	size_t written_elems =
-		fwrite(manager->byte_code.buf, sizeof(char), manager->byte_code.length, byte_code);
+		size_t written_elems =
+			fwrite(manager->byte_code.buf, sizeof(char), manager->byte_code.length, byte_code);
 
-	if(written_elems != manager->byte_code.length)
-	{
-		CPU_LOG("ERROR INVALID_FWRITE\n");
+		if(written_elems != manager->byte_code.length)
+		{
+			CPU_LOG("ERROR INVALID_FWRITE\n");
 
-		return ASM_INVALID_FWRITE;
-	}
+			return ASM_INVALID_FWRITE;
+		}
+	)
 
-	fclose(byte_code);
 
 	return ASM_INVALID_FWRITE;
 }
