@@ -44,15 +44,15 @@ error_t compile(const char *file_name)
 	Compile_manager manager = {};
 	error_t error_code = ASM_ALL_GOOD;
 
-	CALL(parse_human_code(&manager, file_name))
+	CALL(parse_human_code(&manager, file_name));
 
-	CALL(cmds_process(&manager))
+	CALL(cmds_process(&manager));
 
-	CALL(arrange_labels(&manager))
+	CALL(arrange_labels(&manager));
 
-	CALL(reduce_buffer_size(&(manager.byte_code)))
+	CALL(reduce_buffer_size(&(manager.byte_code)));
 
-	CALL(create_bin(&manager, file_name))
+	CALL(create_bin(&manager, file_name));
 
 	manager_dtor(&manager);
 

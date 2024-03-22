@@ -9,13 +9,21 @@
 #include "file_parse.h"
 #include "stack.h"
 
-#define ALLOCATION_CHECK(ptr)										\
-	if(ptr == NULL)													\
-	{																\
-		CPU_LOG("Unable to allocate manager->strings.tokens\n");	\
-																	\
-		return ASM_UNABLE_TO_ALLOCATE;								\
-	}																\
+#define CALLOC(ptr, amount, type)				\
+	ptr = (type *)calloc(amount, sizeof(type));	\
+	if(ptr == NULL)								\
+	{											\
+		CPU_LOG("Unable to allocate"#ptr".\n");	\
+		return ASM_UNABLE_TO_ALLOCATE;			\
+	}
+
+#define REALLOC(ptr, amount, type)					\
+	ptr = (type *)realloc(ptr, amount);				\
+	if(ptr == NULL)									\
+	{												\
+		CPU_LOG("Unable to reallocate"#ptr".\n");	\
+		return ASM_UNABLE_TO_ALLOCATE;				\
+	}
 
 /**
  * @def LOG_BUFFER
@@ -71,8 +79,8 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 		manager->human_code_buffer =
 		{
 			.length = human_code_file_length,
-			.buf = (char *)calloc(human_code_file_length, sizeof(char)),
 		};
+		CALLOC(manager->human_code_buffer.buf, human_code_file_length, char);
 
 		fread(manager->human_code_buffer.buf, sizeof(char),
 			manager->human_code_buffer.length, human_code);
@@ -81,13 +89,7 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 	manager->strings.amount = count_file_lines(manager->human_code_buffer);
 	CPU_LOG("amount of lines: %lu\n", manager->strings.amount);
 
-	manager->strings.tokens = (char * *)calloc(manager->strings.amount, sizeof(char *));
-	if(manager->strings.tokens == NULL)
-	{
-		CPU_LOG("Unable to allocate manager->strings.tokens\n");
-
-		return ASM_UNABLE_TO_ALLOCATE;
-	}
+	CALLOC(manager->strings.tokens, manager->strings.amount, char *);
 
 	ptr_arranger(manager->strings.tokens, manager->human_code_buffer); //rename
 
@@ -119,19 +121,19 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
  * @param num The numerical representation of the command.
  */
 #define WRITE_CMD_W_8_BYTE_ARG(cmd_name, num)								\
-	if(IS_COMMAND(#cmd_name))												\
+	if(IS_COMMAND(cmd_name))												\
 	{																		\
 		cmd_type = (char)num;												\
 		WRITE_BYTE(&cmd_type);												\
-		if(*(COMMANDS[line_ID] + LEN(#cmd_name)) == '[')					\
+		if(*(COMMANDS[line_ID] + strlen(cmd_name)) == '[')					\
 		{/* RAM */															\
-			if(sscanf(COMMANDS[line_ID] + LEN(#cmd_name) + SPACE_SKIP, 	\
+			if(sscanf(COMMANDS[line_ID] + strlen(cmd_name) + SPACE_SKIP, 	\
 					  "%d", &RAM_address) == 0)								\
 			{/* RAM w REG */												\
 				mask_buffer(&(manager->byte_code), RAM_MASK | REG_MASK);	\
 				ALIGN_BUF(TWO_BYTE_ALIGNMENT);								\
 																			\
-				reg_type = GET_REG_TYPE(#cmd_name);							\
+				reg_type = GET_REG_TYPE(cmd_name);							\
 				write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);	\
 			}																\
 			else															\
@@ -142,13 +144,13 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 				WRITE_INT(&RAM_address);									\
 			}																\
 		}																	\
-		else if(sscanf(COMMANDS[line_ID] + LEN(#cmd_name),				\
+		else if(sscanf(COMMANDS[line_ID] + strlen(cmd_name),				\
 				"%lf", &argument_value) == 0)								\
 		{/* REG */															\
 			mask_buffer(&(manager->byte_code), REG_MASK);					\
 			ALIGN_BUF(TWO_BYTE_ALIGNMENT);									\
 																			\
-			reg_type = GET_REG_TYPE(#cmd_name);								\
+			reg_type = GET_REG_TYPE(cmd_name);								\
 			write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);		\
 																			\
 			buf_carriage++;													\
@@ -176,20 +178,20 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
  * @param num The numerical representation of the command.
  */
 #define WRITE_CMD_W_4_BYTE_ARG(cmd_name, num)								\
-	if(IS_COMMAND(#cmd_name))												\
+	if(IS_COMMAND(cmd_name))												\
 	{																		\
 		cmd_type = (char)num;												\
 		WRITE_BYTE(&cmd_type);												\
 																			\
-		if(*(COMMANDS[line_ID] + LEN(#cmd_name)) == '[')					\
+		if(*(COMMANDS[line_ID] + strlen(cmd_name)) == '[')					\
 		{/* RAM */															\
-			if(sscanf(COMMANDS[line_ID] + LEN(#cmd_name) + SPACE_SKIP, 	\
+			if(sscanf(COMMANDS[line_ID] + strlen(cmd_name) + SPACE_SKIP, 	\
 					  "%d", &RAM_address) == 0)								\
 			{/* RAM w REG */												\
 				mask_buffer(&(manager->byte_code), RAM_MASK | REG_MASK);	\
 				ALIGN_BUF(TWO_BYTE_ALIGNMENT);								\
 																			\
-				reg_type = GET_REG_TYPE(#cmd_name);							\
+				reg_type = GET_REG_TYPE(cmd_name);							\
 				write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);	\
 			}																\
 			else															\
@@ -206,7 +208,7 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 			mask_buffer(&(manager->byte_code), REG_MASK);					\
 			ALIGN_BUF(TWO_BYTE_ALIGNMENT);									\
 																			\
-			reg_type = GET_REG_TYPE(#cmd_name);								\
+			reg_type = GET_REG_TYPE(cmd_name);								\
 			write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);		\
 		}																	\
 																			\
@@ -224,7 +226,7 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
  * @param num The numerical representation of the command.
  */
 #define WRITE_CMD_W_NO_ARG(cmd_name, num)									\
-	if(IS_COMMAND(#cmd_name))												\
+	if(IS_COMMAND(cmd_name))												\
 	{																		\
 		write_char_w_alignment(&BYTE_CODE, (char)num, ALIGN_TO_DOUBLE);		\
 																			\
@@ -243,12 +245,12 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
  * @param num The numerical representation of the command.
  */
 #define WRITE_CMD_W_LABEL_ARG(cmd_name, num)								\
-	if(IS_COMMAND(#cmd_name))												\
+	if(IS_COMMAND(cmd_name))												\
 	{																		\
 		write_char_w_alignment(&BYTE_CODE, (char)num, ALIGN_TO_INT);		\
 		WRITE_INT(&POISON_JMP_POS);											\
 																			\
-		CURRENT_JMP.name = COMMANDS[line_ID] + LEN(#cmd_name) + 1;		\
+		CURRENT_JMP.name = COMMANDS[line_ID] + strlen(cmd_name) + 1;		\
 		CURRENT_JMP.IP_pos = (int)buf_carriage;								\
 																			\
 		manager->jmp_poses_w_carriage.carriage++;							\
@@ -266,13 +268,13 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
  * @param num The numerical representation of the command.
  */
 #define WRITE_LABEL(cmd_name, num)											\
-	if(IS_COMMAND(#cmd_name))												\
+	else if(IS_COMMAND(cmd_name))											\
 	{																		\
-		CURRENT_LABEL.name   = COMMANDS[line_ID] + LEN(":");				\
+		CURRENT_LABEL.name   = COMMANDS[line_ID] + strlen(":");				\
 		CURRENT_LABEL.IP_pos = buf_carriage;								\
 																			\
 		manager->labels_w_carriage.carriage++;								\
-	}																		\
+	}
 
 /**
  * @def DEF_CMD
@@ -284,7 +286,7 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
  * @param ... Additional arguments.
  */
 #define DEF_CMD(name, num, type, ...)	\
-	type(name, num);
+	type(name, num)
 
 
 error_t cmds_process(Compile_manager *manager)
@@ -293,24 +295,22 @@ error_t cmds_process(Compile_manager *manager)
 
 	size_t byte_code_size = amount_of_lines * sizeof(double) * 2;
 
-	manager->byte_code.buf = (char *)calloc(byte_code_size, sizeof(char));
-	ALLOCATION_CHECK(manager->byte_code.buf);
+	CALLOC(manager->byte_code.buf, byte_code_size, char);
+
 	manager->byte_code.carriage = 0;
 	manager->byte_code.length = byte_code_size;
 
 	manager->labels_w_carriage =
 	{
-		.labels = (Label *)calloc(amount_of_lines, sizeof(Label)),
 		.carriage = 0,
 	};
-	ALLOCATION_CHECK(manager->labels_w_carriage.labels);
+	CALLOC(manager->labels_w_carriage.labels, amount_of_lines, Label)
 
 	manager->jmp_poses_w_carriage =
 	{
-		.JMP_poses = (JMP_pos *)calloc(amount_of_lines, sizeof(JMP_pos)),
 		.carriage = 0,
 	};
-	ALLOCATION_CHECK(manager->jmp_poses_w_carriage.JMP_poses);
+	CALLOC(manager->jmp_poses_w_carriage.JMP_poses, amount_of_lines, JMP_pos);
 
 	write_main_jmp(&BYTE_CODE, &(manager->jmp_poses_w_carriage));
 
@@ -326,14 +326,15 @@ error_t cmds_process(Compile_manager *manager)
 		manager->jmp_poses_w_carriage.JMP_poses[manager->jmp_poses_w_carriage.carriage]
 
 	#define GET_REG_TYPE(cmd)\
-		*(COMMANDS[line_ID] + LEN(cmd) + SPACE_SKIP + LETTER_SKIP) - 'a'
+		*(COMMANDS[line_ID] + strlen(cmd) + SPACE_SKIP + LETTER_SKIP) - 'a'
 
 	#define IS_COMMAND(cmd)\
-		!strncmp(COMMANDS[line_ID], cmd, LEN(cmd))
+		!strncmp(COMMANDS[line_ID], cmd, strlen(cmd))
 
 	size_t buf_carriage = 1;
 	SAFE_FOR_START(size_t line_ID = 0; line_ID < amount_of_lines; line_ID++)
 	{
+		if(false);
 		#include "../global/cmd_definitions.h"
 
 		SAFE_FOR_END
@@ -346,12 +347,12 @@ error_t cmds_process(Compile_manager *manager)
 	return ASM_ALL_GOOD;
 }
 
-#undef WRITE_CMD_W_8_BYTE_ARG
 #undef WRITE_CMD_W_4_BYTE_ARG
-#undef WRITE_CMD_W_NO_ARG
+#undef WRITE_CMD_W_8_BYTE_ARG
 #undef WRITE_CMD_W_LABEL_ARG
+#undef WRITE_CMD_W_NO_ARG
 #undef WRITE_LABEL
-#undef CMD_DEF
+#undef DEF_CMD
 #undef CURRENT_LABEL
 #undef GET_REG_TYPE
 #undef IS_COMMAND
@@ -555,9 +556,7 @@ error_t reduce_buffer_size(Buf_w_carriage_n_len *buffer_w_info)
 	// + 1 incase of push 0 as a last cmd
 	buffer_w_info->length = tale + sizeof(double);
 
-	buffer_w_info->buf =
-		(char *)realloc(buffer_w_info->buf, buffer_w_info->length);
-	ALLOCATION_CHECK(buffer_w_info->buf);
+	REALLOC(buffer_w_info->buf, buffer_w_info->length, char);
 
 	LOG_BUFFER(buffer_w_info->buf, buffer_w_info->length);
 	CPU_LOG("reduced length: %lu * sizeof(double) bytes\n",
@@ -569,10 +568,15 @@ error_t reduce_buffer_size(Buf_w_carriage_n_len *buffer_w_info)
 char *create_byte_code_file_name(const char *file_name)
 {
 	size_t byte_code_file_name_size =
-		LEN("byte_code.bin") + strlen(file_name) + ADDITIONAL_CONCATENATION_SPACE;
+		strlen("byte_code.bin") + strlen(file_name) + ADDITIONAL_CONCATENATION_SPACE;
 
 	char *byte_code_file_name =
 		(char *)calloc(byte_code_file_name_size, sizeof(char));
+	if(byte_code_file_name == NULL)
+	{
+		CPU_LOG("Unable to allocate byte_code_file_name.\n");
+		return NULL;
+	}
 
 	snprintf(byte_code_file_name, byte_code_file_name_size, "%s_byte_code.bin", file_name);
 
@@ -595,13 +599,14 @@ error_t create_bin(Compile_manager *manager, const char *file_name)
 		if(written_elems != manager->byte_code.length)
 		{
 			CPU_LOG("ERROR INVALID_FWRITE\n");
+			CPU_LOG("%written_elems:%lu\n", written_elems);
+			CPU_LOG("%expected:%lu\n", manager->byte_code.length);
 
 			return ASM_INVALID_FWRITE;
 		}
 	)
 
-
-	return ASM_INVALID_FWRITE;
+	return ASM_ALL_GOOD;
 }
 
 error_t manager_dtor(Compile_manager *manager)
