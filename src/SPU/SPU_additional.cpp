@@ -71,6 +71,7 @@ error_t process(FILE *input_file, FILE *output_file)
 
 	#define CURRENT_BYTE_CODE\
 		(BYTE_CODE + byte_code_carriage)
+
 	while(byte_code_carriage < byte_code_length)
 	{
 		command = *(CURRENT_BYTE_CODE);

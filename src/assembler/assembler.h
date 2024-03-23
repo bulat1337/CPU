@@ -22,16 +22,6 @@ typedef enum
 	ASM_INVALID_FREAD       = 1 << 4, /**< The amount of read elements is unexpexted. */
 } error_t;
 
-/**
- * @struct Buf_w_carriage_n_len
- * @brief Structure representing a buffer with carriage and length information.
- */
-struct Buf_w_carriage_n_len
-{
-    char  *buf; /**< Pointer to the buffer. */
-    size_t carriage; /**< Carriage position in the buffer. */
-    size_t length; /**< Length of the buffer. */
-};
 
 /**
  * @union Second_arg
@@ -43,7 +33,7 @@ union Second_arg
     FILE                        *fp; /**< Pointer to a file. */
     char                        *buf; /**< Pointer to a buffer. */
     size_t                       amount; /**< Amount value. */
-    struct Buf_w_carriage_n_len  buf_w_info; /**< Buffer with carriage and length information. */
+    // struct Buffer_w_info         buf_w_info; /**< Buffer with length information. */
 };
 
 /**

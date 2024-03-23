@@ -18,6 +18,10 @@ error_t execute(const char *file_name)
 	(
 		"execution_result.txt", "w", exe_result,
 
+		//temp
+		exe_result = stdout;
+		//
+
 		WITH_OPEN
 		(
 			file_name, "rb", byte_code_file,

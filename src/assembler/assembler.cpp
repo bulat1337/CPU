@@ -51,7 +51,7 @@ error_t compile(const char *file_name)
 
 	CALL(arrange_labels(&manager));
 
-	CALL(reduce_buffer_size(&(manager.byte_code)));
+	CALL(reduce_buffer_size(&manager));
 
 	CALL(create_bin(&manager, file_name));
 

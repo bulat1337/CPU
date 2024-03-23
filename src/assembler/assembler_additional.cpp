@@ -126,12 +126,13 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 #define WRITE_CMD_W_8_BYTE_ARG(cmd_name, num)								\
 	if(IS_COMMAND(cmd_name))												\
 	{																		\
-		cmd_type = (char)num;												\
+		cmd_type = (Command)num;											\
 		WRITE_BYTE(&cmd_type);												\
-		if(*(COMMANDS[line_ID] + LEN(cmd_name)) == '[')					\
+		char *cmd_arg = COMMANDS[line_ID] + LEN(cmd_name);					\
+																			\
+		if(*(cmd_arg) == '[')												\
 		{/* RAM */															\
-			if(sscanf(COMMANDS[line_ID] + LEN(cmd_name) + SPACE_SKIP, 	\
-					  "%d", &RAM_address) == 0)								\
+			if(sscanf(cmd_arg + SPACE_SKIP, "%d", &RAM_address) == 0)		\
 			{/* RAM w REG */												\
 				mask_buffer(&(manager->byte_code), RAM_MASK | REG_MASK);	\
 				ALIGN_BUF(TWO_BYTE_ALIGNMENT);								\
@@ -147,8 +148,7 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 				WRITE_INT(&RAM_address);									\
 			}																\
 		}																	\
-		else if(sscanf(COMMANDS[line_ID] + LEN(cmd_name),				\
-				"%lf", &argument_value) == 0)								\
+		else if(sscanf(cmd_arg, "%lf", &argument_value) == 0)				\
 		{/* REG */															\
 			mask_buffer(&(manager->byte_code), REG_MASK);					\
 			ALIGN_BUF(TWO_BYTE_ALIGNMENT);									\
@@ -183,7 +183,7 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 #define WRITE_CMD_W_4_BYTE_ARG(cmd_name, num)								\
 	if(IS_COMMAND(cmd_name))												\
 	{																		\
-		cmd_type = (char)num;												\
+		cmd_type = (Command)num;												\
 		WRITE_BYTE(&cmd_type);												\
 																			\
 		if(*(COMMANDS[line_ID] + LEN(cmd_name)) == '[')					\
@@ -270,13 +270,13 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
  * @param cmd_name The name of the command.
  * @param num The numerical representation of the command.
  */
-#define WRITE_LABEL(cmd_name, num)											\
-	else if(IS_COMMAND(cmd_name))											\
-	{																		\
-		CURRENT_LABEL.name   = COMMANDS[line_ID] + LEN(":");				\
-		CURRENT_LABEL.IP_pos = buf_carriage;								\
-																			\
-		manager->labels_w_carriage.carriage++;								\
+#define WRITE_LABEL(cmd_name, num)													\
+	else if(IS_COMMAND(cmd_name))													\
+	{																				\
+		CURRENT_LABEL.name   = COMMANDS[line_ID] + LEN(":");						\
+		CURRENT_LABEL.IP_pos = get_ip_pos(manager);									\
+																					\
+		manager->labels_w_carriage.carriage++;										\
 	}
 
 /**
@@ -299,8 +299,8 @@ error_t cmds_process(Compile_manager *manager)
 	size_t byte_code_size = amount_of_lines * sizeof(double) * 2;
 
 	CALLOC(manager->byte_code.buf, byte_code_size, char);
+	manager->byte_code_start = manager->byte_code.buf;
 
-	manager->byte_code.carriage = 0;
 	manager->byte_code.length = byte_code_size;
 
 	manager->labels_w_carriage =
@@ -346,9 +346,11 @@ error_t cmds_process(Compile_manager *manager)
 		SAFE_FOR_END
 	}
 
-	LOG_BUFFER(BYTE_CODE.buf, BYTE_CODE.length);
+	LOG_BUFFER(manager->byte_code_start, BYTE_CODE.length);
 	log_labels(&(manager->labels_w_carriage));
 	log_jmps(&(manager->jmp_poses_w_carriage));
+
+	manager->byte_code.buf = manager->byte_code_start;
 
 	return ASM_ALL_GOOD;
 }
@@ -364,7 +366,7 @@ error_t cmds_process(Compile_manager *manager)
 #undef IS_COMMAND
 #undef CURRENT_JMP
 
-error_t write_main_jmp(struct Buf_w_carriage_n_len *byte_code,
+error_t write_main_jmp(struct Buffer_w_info *byte_code,
 					   JMP_poses_w_carriage *jmp_poses_w_carriage)
 {
 	write_char_w_alignment(byte_code, JMP, ALIGN_TO_INT);
@@ -378,7 +380,7 @@ error_t write_main_jmp(struct Buf_w_carriage_n_len *byte_code,
 	return ASM_ALL_GOOD;
 }
 
-error_t write_to_buf(struct Buf_w_carriage_n_len *byte_code,
+error_t write_to_buf(struct Buffer_w_info *byte_code,
 					 const void *value, size_t size)
 {
 	error_t function_error = ASM_ALL_GOOD;
@@ -386,10 +388,9 @@ error_t write_to_buf(struct Buf_w_carriage_n_len *byte_code,
 
 	SAFE_FOR_START(size_t ID = 0; ID < size; ID++)
 	{
-		snprintf(byte_code->buf + byte_code->carriage,
-				 sizeof(char) + 1, "%c", *(byte_of_value + ID));
+		snprintf(byte_code->buf, sizeof(char) + 1, "%c", *(byte_of_value + ID));
 
-		byte_code->carriage++;
+		byte_code->buf++;
 
 		SAFE_FOR_END
 	}
@@ -397,7 +398,7 @@ error_t write_to_buf(struct Buf_w_carriage_n_len *byte_code,
 	return function_error;
 }
 
-error_t align_buffer(struct Buf_w_carriage_n_len *buf, size_t amount_of_bytes)
+error_t align_buffer(struct Buffer_w_info *buf, size_t amount_of_bytes)
 {
 	char value = 0;
 	SAFE_FOR_START(size_t byte_ID = 0; byte_ID < amount_of_bytes; byte_ID++)
@@ -410,7 +411,7 @@ error_t align_buffer(struct Buf_w_carriage_n_len *buf, size_t amount_of_bytes)
 	return ASM_ALL_GOOD;
 }
 
-error_t write_char_w_alignment(struct Buf_w_carriage_n_len *byte_code,
+error_t write_char_w_alignment(struct Buffer_w_info *byte_code,
 							   char value, size_t alignment_space)
 {
 	write_to_buf(byte_code, &value, sizeof(char));
@@ -455,8 +456,6 @@ error_t log_jmps(struct JMP_poses_w_carriage *jmp_poses_w_carriage)
 	manager->jmp_poses_w_carriage.JMP_poses[jmp_ID]
 #define CURRENT_LABEL\
 	manager->labels_w_carriage.labels[label_ID]
-#define FIXED_BYTE_CODE\
-	manager->byte_code
 
 error_t arrange_labels(Compile_manager *manager)
 {
@@ -480,7 +479,7 @@ error_t arrange_labels(Compile_manager *manager)
 
 				label_found = true;
 
-				FIXED_BYTE_CODE.carriage = sizeof(double) *
+				BYTE_CODE.buf += sizeof(double) *
 					(size_t)CURRENT_JMP.IP_pos + sizeof(int);
 
 
@@ -490,7 +489,9 @@ error_t arrange_labels(Compile_manager *manager)
 					то есть от типа не зависит.
 					при использовании этой функции ранее проблем не возникало
 				*/
-				write_to_buf(&FIXED_BYTE_CODE, &CURRENT_LABEL.IP_pos, sizeof(int) - 1);
+				write_to_buf(&BYTE_CODE, &CURRENT_LABEL.IP_pos, sizeof(int) - 1);
+
+				BYTE_CODE.buf = manager->byte_code_start;
 
 				// LOG_BUFFER(FIXED_BYTE_CODE.buf, FIXED_BYTE_CODE.length);
 
@@ -513,30 +514,32 @@ error_t arrange_labels(Compile_manager *manager)
 		SAFE_FOR_END
 	}
 
-	LOG_BUFFER(FIXED_BYTE_CODE.buf, FIXED_BYTE_CODE.length);
+	LOG_BUFFER(manager->byte_code_start, BYTE_CODE.length);
 
 	CPU_LOG("Byte_code size: %lu * sizeof(double) bytes\n",
 			 manager->byte_code.length / sizeof(double));
+
+	manager->byte_code.buf = manager->byte_code_start;
 
 	return error_code;
 }
 
 #define CURRENT_CHUNK\
-	*(long *)(buffer_w_info->buf + carriage)
+	*(long *)(manager->byte_code.buf + carriage)
 
-error_t reduce_buffer_size(Buf_w_carriage_n_len *buffer_w_info)
+error_t reduce_buffer_size(Compile_manager *manager)
 {
 	bool non_zero_flag = true;
 	bool zero_flag     = false;
 	size_t tale   = 0;
 
-	if(*(long *)(buffer_w_info->buf + buffer_w_info->length - sizeof(double)) != 0)
+	if(*(long *)(BYTE_CODE.buf + BYTE_CODE.length - sizeof(double)) != 0)
 	{
-		tale = buffer_w_info->length;
+		tale = BYTE_CODE.length;
 	}
 	else
 	{
-		SAFE_FOR_START(size_t carriage = 0; carriage < buffer_w_info->length; carriage += sizeof(long))
+		SAFE_FOR_START(size_t carriage = 0; carriage < BYTE_CODE.length; carriage += sizeof(long))
 		{
 			if(CURRENT_CHUNK == 0)
 			{
@@ -560,13 +563,14 @@ error_t reduce_buffer_size(Buf_w_carriage_n_len *buffer_w_info)
 	}
 
 	// + 1 incase of push 0 as a last cmd
-	buffer_w_info->length = tale + sizeof(double);
+	BYTE_CODE.length = tale + sizeof(double);
 
-	REALLOC(buffer_w_info->buf, buffer_w_info->length, char);
+	REALLOC(BYTE_CODE.buf, BYTE_CODE.length, char);
+	manager->byte_code_start = BYTE_CODE.buf;
 
-	LOG_BUFFER(buffer_w_info->buf, buffer_w_info->length);
+	LOG_BUFFER(BYTE_CODE.buf, BYTE_CODE.length);
 	CPU_LOG("reduced length: %lu * sizeof(double) bytes\n",
-			buffer_w_info->length / sizeof(double));
+			BYTE_CODE.length / sizeof(double));
 
 	return ASM_ALL_GOOD;
 }
@@ -614,7 +618,6 @@ error_t manager_dtor(Compile_manager *manager)
 	free(manager->labels_w_carriage.labels);
 	free(manager->strings.tokens);
 
-	manager->byte_code.carriage 			= 0;
 	manager->byte_code.length 				= 0;
 	manager->human_code_buffer.length 		= 0;
 	manager->jmp_poses_w_carriage.carriage 	= 0;
@@ -624,11 +627,11 @@ error_t manager_dtor(Compile_manager *manager)
 	return ASM_ALL_GOOD;
 }
 
-error_t mask_buffer(Buf_w_carriage_n_len *byte_code, const char mask)
+error_t mask_buffer(Buffer_w_info *byte_code, const char mask)
 {
-	*(byte_code->buf + byte_code->carriage) |= mask;
+	*(byte_code->buf) |= mask;
 
-	byte_code->carriage++;
+	byte_code->buf++;
 
 	return ASM_ALL_GOOD;
 }
@@ -636,7 +639,6 @@ error_t mask_buffer(Buf_w_carriage_n_len *byte_code, const char mask)
 error_t init_manager(Compile_manager *manager)
 {
 	manager->byte_code.buf                  = NULL;
-	manager->byte_code.carriage             = 0;
 	manager->byte_code.length               = 0;
 
 	manager->human_code_buffer.buf          = NULL;
@@ -651,7 +653,14 @@ error_t init_manager(Compile_manager *manager)
 	manager->strings.tokens                 = NULL;
 	manager->strings.amount                 = 0;
 
+	manager->byte_code_start                = NULL;
+
 	return ASM_ALL_GOOD;
+}
+
+size_t get_ip_pos(Compile_manager *manager)
+{
+	return (size_t)(BYTE_CODE.buf - manager->byte_code_start) / sizeof(double);
 }
 
 #undef CURRENT_JMP
