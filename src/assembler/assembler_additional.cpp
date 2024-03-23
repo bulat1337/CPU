@@ -112,6 +112,27 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 #define ALIGN_BUF(amount)\
 	align_buffer(&BYTE_CODE, amount);
 
+#define PROCESS_RAM_ARG(cmd_name)\
+	if(*(cmd_arg) == '[')												\
+	{/* RAM */															\
+		if(sscanf(cmd_arg, "[%d]", &RAM_address) == 0)					\
+		{/* RAM w REG */												\
+			mask_buffer(&(manager->byte_code), RAM_MASK | REG_MASK);	\
+			ALIGN_BUF(TWO_BYTE_ALIGNMENT);								\
+																		\
+			reg_type = GET_REG_TYPE(cmd_name);							\
+			write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);	\
+		}																\
+		else															\
+		{/* RAM w IMM*/													\
+			mask_buffer(&(manager->byte_code), RAM_MASK | IMM_MASK);	\
+			ALIGN_BUF(TWO_BYTE_ALIGNMENT);								\
+																		\
+			WRITE_INT(&RAM_address);									\
+		}																\
+	}																	\
+
+
 /**
  * @def WRITE_CMD_W_8_BYTE_ARG
  * @brief Macro to write a command with an 8-byte argument to the byte code buffer.
@@ -130,24 +151,7 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 		WRITE_BYTE(&cmd_type);												\
 		char *cmd_arg = COMMANDS[line_ID] + LEN(cmd_name);					\
 																			\
-		if(*(cmd_arg) == '[')												\
-		{/* RAM */															\
-			if(sscanf(cmd_arg + SPACE_SKIP, "%d", &RAM_address) == 0)		\
-			{/* RAM w REG */												\
-				mask_buffer(&(manager->byte_code), RAM_MASK | REG_MASK);	\
-				ALIGN_BUF(TWO_BYTE_ALIGNMENT);								\
-																			\
-				reg_type = GET_REG_TYPE(cmd_name);							\
-				write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);	\
-			}																\
-			else															\
-			{/* RAM w IMM*/													\
-				mask_buffer(&(manager->byte_code), RAM_MASK | IMM_MASK);	\
-				ALIGN_BUF(TWO_BYTE_ALIGNMENT);								\
-																			\
-				WRITE_INT(&RAM_address);									\
-			}																\
-		}																	\
+		PROCESS_RAM_ARG(cmd_name)											\
 		else if(sscanf(cmd_arg, "%lf", &argument_value) == 0)				\
 		{/* REG */															\
 			mask_buffer(&(manager->byte_code), REG_MASK);					\
@@ -155,18 +159,13 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 																			\
 			reg_type = GET_REG_TYPE(cmd_name);								\
 			write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);		\
-																			\
-			buf_carriage++;													\
 		}																	\
 		else																\
 		{/* IMM */															\
 			mask_buffer(&(manager->byte_code), IMM_MASK);					\
 			ALIGN_BUF(SIX_BYTE_ALIGNMENT);									\
-			buf_carriage++;													\
 																			\
 			write_to_buf(&BYTE_CODE, &argument_value, sizeof(elem_t));		\
-																			\
-			buf_carriage++;													\
 		}																	\
 	}
 
@@ -183,29 +182,11 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 #define WRITE_CMD_W_4_BYTE_ARG(cmd_name, num)								\
 	if(IS_COMMAND(cmd_name))												\
 	{																		\
-		cmd_type = (Command)num;												\
+		cmd_type = (Command)num;											\
 		WRITE_BYTE(&cmd_type);												\
+		char *cmd_arg = COMMANDS[line_ID] + LEN(cmd_name);					\
 																			\
-		if(*(COMMANDS[line_ID] + LEN(cmd_name)) == '[')					\
-		{/* RAM */															\
-			if(sscanf(COMMANDS[line_ID] + LEN(cmd_name) + SPACE_SKIP, 	\
-					  "%d", &RAM_address) == 0)								\
-			{/* RAM w REG */												\
-				mask_buffer(&(manager->byte_code), RAM_MASK | REG_MASK);	\
-				ALIGN_BUF(TWO_BYTE_ALIGNMENT);								\
-																			\
-				reg_type = GET_REG_TYPE(cmd_name);							\
-				write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);	\
-			}																\
-			else															\
-			{/* RAM w IMM */												\
-				mask_buffer(&(manager->byte_code), RAM_MASK | IMM_MASK);	\
-				ALIGN_BUF(TWO_BYTE_ALIGNMENT);								\
-																			\
-																			\
-				WRITE_INT(&RAM_address);									\
-			}																\
-		}																	\
+		PROCESS_RAM_ARG(cmd_name)											\
 		else																\
 		{																	\
 			mask_buffer(&(manager->byte_code), REG_MASK);					\
@@ -214,8 +195,6 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 			reg_type = GET_REG_TYPE(cmd_name);								\
 			write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);		\
 		}																	\
-																			\
-		buf_carriage++;														\
 	}
 
 /**
@@ -232,8 +211,6 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 	if(IS_COMMAND(cmd_name))												\
 	{																		\
 		write_char_w_alignment(&BYTE_CODE, (char)num, ALIGN_TO_DOUBLE);		\
-																			\
-		buf_carriage++;														\
 	}
 
 /**
@@ -253,11 +230,10 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 		write_char_w_alignment(&BYTE_CODE, (char)num, ALIGN_TO_INT);		\
 		WRITE_INT(&POISON_JMP_POS);											\
 																			\
-		CURRENT_JMP.name = COMMANDS[line_ID] + LEN(cmd_name) + 1;		\
+		CURRENT_JMP.name = COMMANDS[line_ID] + LEN(cmd_name) + 1;			\
 		CURRENT_JMP.IP_pos = (int)buf_carriage;								\
 																			\
 		manager->jmp_poses_w_carriage.carriage++;							\
-		buf_carriage++;														\
 	}
 
 /**
@@ -617,6 +593,12 @@ error_t manager_dtor(Compile_manager *manager)
 	free(manager->jmp_poses_w_carriage.JMP_poses);
 	free(manager->labels_w_carriage.labels);
 	free(manager->strings.tokens);
+
+	manager->byte_code.buf                  = NULL;
+	manager->human_code_buffer.buf          = NULL;
+	manager->jmp_poses_w_carriage.JMP_poses = NULL;
+	manager->labels_w_carriage.labels       = NULL;
+	manager->strings.tokens                 = NULL;
 
 	manager->byte_code.length 				= 0;
 	manager->human_code_buffer.length 		= 0;
