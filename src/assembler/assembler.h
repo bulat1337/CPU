@@ -19,6 +19,7 @@ typedef enum
     ASM_UNABLE_TO_ALLOCATE  = 1 << 1, /**< Memory allocation error. */
     LABEL_DOESNT_EXIST      = 1 << 2, /**< Label does not exist error. */
 	ASM_INVALID_FWRITE      = 1 << 3, /**< The amount of written elements is unexpexted. */
+	ASM_INVALID_FREAD       = 1 << 4, /**< The amount of read elements is unexpexted. */
 } error_t;
 
 /**

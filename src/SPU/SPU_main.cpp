@@ -12,9 +12,9 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	return_t exe_result = execute(argv[1]);
+	error_t error_code = execute(argv[1]);
 
-	if(exe_result.error_code != SPU_ALL_GOOD)
+	if(error_code != SPU_ALL_GOOD)
 	{
 		fprintf(stderr, "Execution ended with an error\n");
 	}

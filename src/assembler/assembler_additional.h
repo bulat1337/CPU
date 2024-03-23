@@ -9,6 +9,28 @@
 #include "assembler.h"
 #include "file_parse.h"
 
+#define FREAD(buf, elem_size, amount, file_ptr)\
+	size_t read_elems = fread(buf, elem_size, amount, file_ptr);	\
+	if(read_elems != amount)										\
+	{																\
+		CPU_LOG("ERROR: fread read unexpected amount of elems.\n");	\
+		CPU_LOG("\t expected amount: %lu.\n", amount);				\
+		CPU_LOG("\t read amount: %lu.\n", read_elems);				\
+																	\
+		return ASM_INVALID_FREAD;									\
+	}
+
+#define FWRITE(buf, elem_size, amount, file_ptr)\
+	size_t written_elems = fwrite(buf, elem_size, amount, file_ptr);	\
+	if(written_elems != amount)											\
+	{																	\
+		CPU_LOG("ERROR: fwrite wrote unexpected amount of elems.\n");	\
+		CPU_LOG("\t expected amount: %lu.\n", amount);					\
+		CPU_LOG("\t written amount: %lu.\n", written_elems);			\
+																		\
+		return ASM_INVALID_FWRITE;										\
+	}
+
 /**
  * @struct Label
  * @brief Structure representing a label with its name and position.
@@ -190,15 +212,8 @@ error_t arrange_labels(Compile_manager *manager);
  */
 error_t reduce_buffer_size(Buf_w_carriage_n_len *buffer_w_info);
 
-/**
- * @brief Creates byte codes file name.
- *
- * Creates byte codes file name by concatenating human readable codes file name and "_byte_code.bin".
- *
- * @param file_name Name of the human readable code file.
- * @return Byte codes file name.
- */
-char *create_byte_code_file_name(const char *file_name);
+//doxy
+char *create_file_name(const char *name, const char *postfix);
 
 //doxy
 error_t create_bin(Compile_manager *manager, const char *file_name);
@@ -207,5 +222,7 @@ error_t create_bin(Compile_manager *manager, const char *file_name);
 error_t manager_dtor(Compile_manager *manager);
 
 error_t mask_buffer(Buf_w_carriage_n_len *byte_code, const char mask);
+
+error_t init_manager(Compile_manager *manager);
 
 #endif

@@ -3,42 +3,34 @@
 #include "SPU_additional.h"
 #include "SPU.h"
 
-return_t execute(const char *file_name)
+#define FILE_PTR_CHECK(file_ptr)                                    \
+    if(file_ptr == NULL)                                            \
+    {                                                               \
+        CPU_LOG("\nERROR: Unable to open "#file_ptr"\n");           \
+        return SPU_UNABLE_TO_OPEN_FILE;								\
+    }
+
+error_t execute(const char *file_name)
 {
-	return_t result =
-	{
-		.error_code = SPU_ALL_GOOD,
-		.second_arg.file_ptr = fopen("exeution_result.txt", "w"),
-	};
+	error_t error_code = SPU_ALL_GOOD;
 
-	FILE *byte_code_file = fopen(file_name, "rb");
+	WITH_OPEN
+	(
+		"execution_result.txt", "w", exe_result,
 
-	if(byte_code_file == NULL)
-	{
-		CPU_LOG("Unable to open %s\n", file_name);
-		result.error_code = SPU_UNABLE_TO_OPEN_FILE;
+		WITH_OPEN
+		(
+			file_name, "rb", byte_code_file,
 
-		return result;
-	}
+			error_code = process(byte_code_file, exe_result);
+			if(error_code != SPU_ALL_GOOD)
+			{
+				CPU_LOG("\nERROR: code_%d\n", error_code);
 
-	if(result.second_arg.file_ptr == NULL)
-	{
-		CPU_LOG("Unable to open execution_result.txt\n");
-		result.error_code = SPU_UNABLE_TO_OPEN_FILE;
+				return error_code;
+			}
+		)
+	)
 
-		return result;
-	}
-
-	result.error_code = process(byte_code_file, result.second_arg.file_ptr);
-	if(result.error_code != SPU_ALL_GOOD)
-	{
-		CPU_LOG("\nERROR: code_%d\n", result.error_code);
-
-		return result;
-	}
-
-	fclose(byte_code_file);
-	fclose(result.second_arg.file_ptr);
-
-	return result;
+	return error_code;
 }

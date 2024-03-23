@@ -8,6 +8,17 @@
 
 #include "SPU.h"
 
+#define FREAD(buf, elem_size, amount, file_ptr)\
+	size_t read_elems = fread(buf, elem_size, amount, file_ptr);	\
+	if(read_elems != amount)										\
+	{																\
+		CPU_LOG("ERROR: fread read unexpected amount of elems.\n");	\
+		CPU_LOG("\t expected amount: %lu.\n", amount);				\
+		CPU_LOG("\t read amount: %lu.\n", read_elems);				\
+																	\
+		return SPU_INVALID_FREAD;									\
+	}
+
 const size_t STD_USER_STACK_SIZE = 10;
 const size_t STD_RET_STACK_SIZE  = 2;
 

@@ -17,7 +17,7 @@
 	fclose(file_ptr);
 
 #define LEN(token)\
-	sizeof(token) / sizeof(char)
+	sizeof(token) / sizeof(char) - 1
 
 /**
  * @brief Macro to log messages to a file.

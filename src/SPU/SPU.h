@@ -44,7 +44,7 @@ typedef enum
     SPU_ALL_GOOD            = 0, /**< No errors occurred. */
     SPU_UNABLE_TO_OPEN_FILE = 1 << 0, /**< Unable to open file error. */
     SPU_UNABLE_TO_ALLOCATE  = 1 << 1, /**< Memory allocation error. */
-    INVALID_FREAD           = 1 << 2, /**< Invalid read operation error. */
+    SPU_INVALID_FREAD       = 1 << 2, /**< Invalid read operation error. */
     INVALID_RAM_MODE        = 1 << 3, /**< Invalid RAM access mode error. */
 } error_t;
 
@@ -83,6 +83,6 @@ typedef struct
  * @param file_name Name of the file containing the SPU byte code.
  * @return Returns a structure containing the execution result.
  */
-return_t execute(const char *file_name);
+error_t execute(const char *file_name);
 
 #endif

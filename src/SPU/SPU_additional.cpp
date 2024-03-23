@@ -51,21 +51,13 @@ error_t process(FILE *input_file, FILE *output_file)
 {
 	size_t byte_code_length = get_file_length(input_file);
 
-
 	struct VM vm = {};
 	VM_ctor(&vm);
 
 
 	BYTE_CODE = (char *)calloc(byte_code_length, sizeof(char));
 
-	size_t read_elems = fread(BYTE_CODE, sizeof(char), byte_code_length, input_file);
-
-	if(read_elems != byte_code_length)
-	{
-		CPU_LOG("ERROR: read_elems != byte_code_length\n");
-
-		return INVALID_FREAD;
-	}
+	FREAD(BYTE_CODE, sizeof(char), byte_code_length, input_file);
 
 	size_t byte_code_carriage = 0;
 	char command              = (char)VOID;

@@ -9,13 +9,16 @@
 #include "file_parse.h"
 #include "stack.h"
 
-#define CALLOC(ptr, amount, type)				\
-	ptr = (type *)calloc(amount, sizeof(type));	\
-	if(ptr == NULL)								\
-	{											\
+#define ALLOCATION_CHECK(ptr)\
+	if(ptr == NULL)\
+	{\
 		CPU_LOG("Unable to allocate"#ptr".\n");	\
 		return ASM_UNABLE_TO_ALLOCATE;			\
 	}
+
+#define CALLOC(ptr, amount, type)				\
+	ptr = (type *)calloc(amount, sizeof(type));	\
+	ALLOCATION_CHECK(ptr);
 
 #define REALLOC(ptr, amount, type)					\
 	ptr = (type *)realloc(ptr, amount);				\
@@ -82,8 +85,8 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 		};
 		CALLOC(manager->human_code_buffer.buf, human_code_file_length, char);
 
-		fread(manager->human_code_buffer.buf, sizeof(char),
-			manager->human_code_buffer.length, human_code);
+		FREAD(manager->human_code_buffer.buf, sizeof(char),
+		      manager->human_code_buffer.length, human_code);
 	)
 
 	manager->strings.amount = count_file_lines(manager->human_code_buffer);
@@ -125,9 +128,9 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 	{																		\
 		cmd_type = (char)num;												\
 		WRITE_BYTE(&cmd_type);												\
-		if(*(COMMANDS[line_ID] + strlen(cmd_name)) == '[')					\
+		if(*(COMMANDS[line_ID] + LEN(cmd_name)) == '[')					\
 		{/* RAM */															\
-			if(sscanf(COMMANDS[line_ID] + strlen(cmd_name) + SPACE_SKIP, 	\
+			if(sscanf(COMMANDS[line_ID] + LEN(cmd_name) + SPACE_SKIP, 	\
 					  "%d", &RAM_address) == 0)								\
 			{/* RAM w REG */												\
 				mask_buffer(&(manager->byte_code), RAM_MASK | REG_MASK);	\
@@ -144,7 +147,7 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 				WRITE_INT(&RAM_address);									\
 			}																\
 		}																	\
-		else if(sscanf(COMMANDS[line_ID] + strlen(cmd_name),				\
+		else if(sscanf(COMMANDS[line_ID] + LEN(cmd_name),				\
 				"%lf", &argument_value) == 0)								\
 		{/* REG */															\
 			mask_buffer(&(manager->byte_code), REG_MASK);					\
@@ -183,9 +186,9 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 		cmd_type = (char)num;												\
 		WRITE_BYTE(&cmd_type);												\
 																			\
-		if(*(COMMANDS[line_ID] + strlen(cmd_name)) == '[')					\
+		if(*(COMMANDS[line_ID] + LEN(cmd_name)) == '[')					\
 		{/* RAM */															\
-			if(sscanf(COMMANDS[line_ID] + strlen(cmd_name) + SPACE_SKIP, 	\
+			if(sscanf(COMMANDS[line_ID] + LEN(cmd_name) + SPACE_SKIP, 	\
 					  "%d", &RAM_address) == 0)								\
 			{/* RAM w REG */												\
 				mask_buffer(&(manager->byte_code), RAM_MASK | REG_MASK);	\
@@ -250,7 +253,7 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 		write_char_w_alignment(&BYTE_CODE, (char)num, ALIGN_TO_INT);		\
 		WRITE_INT(&POISON_JMP_POS);											\
 																			\
-		CURRENT_JMP.name = COMMANDS[line_ID] + strlen(cmd_name) + 1;		\
+		CURRENT_JMP.name = COMMANDS[line_ID] + LEN(cmd_name) + 1;		\
 		CURRENT_JMP.IP_pos = (int)buf_carriage;								\
 																			\
 		manager->jmp_poses_w_carriage.carriage++;							\
@@ -270,7 +273,7 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 #define WRITE_LABEL(cmd_name, num)											\
 	else if(IS_COMMAND(cmd_name))											\
 	{																		\
-		CURRENT_LABEL.name   = COMMANDS[line_ID] + strlen(":");				\
+		CURRENT_LABEL.name   = COMMANDS[line_ID] + LEN(":");				\
 		CURRENT_LABEL.IP_pos = buf_carriage;								\
 																			\
 		manager->labels_w_carriage.carriage++;								\
@@ -326,15 +329,18 @@ error_t cmds_process(Compile_manager *manager)
 		manager->jmp_poses_w_carriage.JMP_poses[manager->jmp_poses_w_carriage.carriage]
 
 	#define GET_REG_TYPE(cmd)\
-		*(COMMANDS[line_ID] + strlen(cmd) + SPACE_SKIP + LETTER_SKIP) - 'a'
+		*(COMMANDS[line_ID] + LEN(cmd) + SPACE_SKIP + LETTER_SKIP) - 'a'
 
 	#define IS_COMMAND(cmd)\
-		!strncmp(COMMANDS[line_ID], cmd, strlen(cmd))
+		!strncmp(COMMANDS[line_ID], cmd, LEN(cmd))
 
 	size_t buf_carriage = 1;
 	SAFE_FOR_START(size_t line_ID = 0; line_ID < amount_of_lines; line_ID++)
 	{
-		if(false);
+		if(false)
+		{
+			;
+		}
 		#include "../global/cmd_definitions.h"
 
 		SAFE_FOR_END
@@ -565,27 +571,27 @@ error_t reduce_buffer_size(Buf_w_carriage_n_len *buffer_w_info)
 	return ASM_ALL_GOOD;
 }
 
-char *create_byte_code_file_name(const char *file_name)
+char *create_file_name(const char *name, const char *postfix)
 {
 	size_t byte_code_file_name_size =
-		strlen("byte_code.bin") + strlen(file_name) + ADDITIONAL_CONCATENATION_SPACE;
+		strlen(postfix) + strlen(name) + ADDITIONAL_CONCATENATION_SPACE;
 
 	char *byte_code_file_name =
 		(char *)calloc(byte_code_file_name_size, sizeof(char));
 	if(byte_code_file_name == NULL)
 	{
-		CPU_LOG("Unable to allocate byte_code_file_name.\n");
 		return NULL;
 	}
 
-	snprintf(byte_code_file_name, byte_code_file_name_size, "%s_byte_code.bin", file_name);
+	snprintf(byte_code_file_name, byte_code_file_name_size, "%s%s", name, postfix);
 
 	return byte_code_file_name;
 }
 
 error_t create_bin(Compile_manager *manager, const char *file_name)
 {
-	char *byte_code_file_name = create_byte_code_file_name(file_name); //const
+	char *byte_code_file_name = create_file_name(file_name, ".bin");
+	ALLOCATION_CHECK(byte_code_file_name);
 
 	WITH_OPEN
 	(
@@ -593,17 +599,8 @@ error_t create_bin(Compile_manager *manager, const char *file_name)
 
 		free(byte_code_file_name);
 
-		size_t written_elems =
-			fwrite(manager->byte_code.buf, sizeof(char), manager->byte_code.length, byte_code);
-
-		if(written_elems != manager->byte_code.length)
-		{
-			CPU_LOG("ERROR INVALID_FWRITE\n");
-			CPU_LOG("%written_elems:%lu\n", written_elems);
-			CPU_LOG("%expected:%lu\n", manager->byte_code.length);
-
-			return ASM_INVALID_FWRITE;
-		}
+		FWRITE(manager->byte_code.buf, sizeof(char),
+			   manager->byte_code.length, byte_code);
 	)
 
 	return ASM_ALL_GOOD;
@@ -632,6 +629,27 @@ error_t mask_buffer(Buf_w_carriage_n_len *byte_code, const char mask)
 	*(byte_code->buf + byte_code->carriage) |= mask;
 
 	byte_code->carriage++;
+
+	return ASM_ALL_GOOD;
+}
+
+error_t init_manager(Compile_manager *manager)
+{
+	manager->byte_code.buf                  = NULL;
+	manager->byte_code.carriage             = 0;
+	manager->byte_code.length               = 0;
+
+	manager->human_code_buffer.buf          = NULL;
+	manager->human_code_buffer.length       = 0;
+
+	manager->jmp_poses_w_carriage.JMP_poses = NULL;
+	manager->jmp_poses_w_carriage.carriage  = 0;
+
+	manager->labels_w_carriage.labels       = NULL;
+	manager->labels_w_carriage.carriage     = 0;
+
+	manager->strings.tokens                 = NULL;
+	manager->strings.amount                 = 0;
 
 	return ASM_ALL_GOOD;
 }

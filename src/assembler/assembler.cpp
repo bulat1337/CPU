@@ -42,6 +42,7 @@
 error_t compile(const char *file_name)
 {
 	Compile_manager manager = {};
+	init_manager(&manager);
 	error_t error_code = ASM_ALL_GOOD;
 
 	CALL(parse_human_code(&manager, file_name));
