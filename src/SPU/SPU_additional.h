@@ -8,6 +8,20 @@
 
 #include "SPU.h"
 
+/**
+ * @def CHECK_ERROR(result)
+ * @brief Macro to check if an error occurred during a function call.
+ * @param result The result structure to check for errors.
+ * @return Returns the error code if an error occurred, otherwise continues execution.
+ */
+#define CHECK_ERROR\
+	if(error_code != SPU_ALL_GOOD)\
+		return error_code;
+
+#define CALL(...)				\
+	error_code = __VA_ARGS__;	\
+	CHECK_ERROR;
+
 #define FREAD(buf, elem_size, amount, file_ptr)\
 	size_t read_elems = fread(buf, elem_size, amount, file_ptr);	\
 	if(read_elems != amount)										\
@@ -28,14 +42,9 @@ const size_t STD_RET_STACK_SIZE  = 2;
  * @param output_file Pointer to the output file.
  * @return Returns SPU_ALL_GOOD if successful, otherwise returns an error code.
  */
-error_t process(FILE *input_file, FILE *output_file);
+error_t process(FILE *bin_file, FILE *config_file, FILE *output_file);
 
-/**
- * @brief Constructor for the Virtual Machine.
- * @param vm Pointer to the Virtual Machine structure.
- * @return Returns SPU_ALL_GOOD if successful, otherwise returns an error code.
- */
-error_t VM_ctor(struct VM *vm);
+error_t VM_ctor(struct VM *vm, FILE *config_file);
 
 /**
  * @brief Destructor for the Virtual Machine.

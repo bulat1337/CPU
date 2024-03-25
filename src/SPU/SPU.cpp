@@ -8,9 +8,9 @@
     {                                                               \
         CPU_LOG("\nERROR: Unable to open "#file_ptr"\n");           \
         return SPU_UNABLE_TO_OPEN_FILE;								\
-    }
+	}
 
-error_t execute(const char *file_name)
+error_t execute(const char *bin_file, const char *config_file)
 {
 	error_t error_code = SPU_ALL_GOOD;
 
@@ -24,15 +24,14 @@ error_t execute(const char *file_name)
 
 		WITH_OPEN
 		(
-			file_name, "rb", byte_code_file,
+			bin_file, "rb", bin_file_ptr,
 
-			error_code = process(byte_code_file, exe_result);
-			if(error_code != SPU_ALL_GOOD)
-			{
-				CPU_LOG("\nERROR: code_%d\n", error_code);
+			WITH_OPEN
+			(
+				config_file, "r", config_file_ptr,
 
-				return error_code;
-			}
+				CALL(process(bin_file_ptr, config_file_ptr, exe_result));
+			)
 		)
 	)
 

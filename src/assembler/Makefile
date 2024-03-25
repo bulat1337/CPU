@@ -24,10 +24,10 @@ FLAGS = -D _DEBUG -ggdb3 \
 
 LINK_FLAGS = -fsanitize=address,alignment,bool,bounds,enum,float-cast-overflow,float-divide-by-zero,integer-divide-by-zero,nonnull-attribute,null,return,returns-nonnull-attribute,shift,signed-integer-overflow,undefined,unreachable,vla-bound,vptr
 
-Include = -I../global/ -I../../stack_src
+Include = -I../global/ -I../../stack_src -I../file_parser/
 
 $(ASM_TARGET): $(ASM_OBJ)
-	@ $(CC) $(LINK_FLAGS) $^ -o $@ -L../../libs -lstack -lglobal -I../global/
+	@ $(CC) $(LINK_FLAGS) $^ -o $@ -L../../libs -lstack -lglobal -lfile_parser
 
 $(PATH_ASM_OBJ)%.o: $(PATH_ASM)%.cpp
 	@ $(CC) -c $< -o $@ $(FLAGS) $(Include)

@@ -1,10 +1,10 @@
-PATH_SPU_OBJ    = ../../obj/SPU_obj/
-PATH_SPU        = ./
+PATH_PARSE_OBJ = ../../obj/file_parser_obj/
+PATH_PARSE     = ./
 
-SPU_SRC = $(wildcard $(PATH_SPU)*.cpp)
-SPU_OBJ = $(patsubst $(PATH_SPU)%.cpp, $(PATH_SPU_OBJ)%.o, $(SPU_SRC))
+PARSE_SRC = $(wildcard $(PATH_PARSE)*.cpp)
+PARSE_OBJ = $(patsubst $(PATH_PARSE)%.cpp, $(PATH_PARSE_OBJ)%.o, $(PARSE_SRC))
 
-SPU_TARGET = ../../executables/SPU.out
+PATH_LIB = ../../libs/
 
 CC = g++
 
@@ -24,13 +24,11 @@ FLAGS = -D _DEBUG -ggdb3 \
 
 LINK_FLAGS = -fsanitize=address,alignment,bool,bounds,enum,float-cast-overflow,float-divide-by-zero,integer-divide-by-zero,nonnull-attribute,null,return,returns-nonnull-attribute,shift,signed-integer-overflow,undefined,unreachable,vla-bound,vptr
 
-Include = -I../global/ -I../../stack_src -I../file_parser
+$(PATH_LIB)libfile_parser.a: $(PARSE_OBJ)
+	@ ar rvs $@ $(PARSE_OBJ)
 
-$(SPU_TARGET): $(SPU_OBJ)
-	@ $(CC) $(LINK_FLAGS) $^ -o $@ -L../../libs -lstack -lglobal -lfile_parser
-
-$(PATH_SPU_OBJ)%.o: $(PATH_SPU)%.cpp
-	@ $(CC) -c $< -o $@ $(FLAGS) $(Include)
+$(PATH_PARSE_OBJ)%.o: $(PATH_PARSE)%.cpp
+	@ $(CC) -c $< -o $@ $(FLAGS)
 
 clean:
-	@rm $(SPU_TARGET) $(PATH_SPU_OBJ)*.o
+	@rm $(PATH_PARSE_OBJ)*.o

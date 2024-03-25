@@ -3,16 +3,16 @@
 
 #include "SPU.h"
 
-int main(int argc, char *argv[])
+int main(const int argc, const char *argv[])
 {
-	if(argc > 2)
+	if(argc > 3)
 	{
 		fprintf(stderr, "ERROR: invalid amount of main function arguments(argc = %d)\n", argc);
 
 		return EXIT_FAILURE;
 	}
 
-	error_t error_code = execute(argv[1]);
+	error_t error_code = execute(argv[1], argv[2]);
 
 	if(error_code != SPU_ALL_GOOD)
 	{

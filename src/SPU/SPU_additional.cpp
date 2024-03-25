@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 
 #include "SPU_additional.h"
+#include "file_parse.h"
 
 /**
  * @def BYTE_CODE
@@ -47,17 +49,28 @@
         break;                         \
     }
 
-error_t process(FILE *input_file, FILE *output_file)
+#define ALLOCATION_CHECK(ptr)\
+	if(ptr == NULL)\
+	{\
+		CPU_LOG("Unable to allocate"#ptr".\n");	\
+		return SPU_UNABLE_TO_ALLOCATE;			\
+	}
+
+#define CALLOC(ptr, amount, type)				\
+	ptr = (type *)calloc(amount, sizeof(type));	\
+	ALLOCATION_CHECK(ptr);
+
+error_t process(FILE *bin_file, FILE *config_file, FILE *output_file)
 {
-	size_t byte_code_length = get_file_length(input_file);
+	size_t byte_code_length = get_file_length(bin_file);
+	error_t error_code = SPU_ALL_GOOD;
 
 	struct VM vm = {};
-	VM_ctor(&vm);
-
+	CALL(VM_ctor(&vm, config_file));
 
 	BYTE_CODE = (char *)calloc(byte_code_length, sizeof(char));
 
-	FREAD(BYTE_CODE, sizeof(char), byte_code_length, input_file);
+	FREAD(BYTE_CODE, sizeof(char), byte_code_length, bin_file);
 
 	size_t byte_code_carriage = 0;
 	char command              = (char)VOID;
@@ -94,8 +107,39 @@ error_t process(FILE *input_file, FILE *output_file)
 
 #undef CMD_DEF
 
-error_t VM_ctor(struct VM *vm)
+error_t VM_ctor(struct VM *vm, FILE *config_file)
 {
+	Strings settings = file_parse(config_file);
+	if(settings.tokens == NULL)
+	{
+		return SPU_INVALID_PARSE;
+	}
+
+	#define IS_SETTING(setting)												\
+		!strncmp(settings.tokens[set_ID], setting, LEN(setting))
+
+	size_t regs_amount = 0;
+	size_t RAM_size    = 0;
+
+	for(size_t set_ID = 0; set_ID < settings.amount; set_ID++)
+	{
+		if(IS_SETTING("regs_amount:"))
+		{
+			sscanf(settings.tokens[set_ID] + strlen("regs_amount:"), "%lu", &regs_amount);
+
+			CPU_LOG("regs amount = %lu\n", regs_amount);
+		}
+		else if(IS_SETTING("RAM_size:"))
+		{
+			sscanf(settings.tokens[set_ID] + strlen("RAM_size:"), "%lu", &RAM_size);
+
+			CPU_LOG("ram size = %lu\n", RAM_size);
+		}
+	}
+
+	CALLOC(vm->registers, regs_amount, elem_t);
+	CALLOC(vm->rand_access_mem.user_RAM, RAM_size, elem_t);
+
 	STACK_CTOR(&(vm->user_stack), STD_USER_STACK_SIZE);
 	STACK_CTOR(&(vm->ret_stack),  STD_RET_STACK_SIZE);
 

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
 
 #include "secondary.h"
 
@@ -46,18 +47,6 @@ void print_binary(char *buf, size_t size, const char *buf_name)
     }
 }
 
-size_t get_file_length(FILE *file_ptr)
-{
-    size_t length = 0;
-	rewind(file_ptr);
-
-    fseek(file_ptr, 0L, SEEK_END);
-    length = (size_t)ftell(file_ptr);
-    rewind(file_ptr);
-
-    return length;
-}
-
 int cmp_double(double first_double, double second_double)
 {
     const double eps = 1e-7;
@@ -85,3 +74,16 @@ void clear_buffer(void)
     while(getchar() != '\n');
 }
 
+size_t max_len(const char *str_1, const char *str_2)
+{
+	size_t size_1 = strlen(str_1);
+	size_t size_2 = strlen(str_2);
+	if(size_1 > size_2)
+	{
+		return size_1;
+	}
+	else
+	{
+		return size_2;
+	}
+}

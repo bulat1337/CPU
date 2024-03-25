@@ -85,16 +85,6 @@ void log(const char *file_name, const char *func_name, int line, const char *fmt
 void print_binary(char *buf, size_t size, const char *buf_name);
 
 /**
- * @brief Gets the length of a file.
- *
- * Determines the length of the specified file in bytes.
- *
- * @param file_ptr Pointer to the file.
- * @return The length of the file.
- */
-size_t get_file_length(FILE *file_ptr);
-
-/**
  * @brief Compares two double-precision floating-point numbers.
  *
  * Compares two double-precision floating-point numbers with a small epsilon tolerance.
@@ -111,5 +101,7 @@ int cmp_double(double first_double, double second_double);
  * Clears the input buffer by reading and discarding characters until a newline character is encountered.
  */
 void clear_buffer(void);
+
+size_t max_len(const char *str_1, const char *str_2);
 
 #endif

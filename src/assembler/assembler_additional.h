@@ -71,15 +71,9 @@ struct JMP_poses_w_carriage
     size_t   carriage; /**< Carriage position of the jumps. */
 };
 
-struct Strings
-{
-    char * *tokens; /**< Array of strings representing parsed commands. */
-	size_t  amount; /**< Amount of strings. */
-};
-
 struct Compile_manager
 {
-    struct Strings       strings;
+    Strings       strings;
 	Buffer_w_info        human_code_buffer; /**< Buffer with length information for human-readable code. */
 	Labels_w_carriage    labels_w_carriage; /**< Structure containing labels with carriage information. */
     JMP_poses_w_carriage jmp_poses_w_carriage; /**< Structure containing jumps with carriage information. */

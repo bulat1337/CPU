@@ -20,7 +20,7 @@ const size_t USER_RAM_SIZE       = 400; /**< Size of user-accessible RAM in the 
 struct RAM
 {
     char  *byte_code; /**< Pointer to the byte code stored in RAM. */
-    elem_t user_RAM[USER_RAM_SIZE]; /**< Array representing user-accessible RAM. */
+    elem_t *user_RAM; /**< Array representing user-accessible RAM. */
 };
 
 /**
@@ -29,7 +29,7 @@ struct RAM
  */
 struct VM
 {
-    elem_t registers[AMOUNT_OF_REGISTERS]; /**< Array representing registers in the SPU VM. */
+    elem_t *registers; /**< Array representing registers in the SPU VM. */
     struct Stack user_stack; /**< Stack for user-defined operations. */
     struct Stack ret_stack; /**< Stack for return addresses. */
     RAM    rand_access_mem; /**< Random access memory in the SPU VM. */
@@ -46,6 +46,7 @@ typedef enum
     SPU_UNABLE_TO_ALLOCATE  = 1 << 1, /**< Memory allocation error. */
     SPU_INVALID_FREAD       = 1 << 2, /**< Invalid read operation error. */
     INVALID_RAM_MODE        = 1 << 3, /**< Invalid RAM access mode error. */
+    SPU_INVALID_PARSE       = 1 << 4, /**< Parse_file executed with an error. */
 } error_t;
 
 /**
@@ -83,6 +84,6 @@ typedef struct
  * @param file_name Name of the file containing the SPU byte code.
  * @return Returns a structure containing the execution result.
  */
-error_t execute(const char *file_name);
+error_t execute(const char *bin_file, const char *config_file);
 
 #endif
