@@ -102,7 +102,6 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 #define COMMANDS\
 	manager->strings.tokens
 
-
 #define WRITE_BYTE(ptr)\
 	write_to_buf(&BYTE_CODE, ptr, sizeof(char));
 
@@ -156,17 +155,14 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 			reg_type = GET_REG_TYPE(cmd_name);								\
 			write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);		\
 																			\
-			buf_carriage++;													\
 		}																	\
 		else																\
 		{/* IMM */															\
 			mask_buffer(&(manager->byte_code), IMM_MASK);					\
 			ALIGN_BUF(SIX_BYTE_ALIGNMENT);									\
-			buf_carriage++;													\
 																			\
 			write_to_buf(&BYTE_CODE, &argument_value, sizeof(elem_t));		\
 																			\
-			buf_carriage++;													\
 		}																	\
 	}
 
@@ -214,8 +210,6 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 			reg_type = GET_REG_TYPE(cmd_name);								\
 			write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);		\
 		}																	\
-																			\
-		buf_carriage++;														\
 	}
 
 /**
@@ -232,8 +226,6 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 	if(IS_COMMAND(cmd_name))												\
 	{																		\
 		write_char_w_alignment(&BYTE_CODE, (char)num, ALIGN_TO_DOUBLE);		\
-																			\
-		buf_carriage++;														\
 	}
 
 /**
@@ -253,11 +245,10 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 		write_char_w_alignment(&BYTE_CODE, (char)num, ALIGN_TO_INT);		\
 		WRITE_INT(&POISON_JMP_POS);											\
 																			\
-		CURRENT_JMP.name = COMMANDS[line_ID] + LEN(cmd_name) + 1;		\
-		CURRENT_JMP.IP_pos = (int)buf_carriage;								\
+		CURRENT_JMP.name = COMMANDS[line_ID] + LEN(cmd_name) + 1;			\
+		CURRENT_JMP.IP_pos = get_ip_pos(manager) - 1;						\
 																			\
 		manager->jmp_poses_w_carriage.carriage++;							\
-		buf_carriage++;														\
 	}
 
 /**
@@ -334,7 +325,6 @@ error_t cmds_process(Compile_manager *manager)
 	#define IS_COMMAND(cmd)\
 		!strncmp(COMMANDS[line_ID], cmd, LEN(cmd))
 
-	size_t buf_carriage = 1;
 	SAFE_FOR_START(size_t line_ID = 0; line_ID < amount_of_lines; line_ID++)
 	{
 		if(false)
@@ -676,3 +666,6 @@ size_t get_ip_pos(Compile_manager *manager)
 #undef CURRENT_JMP_PTR
 #undef BYTE_CODE
 #undef FILE_PTR_CHECK
+#undef ALLOCATION_CHECK
+#undef CALLOC
+#undef REALLOC

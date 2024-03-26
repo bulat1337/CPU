@@ -18,10 +18,6 @@ error_t execute(const char *bin_file, const char *config_file)
 	(
 		"execution_result.txt", "w", exe_result,
 
-		//temp
-		exe_result = stdout;
-		//
-
 		WITH_OPEN
 		(
 			bin_file, "rb", bin_file_ptr,

@@ -67,7 +67,7 @@ error_t process(FILE *bin_file, FILE *config_file, FILE *output_file)
 
 	struct VM vm = {};
 	CALL(VM_ctor(&vm, config_file));
-
+	
 	BYTE_CODE = (char *)calloc(byte_code_length, sizeof(char));
 
 	FREAD(BYTE_CODE, sizeof(char), byte_code_length, bin_file);
@@ -126,12 +126,14 @@ error_t VM_ctor(struct VM *vm, FILE *config_file)
 		if(IS_SETTING("regs_amount:"))
 		{
 			sscanf(settings.tokens[set_ID] + strlen("regs_amount:"), "%lu", &regs_amount);
+			vm->regs_amount = regs_amount;
 
 			CPU_LOG("regs amount = %lu\n", regs_amount);
 		}
 		else if(IS_SETTING("RAM_size:"))
 		{
 			sscanf(settings.tokens[set_ID] + strlen("RAM_size:"), "%lu", &RAM_size);
+			vm->RAM_size = RAM_size;
 
 			CPU_LOG("ram size = %lu\n", RAM_size);
 		}

@@ -298,11 +298,13 @@ DEF_CMD
 (
 	"draw", DRAW, WRITE_CMD_W_NO_ARG,
 
-	SAFE_FOR_START(size_t address = 0; address < USER_RAM_SIZE; address++)
-	{
-		fprintf(output_file, "%c ", (char)vm.rand_access_mem.user_RAM[address]);
+	size_t screen_size = (size_t)sqrt(vm.RAM_size);
 
-		if((address + 1) % 20 == 0)
+	SAFE_FOR_START(size_t address = 0; address < vm.RAM_size; address++)
+	{
+		fprintf(output_file, "%c  ", (char)vm.rand_access_mem.user_RAM[address]);
+
+		if((address + 1) % screen_size == 0)
 		{
 			fprintf(output_file, "\n");
 		}

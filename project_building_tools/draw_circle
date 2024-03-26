@@ -1,0 +1,145 @@
+:main
+
+call fill_with_dots
+
+call fill_circle
+
+draw
+
+hlt
+
+
+:fill_with_dots
+push 0
+pop rcx
+
+push 0
+pop rbx
+
+push 21
+pop rdx
+
+
+:iteration_y_1
+
+push rcx
+push rdx
+jae break_y_1
+
+:iteration_x_1
+push rbx
+push rdx
+jae break_x_1
+
+push rcx
+push 21
+mul
+push rbx
+add
+
+pop rax
+
+push 46
+pop[rax]
+
+push 1
+push rbx
+add
+pop rbx
+
+jmp iteration_x_1
+
+:break_x_1
+
+push 0
+pop rbx
+
+push 1
+push rcx
+add
+pop rcx
+
+jmp iteration_y_1
+
+:break_y_1
+
+ret
+
+:fill_circle
+push 0
+pop rcx
+
+push 0
+pop rbx
+
+
+:iteration_y_2
+
+push rcx
+push rdx
+jae break_y_2
+
+:iteration_x_2
+push rbx
+push rdx
+jae break_x_2
+
+push rbx
+push 10
+sub
+pop rax
+push rax
+push rax
+mul
+
+push rcx
+push 10
+sub
+pop rax
+push rax
+push rax
+mul
+
+add
+
+sqrt
+
+push 10
+
+ja dont_fill
+
+push rcx
+push 21
+mul
+push rbx
+add
+
+pop rax
+
+push 35
+pop[rax]
+
+:dont_fill
+
+push 1
+push rbx
+add
+pop rbx
+
+jmp iteration_x_2
+
+:break_x_2
+
+push 0
+pop rbx
+
+push 1
+push rcx
+add
+pop rcx
+
+jmp iteration_y_2
+
+:break_y_2
+
+ret

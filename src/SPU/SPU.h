@@ -33,6 +33,8 @@ struct VM
     struct Stack user_stack; /**< Stack for user-defined operations. */
     struct Stack ret_stack; /**< Stack for return addresses. */
     RAM    rand_access_mem; /**< Random access memory in the SPU VM. */
+	size_t regs_amount;
+	size_t RAM_size;
 };
 
 /**
