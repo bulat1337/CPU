@@ -49,9 +49,9 @@
         break;                         \
     }
 
-#define ALLOCATION_CHECK(ptr)\
-	if(ptr == NULL)\
-	{\
+#define ALLOCATION_CHECK(ptr)					\
+	if(ptr == NULL)								\
+	{											\
 		CPU_LOG("Unable to allocate"#ptr".\n");	\
 		return SPU_UNABLE_TO_ALLOCATE;			\
 	}
@@ -67,7 +67,7 @@ error_t process(FILE *bin_file, FILE *config_file, FILE *output_file)
 
 	struct VM vm = {};
 	CALL(VM_ctor(&vm, config_file));
-	
+
 	BYTE_CODE = (char *)calloc(byte_code_length, sizeof(char));
 
 	FREAD(BYTE_CODE, sizeof(char), byte_code_length, bin_file);

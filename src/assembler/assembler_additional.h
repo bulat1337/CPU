@@ -93,6 +93,7 @@ const unsigned char SIX_BYTE_ALIGNMENT             = 6;
 const unsigned char ONE_BYTE_ALIGNMENT             = 1;
 const unsigned char TWO_BYTE_ALIGNMENT             = 2;
 const unsigned char ADDITIONAL_CONCATENATION_SPACE = 2;
+const unsigned char B_CODE_SIZE_COEFF              = 2;
 
 //doxy
 error_t parse_human_code(Compile_manager *manager, const char *file_name);

@@ -1,0 +1,31 @@
+:main
+
+in
+pop rcx
+
+push 1
+pop rax
+
+:iteration
+
+push 1
+push rcx
+jae break
+
+push rax
+push rcx
+mul
+pop rax
+
+push rcx
+push 1
+sub
+pop rcx
+
+jmp iteration
+
+:break
+
+push rax
+out
+hlt
