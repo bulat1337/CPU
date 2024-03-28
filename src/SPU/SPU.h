@@ -81,11 +81,7 @@ typedef struct
     union Second_arg second_arg; /**< Second argument for SPU functions. */
 } return_t;
 
-/**
- * @brief Executes the SPU program.
- * @param file_name Name of the file containing the SPU byte code.
- * @return Returns a structure containing the execution result.
- */
-error_t execute(const char *bin_file, const char *config_file);
+error_t execute(const char *bin_file, const char *config_file,
+				void (*driver)(VM *, char *, FILE *));
 
 #endif

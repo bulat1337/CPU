@@ -1,10 +1,10 @@
-PATH_SPU_OBJ    = ../../obj/SPU_obj/
-PATH_SPU        = ./
+PATH_DRIVE_OBJ = ../../obj/drivers_obj/
+PATH_DRIVE     = ./
 
-SPU_SRC = $(wildcard $(PATH_SPU)*.cpp)
-SPU_OBJ = $(patsubst $(PATH_SPU)%.cpp, $(PATH_SPU_OBJ)%.o, $(SPU_SRC))
+DRIVE_SRC = $(wildcard $(PATH_DRIVE)*.cpp)
+DRIVE_OBJ = $(patsubst $(PATH_DRIVE)%.cpp, $(PATH_DRIVE_OBJ)%.o, $(DRIVE_SRC))
 
-SPU_TARGET = ../../executables/SPU.out
+PATH_LIB = ../../libs/
 
 CC = g++
 
@@ -24,13 +24,10 @@ FLAGS = -D _DEBUG -ggdb3 \
 
 LINK_FLAGS = -fsanitize=address,alignment,bool,bounds,enum,float-cast-overflow,float-divide-by-zero,integer-divide-by-zero,nonnull-attribute,null,return,returns-nonnull-attribute,shift,signed-integer-overflow,undefined,unreachable,vla-bound,vptr
 
-Include = -I../global/ -I../../stack_src -I../file_parser -I../drivers
+$(PATH_LIB)libdrivers.a: $(DRIVE_OBJ)
+	@ ar rvs $@ $(DRIVE_OBJ)
 
-$(SPU_TARGET): $(SPU_OBJ)
-	@ $(CC) $(LINK_FLAGS) $^ -o $@ -L../../libs -lstack -lglobal -lfile_parser -ldrivers
-
-$(PATH_SPU_OBJ)%.o: $(PATH_SPU)%.cpp
-	@ $(CC) -c $< -o $@ $(FLAGS) $(Include)
-
+$(PATH_DRIVE_OBJ)%.o: $(PATH_DRIVE)%.cpp
+	@ $(CC) -c $< -o $@ $(FLAGS) -I../SPU/ -I../global/ -I../../stack_src
 clean:
-	@rm $(SPU_TARGET) $(PATH_SPU_OBJ)*.o
+	@rm $(PATH_DRIVE_OBJ)*.o

@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "SPU.h"
+#include "drivers.h"
 
 int main(const int argc, const char *argv[])
 {
@@ -12,7 +14,9 @@ int main(const int argc, const char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	error_t error_code = execute(argv[1], argv[2]);
+	void (*driver)(VM *, char *, FILE *) = &terminal_draw;
+
+	error_t error_code = execute(argv[1], argv[2], driver);
 
 	if(error_code != SPU_ALL_GOOD)
 	{

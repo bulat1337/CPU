@@ -10,7 +10,8 @@
         return SPU_UNABLE_TO_OPEN_FILE;								\
 	}
 
-error_t execute(const char *bin_file, const char *config_file)
+error_t execute(const char *bin_file, const char *config_file,
+				void (*driver)(VM *, char *, FILE *))
 {
 	error_t error_code = SPU_ALL_GOOD;
 
@@ -26,7 +27,7 @@ error_t execute(const char *bin_file, const char *config_file)
 			(
 				config_file, "r", config_file_ptr,
 
-				CALL(process(bin_file_ptr, config_file_ptr, exe_result));
+				CALL(process(bin_file_ptr, config_file_ptr, exe_result, driver));
 			)
 		)
 	)

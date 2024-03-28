@@ -296,22 +296,11 @@ DEF_CMD
 
 DEF_CMD
 (
-	"draw", DRAW, WRITE_CMD_W_NO_ARG,
+	"draw", DRAW, WRITE_CMD_W_2_ARGS,
 
-	size_t screen_size = (size_t)sqrt(vm.RAM_size);
+	(*driver)(&vm, CURRENT_BYTE_CODE, output_file);
 
-	SAFE_FOR_START(size_t address = 0; address < vm.RAM_size; address++)
-	{
-		fprintf(output_file, "%c  ", (char)vm.rand_access_mem.user_RAM[address]);
-
-		if((address + 1) % screen_size == 0)
-		{
-			fprintf(output_file, "\n");
-		}
-
-		SAFE_FOR_END
-	}
-
+	MOVE_CARRIAGE;
 	MOVE_CARRIAGE;
 )
 

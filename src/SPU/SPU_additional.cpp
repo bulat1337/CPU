@@ -60,11 +60,13 @@
 	ptr = (type *)calloc(amount, sizeof(type));	\
 	ALLOCATION_CHECK(ptr);
 
-error_t process(FILE *bin_file, FILE *config_file, FILE *output_file)
+error_t process(FILE *bin_file, FILE *config_file,
+				FILE *output_file, void (*driver)(VM *, char *, FILE *))
 {
 	size_t byte_code_length = get_file_length(bin_file);
 	error_t error_code = SPU_ALL_GOOD;
 
+	// VM vm{config_file};
 	struct VM vm = {};
 	CALL(VM_ctor(&vm, config_file));
 
@@ -115,7 +117,7 @@ error_t VM_ctor(struct VM *vm, FILE *config_file)
 		return SPU_INVALID_PARSE;
 	}
 
-	#define IS_SETTING(setting)												\
+	#define IS_SETTING(setting)\
 		!strncmp(settings.tokens[set_ID], setting, LEN(setting))
 
 	size_t regs_amount = 0;
@@ -150,6 +152,12 @@ error_t VM_ctor(struct VM *vm, FILE *config_file)
 
 error_t VM_dtor(struct VM *vm)
 {
+	free(vm->rand_access_mem.user_RAM);
+	free(vm->registers);
+
+	vm->RAM_size    = 0;
+	vm->regs_amount = 0;
+
 	stack_dtor(&(vm->user_stack));
 	stack_dtor(&(vm->ret_stack));
 

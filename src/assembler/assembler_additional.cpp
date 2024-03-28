@@ -111,6 +111,9 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 #define ALIGN_BUF(amount)\
 	align_buffer(&BYTE_CODE, amount);
 
+
+
+
 #define PROCESS_RAM_ARG(cmd_name)\
  	if(*(cmd_arg) == '[')												\
  	{/* RAM */															\
@@ -184,7 +187,6 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 	{																		\
 		cmd_type = (Command)num;											\
 		WRITE_BYTE(&cmd_type);												\
-																			\
 		char *cmd_arg = COMMANDS[line_ID] + LEN(cmd_name);					\
 																			\
 		PROCESS_RAM_ARG(cmd_name)											\
@@ -197,8 +199,6 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 			write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);		\
 		}																	\
 	}
-
-#undef PROCESS_RAM_ARG
 
 /**
  * @def WRITE_CMD_W_NO_ARG
@@ -234,7 +234,7 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 		WRITE_INT(&POISON_JMP_POS);											\
 																			\
 		CURRENT_JMP.name = COMMANDS[line_ID] + LEN(cmd_name) + 1;			\
-		CURRENT_JMP.IP_pos = get_ip_pos(manager) - 1;						\
+		CURRENT_JMP.IP_pos = (int)get_ip_pos(manager) - 1;					\
 																			\
 		manager->jmp_poses_w_carriage.carriage++;							\
 	}
@@ -258,6 +258,24 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 		manager->labels_w_carriage.carriage++;										\
 	}
 
+#define WRITE_CMD_W_2_ARGS(cmd_name, num)									\
+	if(IS_COMMAND(cmd_name))												\
+	{																		\
+		cmd_type = (Command)num;											\
+		write_char_w_alignment(&BYTE_CODE, (char)num, ALIGN_TO_DOUBLE);		\
+																			\
+		char *cmd_arg = COMMANDS[line_ID] + LEN(cmd_name);					\
+																			\
+		unsigned int head  = 0;												\
+		unsigned int end   = 0;												\
+																			\
+		sscanf(cmd_arg, "%u %u", &head, &end);								\
+																			\
+		write_to_buf(&BYTE_CODE, &head, sizeof(int));						\
+		write_to_buf(&BYTE_CODE, &end, sizeof(int));						\
+																			\
+	}
+
 /**
  * @def DEF_CMD
  * @brief Macro to define a command with different argument types.
@@ -275,7 +293,7 @@ error_t cmds_process(Compile_manager *manager)
 {
 	size_t amount_of_lines = manager->strings.amount;
 
-	size_t byte_code_size = amount_of_lines * sizeof(double) * B_CODE_SIZE_COEFF;
+	size_t byte_code_size = amount_of_lines * sizeof(double) * 2;
 
 	CALLOC(manager->byte_code.buf, byte_code_size, char);
 	manager->byte_code_start = manager->byte_code.buf;
@@ -471,6 +489,8 @@ error_t arrange_labels(Compile_manager *manager)
 
 				BYTE_CODE.buf = manager->byte_code_start;
 
+				// LOG_BUFFER(FIXED_BYTE_CODE.buf, FIXED_BYTE_CODE.length);
+
 				break;
 			}
 			else
@@ -507,7 +527,7 @@ error_t reduce_buffer_size(Compile_manager *manager)
 {
 	bool non_zero_flag = true;
 	bool zero_flag     = false;
-	size_t tale   = 0;
+	size_t tale        = 0;
 
 	if(*(long *)(BYTE_CODE.buf + BYTE_CODE.length - sizeof(double)) != 0)
 	{

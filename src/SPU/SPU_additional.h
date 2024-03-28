@@ -36,13 +36,8 @@
 const size_t STD_USER_STACK_SIZE = 10;
 const size_t STD_RET_STACK_SIZE  = 2;
 
-/**
- * @brief Processes the input file and performs operations based on the byte code.
- * @param input_file Pointer to the input file.
- * @param output_file Pointer to the output file.
- * @return Returns SPU_ALL_GOOD if successful, otherwise returns an error code.
- */
-error_t process(FILE *bin_file, FILE *config_file, FILE *output_file);
+error_t process(FILE *bin_file, FILE *config_file,
+				FILE *output_file, void (*driver)(VM *, char *, FILE *));
 
 error_t VM_ctor(struct VM *vm, FILE *config_file);
 

@@ -4,7 +4,7 @@ call fill_with_dots
 
 call fill_circle
 
-draw
+draw 0 440
 
 hlt
 

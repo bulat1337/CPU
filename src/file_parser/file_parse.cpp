@@ -77,7 +77,7 @@ Strings file_parse(FILE *file_ptr)
 
 	buf_w_len.length = get_file_length(file_ptr);
 
-	if(buf_w_len.length == NULL)
+	if(buf_w_len.length == 0)
 	{
 		Strings void_strs = {};
 		return void_strs;
