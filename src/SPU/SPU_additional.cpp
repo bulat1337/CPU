@@ -82,6 +82,8 @@ error_t process(FILE *bin_file, const char *config_file,
 	int cmp_result            = 666;
 	unsigned int RAM_address  = 0;
 
+	bool run_flag = false;
+
 	#define CURRENT_BYTE_CODE\
 		(BYTE_CODE + byte_code_carriage)
 
@@ -95,8 +97,11 @@ error_t process(FILE *bin_file, const char *config_file,
 			{
 				printf("Unknown_command\n");
 			}
-
 		}
+		#ifdef CPU_DEBUG
+			debug(&vm, &run_flag, command);
+		#endif
+
 	}
 
 	free(BYTE_CODE);
@@ -131,6 +136,7 @@ error_t VM_ctor(struct VM *vm, const char *config_file)
 		if(IS_SETTING("regs_amount:"))
 		{
 			sscanf(settings.tokens[set_ID], "%*[^:]%*2c%lu", &regs_amount);
+			vm->regs_amount = regs_amount;
 
 			CPU_LOG("regs amount = %lu\n", regs_amount);
 		}
@@ -167,3 +173,149 @@ error_t VM_dtor(struct VM *vm)
 
 #undef UPDATE_BYTE_CODE_CARRIAGE
 #undef MOVE_CARRIAGE
+
+#ifdef CPU_DEBUG
+
+char get_db_opt(void)
+{
+	char answer = 0;
+
+	printf("[r] to run\n");
+	printf("[c] to continue\n");
+
+	printf("> ");
+	scanf("%c", &answer);
+
+	clear_buffer();
+
+	return answer;
+}
+
+bool proc_db_opt(char answer)
+{
+	bool run_flag = false;
+
+	switch(answer)
+	{
+		case 'c':
+		{
+			break;
+		}
+		case 'r':
+		{
+			run_flag = true;
+			break;
+		}
+		default:
+		{
+			printf("WARNING: Symbols were ignored. Continuing the program\n");
+			break;
+		}
+	}
+
+	return run_flag;
+}
+
+void dump_vm(VM *vm)
+{
+	//dump regs
+	printf("    REGISTERS\n");
+	for(unsigned char reg_ID = 0; reg_ID < vm->regs_amount; reg_ID++)
+	{
+		printf("[r%cx]: ", reg_ID + 'a');
+		printf("%lf\n", vm->registers[reg_ID]);
+	}
+	printf("\n");
+
+	if(vm->user_stack.size != 0)
+	{
+		printf("    USER_STACK\n");
+		dump_stack(&(vm->user_stack));
+	}
+
+	if(vm->ret_stack.size != 0)
+	{
+		printf("    RET_STACK\n");
+		dump_stack(&(vm->ret_stack));
+	}
+}
+
+#define CASE(cmd)								\
+	case cmd:									\
+	{											\
+		printf("Current command: "#cmd"\n");	\
+		break;									\
+	}
+
+void dump_cmd(char command)
+{
+	switch(command)
+	{
+		CASE(VOID)
+		CASE(PUSH)
+		CASE(ADD )
+		CASE(SUB )
+		CASE(MUL )
+		CASE(DIV )
+		CASE(OUT )
+		CASE(IN  )
+		CASE(POP )
+		CASE(JMP )
+		CASE(JA  )
+		CASE(JB  )
+		CASE(JAE )
+		CASE(JBE )
+		CASE(JE  )
+		CASE(JNE )
+		CASE(CALL)
+		CASE(RET )
+		CASE(DRAW)
+		CASE(SQRT)
+		CASE(HLT )
+		default:
+		{
+			printf("Unknown command\n");
+		}
+	}
+}
+
+#undef CASE
+
+void dump_stack(Stack *stk)
+{
+	for(size_t stk_ID = 0; stk_ID < stk->size; stk_ID++)
+	{
+		printf("[%zu]: ", stk_ID);
+		printf("%lf\n", stk->data[stk_ID]);
+	}
+	printf("\n");
+}
+
+void frame_terminal(size_t amount)
+{
+	for(size_t ID = 0; ID < amount; ID++)
+	{
+		printf("-");
+	}
+	printf("\n");
+}
+
+void debug(VM *vm, bool *run_flag, char command)
+{
+	char answer = 0;
+
+	if(*run_flag == false)
+	{
+		dump_cmd(command);
+
+		dump_vm(vm);
+
+		answer   = get_db_opt();
+
+		*run_flag = proc_db_opt(answer);
+
+		frame_terminal(30);
+	}
+}
+
+#endif

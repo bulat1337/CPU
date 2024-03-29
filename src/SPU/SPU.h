@@ -1,6 +1,8 @@
 #ifndef SPU_H
 #define SPU_H
 
+#define CPU_DEBUG
+
 /**
  * @file SPU.h
  * @brief Header file containing function declarations for the SPU program.
@@ -34,6 +36,7 @@ struct VM
     struct Stack ret_stack; /**< Stack for return addresses. */
     RAM    rand_access_mem; /**< Random access memory in the SPU VM. */
 	char  *byte_code; /**< Pointer to the byte code. */
+	size_t regs_amount;
 };
 
 /**

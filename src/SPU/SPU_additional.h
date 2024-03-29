@@ -59,4 +59,20 @@ error_t VM_ctor(struct VM *vm, const char *config_file);
  */
 error_t VM_dtor(struct VM *vm);
 
+#ifdef CPU_DEBUG
+	char get_db_opt(void);
+
+	bool proc_db_opt(char answer);
+
+	void dump_vm(VM *vm);
+
+	void dump_cmd(char command);
+
+	void dump_stack(Stack *stk);
+
+	void frame_terminal(size_t amount);
+
+	void debug(VM *vm, bool *run_flag, char command);
+#endif
+
 #endif
