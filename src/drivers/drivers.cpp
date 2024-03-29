@@ -5,7 +5,7 @@
 
 void terminal_draw(VM *vm, char *current_byte_code, FILE *output_file)
 {
-	size_t screen_size = (size_t)sqrt(vm->RAM_size); // sqrt тяжело
+	size_t screen_size = (size_t)sqrt(vm->rand_access_mem.RAM_size); // sqrt тяжело
 
 	unsigned int head = *(unsigned int *)(current_byte_code + sizeof(double));
 	unsigned int end  = *(unsigned int *)(current_byte_code + sizeof(double) + sizeof(int));

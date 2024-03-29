@@ -3,13 +3,6 @@
 #include "SPU_additional.h"
 #include "SPU.h"
 
-#define FILE_PTR_CHECK(file_ptr)                                    \
-    if(file_ptr == NULL)                                            \
-    {                                                               \
-        CPU_LOG("\nERROR: Unable to open "#file_ptr"\n");           \
-        return SPU_UNABLE_TO_OPEN_FILE;								\
-	}
-
 error_t execute(const char *bin_file, const char *config_file,
 				void (*driver)(VM *, char *, FILE *))
 {
@@ -23,12 +16,7 @@ error_t execute(const char *bin_file, const char *config_file,
 		(
 			bin_file, "rb", bin_file_ptr,
 
-			WITH_OPEN
-			(
-				config_file, "r", config_file_ptr,
-
-				CALL(process(bin_file_ptr, config_file_ptr, exe_result, driver));
-			)
+			CALL(process(bin_file_ptr, config_file, exe_result, driver));
 		)
 	)
 

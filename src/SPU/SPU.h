@@ -19,7 +19,7 @@ const size_t USER_RAM_SIZE       = 400; /**< Size of user-accessible RAM in the 
  */
 struct RAM
 {
-    char  *byte_code; /**< Pointer to the byte code stored in RAM. */
+    size_t RAM_size;
     elem_t *user_RAM; /**< Array representing user-accessible RAM. */
 };
 
@@ -33,8 +33,7 @@ struct VM
     struct Stack user_stack; /**< Stack for user-defined operations. */
     struct Stack ret_stack; /**< Stack for return addresses. */
     RAM    rand_access_mem; /**< Random access memory in the SPU VM. */
-	size_t regs_amount;
-	size_t RAM_size;
+	char  *byte_code; /**< Pointer to the byte code. */
 };
 
 /**

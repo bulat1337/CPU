@@ -33,13 +33,24 @@
 		return SPU_INVALID_FREAD;									\
 	}
 
+#define VM_CTOR(name, config_file)			\
+		struct VM name = {};				\
+		CALL(VM_ctor(&name, config_file));
+
+#define FILE_PTR_CHECK(file_ptr)                                    \
+    if(file_ptr == NULL)                                            \
+    {                                                               \
+        CPU_LOG("\nERROR: Unable to open "#file_ptr"\n");           \
+        return SPU_UNABLE_TO_OPEN_FILE;								\
+	}
+
 const size_t STD_USER_STACK_SIZE = 10;
 const size_t STD_RET_STACK_SIZE  = 2;
 
-error_t process(FILE *bin_file, FILE *config_file,
+error_t process(FILE *bin_file, const char *config_file,
 				FILE *output_file, void (*driver)(VM *, char *, FILE *));
 
-error_t VM_ctor(struct VM *vm, FILE *config_file);
+error_t VM_ctor(struct VM *vm, const char *config_file);
 
 /**
  * @brief Destructor for the Virtual Machine.

@@ -11,7 +11,7 @@
  * @def BYTE_CODE
  * @brief Macro representing the byte code of the Virtual Machine.
  */
-#define BYTE_CODE vm.rand_access_mem.byte_code
+#define BYTE_CODE vm.byte_code
 
 /**
  * @def LOG_BUFFER(buf, size)
@@ -60,17 +60,15 @@
 	ptr = (type *)calloc(amount, sizeof(type));	\
 	ALLOCATION_CHECK(ptr);
 
-error_t process(FILE *bin_file, FILE *config_file,
+error_t process(FILE *bin_file, const char *config_file,
 				FILE *output_file, void (*driver)(VM *, char *, FILE *))
 {
 	size_t byte_code_length = get_file_length(bin_file);
 	error_t error_code = SPU_ALL_GOOD;
 
-	// VM vm{config_file};
-	struct VM vm = {};
-	CALL(VM_ctor(&vm, config_file));
+	VM_CTOR(vm, config_file);
 
-	BYTE_CODE = (char *)calloc(byte_code_length, sizeof(char));
+	CALLOC(BYTE_CODE, byte_code_length, char);
 
 	FREAD(BYTE_CODE, sizeof(char), byte_code_length, bin_file);
 
@@ -109,9 +107,14 @@ error_t process(FILE *bin_file, FILE *config_file,
 
 #undef CMD_DEF
 
-error_t VM_ctor(struct VM *vm, FILE *config_file)
+error_t VM_ctor(struct VM *vm, const char *config_file)
 {
-	Strings settings = file_parse(config_file);
+	WITH_OPEN
+	(
+		config_file, "r", config_file_ptr,
+
+		Strings settings = file_parse(config_file_ptr);
+	)
 	if(settings.tokens == NULL)
 	{
 		return SPU_INVALID_PARSE;
@@ -127,15 +130,14 @@ error_t VM_ctor(struct VM *vm, FILE *config_file)
 	{
 		if(IS_SETTING("regs_amount:"))
 		{
-			sscanf(settings.tokens[set_ID] + strlen("regs_amount:"), "%lu", &regs_amount);
-			vm->regs_amount = regs_amount;
+			sscanf(settings.tokens[set_ID], "%*[^:]%*2c%lu", &regs_amount);
 
 			CPU_LOG("regs amount = %lu\n", regs_amount);
 		}
 		else if(IS_SETTING("RAM_size:"))
 		{
-			sscanf(settings.tokens[set_ID] + strlen("RAM_size:"), "%lu", &RAM_size);
-			vm->RAM_size = RAM_size;
+			sscanf(settings.tokens[set_ID], "%*[^:]%*2c%lu", &RAM_size);
+			vm->rand_access_mem.RAM_size = RAM_size;
 
 			CPU_LOG("ram size = %lu\n", RAM_size);
 		}
@@ -155,8 +157,7 @@ error_t VM_dtor(struct VM *vm)
 	free(vm->rand_access_mem.user_RAM);
 	free(vm->registers);
 
-	vm->RAM_size    = 0;
-	vm->regs_amount = 0;
+	vm->rand_access_mem.RAM_size = 0;
 
 	stack_dtor(&(vm->user_stack));
 	stack_dtor(&(vm->ret_stack));
