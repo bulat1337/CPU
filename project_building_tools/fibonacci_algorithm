@@ -1,0 +1,44 @@
+:iteration
+
+pop rax
+push rax
+add
+push rax
+
+pop rbx
+pop rax
+push rbx
+push rax
+
+ret
+
+:main
+
+push 1
+push 1
+
+push 0
+pop rdx
+
+in
+pop rcx
+
+push rcx
+push 2
+sub
+pop rcx
+
+:again
+push 1
+push rdx
+add
+pop rdx
+
+call iteration
+
+push rdx
+push rcx
+jb again
+
+out
+hlt

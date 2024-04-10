@@ -1,0 +1,5 @@
+#!/bin/bash
+make clean
+make all
+../executables/assembler.out draw_circle
+../executables/SPU.out draw_circle.bin config

@@ -1,0 +1,45 @@
+:main
+
+in
+pop rdx
+
+push 1
+pop rax
+
+call count_fact
+
+push rax
+out
+
+
+
+hlt
+
+:count_fact
+push 1
+push rdx
+jae break
+
+push rdx
+
+push rdx
+push 1
+sub
+pop rdx
+
+
+call count_fact
+
+push rax
+
+mul
+
+pop rax
+
+ret
+
+:break
+push 1
+pop rax
+ret
+

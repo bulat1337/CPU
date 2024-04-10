@@ -1,0 +1,5 @@
+#!/bin/bash
+make clean_junk
+make clean_asm
+make asm
+../executables/assembler.out draw_circle
