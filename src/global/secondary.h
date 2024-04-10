@@ -102,6 +102,16 @@ int cmp_double(double first_double, double second_double);
  */
 void clear_buffer(void);
 
+/**
+ * @brief Returns the maximum length between two strings.
+ *
+ * This function calculates the length of two given strings and returns the
+ * maximum length between them.
+ *
+ * @param str_1 Pointer to the first string.
+ * @param str_2 Pointer to the second string.
+ * @return The maximum length between str_1 and str_2.
+ */
 size_t max_len(const char *str_1, const char *str_2);
 
 #endif

@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include <SFML/Graphics.hpp>
+
 #include "SPU.h"
 #include "drivers.h"
 
@@ -14,7 +16,7 @@ int main(const int argc, const char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	void (*driver)(VM *, char *, FILE *) = &terminal_draw;
+	void (*driver)(VM *, char *, FILE *) = &window_draw;
 
 	error_t error_code = execute(argv[1], argv[2], driver);
 

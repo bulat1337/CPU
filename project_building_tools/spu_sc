@@ -1,4 +1,0 @@
-#!/bin/bash
-make clean_spu
-make spu
-../executables/SPU.out square_solver_byte_code.bin

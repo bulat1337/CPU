@@ -24,10 +24,10 @@ FLAGS = -D _DEBUG -ggdb3 \
 
 LINK_FLAGS = -fsanitize=address,alignment,bool,bounds,enum,float-cast-overflow,float-divide-by-zero,integer-divide-by-zero,nonnull-attribute,null,return,returns-nonnull-attribute,shift,signed-integer-overflow,undefined,unreachable,vla-bound,vptr
 
-Include = -I../global/ -I../../stack_src -I../file_parser -I../drivers
+Include = -I../global/ -I../../stack_src -I../file_parser -I../drivers -I/opt/homebrew/Cellar/sfml/2.6.1/include/
 
 $(SPU_TARGET): $(SPU_OBJ)
-	@ $(CC) $(LINK_FLAGS) $^ -o $@ -L../../libs -lstack -lglobal -lfile_parser -ldrivers
+	@ $(CC) $(LINK_FLAGS) $^ -o $@ -L../../libs -lstack -lglobal -lfile_parser -ldrivers -L/opt/homebrew/Cellar/sfml/2.6.1/lib/ -lsfml-graphics -lsfml-window -lsfml-system
 
 $(PATH_SPU_OBJ)%.o: $(PATH_SPU)%.cpp
 	@ $(CC) -c $< -o $@ $(FLAGS) $(Include)

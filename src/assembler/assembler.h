@@ -33,7 +33,6 @@ union Second_arg
     FILE                        *fp; /**< Pointer to a file. */
     char                        *buf; /**< Pointer to a buffer. */
     size_t                       amount; /**< Amount value. */
-    // struct Buffer_w_info         buf_w_info; /**< Buffer with length information. */
 };
 
 /**

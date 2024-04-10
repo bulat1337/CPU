@@ -146,7 +146,7 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
  * @param num The numerical representation of the command.
  */
 #define WRITE_CMD_W_8_BYTE_ARG(cmd_name, num)								\
-	if(IS_COMMAND(cmd_name))												\
+	else if(IS_COMMAND(cmd_name))											\
 	{																		\
 		cmd_type = (Command)num;											\
 		WRITE_BYTE(&cmd_type);												\
@@ -183,7 +183,7 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
  * @param num The numerical representation of the command.
  */
 #define WRITE_CMD_W_4_BYTE_ARG(cmd_name, num)								\
-	if(IS_COMMAND(cmd_name))												\
+	else if(IS_COMMAND(cmd_name))											\
 	{																		\
 		cmd_type = (Command)num;											\
 		WRITE_BYTE(&cmd_type);												\
@@ -211,7 +211,7 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
  * @param num The numerical representation of the command.
  */
 #define WRITE_CMD_W_NO_ARG(cmd_name, num)									\
-	if(IS_COMMAND(cmd_name))												\
+	else if(IS_COMMAND(cmd_name))											\
 	{																		\
 		write_char_w_alignment(&BYTE_CODE, (char)num, ALIGN_TO_DOUBLE);		\
 	}
@@ -228,7 +228,7 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
  * @param num The numerical representation of the command.
  */
 #define WRITE_CMD_W_LABEL_ARG(cmd_name, num)								\
-	if(IS_COMMAND(cmd_name))												\
+	else if(IS_COMMAND(cmd_name))											\
 	{																		\
 		write_char_w_alignment(&BYTE_CODE, (char)num, ALIGN_TO_INT);		\
 		WRITE_INT(&POISON_JMP_POS);											\
@@ -259,7 +259,7 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 	}
 
 #define WRITE_CMD_W_2_ARGS(cmd_name, num)									\
-	if(IS_COMMAND(cmd_name))												\
+	else if(IS_COMMAND(cmd_name))											\
 	{																		\
 		cmd_type = (Command)num;											\
 		write_char_w_alignment(&BYTE_CODE, (char)num, ALIGN_TO_DOUBLE);		\

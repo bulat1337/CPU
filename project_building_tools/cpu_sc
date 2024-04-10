@@ -1,5 +1,0 @@
-#!/bin/bash
-make clean
-make all
-../executables/assembler.out square_solver
-../executables/SPU.out square_solver_byte_code.bin

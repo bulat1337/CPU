@@ -83,6 +83,17 @@ typedef struct
     union Second_arg second_arg; /**< Second argument for SPU functions. */
 } return_t;
 
+/**
+ * @brief Executes the provided binary file using the specified configuration and driver.
+ *
+ * This function opens the binary and configuration files, then calls the process function
+ * to execute the binary instructions. The results of the execution are written to "execution_result.txt".
+ *
+ * @param bin_file Path to the binary file to execute.
+ * @param config_file Path to the configuration file.
+ * @param driver Pointer to the driver function for the Virtual Machine.
+ * @return An error code indicating the success or failure of the execution.
+ */
 error_t execute(const char *bin_file, const char *config_file,
 				void (*driver)(VM *, char *, FILE *));
 

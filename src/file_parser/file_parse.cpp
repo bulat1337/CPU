@@ -3,18 +3,50 @@
 
 #include "file_parse.h"
 
-#define ALLOCATION_CHECK(ptr)\
-	if(ptr == NULL)\
-	{\
-		fprintf(stderr, "Unable to allocate"#ptr".\n");	\
-		Strings void_strs = {};							\
-		return void_strs;								\
+/**
+ * @brief Checks if a pointer is NULL and prints an error message if it is.
+ *
+ * If the pointer is NULL, an error message is printed to the standard error stream,
+ * and an empty Strings structure is returned.
+ *
+ * @param ptr Pointer to check.
+ * @return An empty Strings structure if the pointer is NULL.
+ */
+#define ALLOCATION_CHECK(ptr)								\
+	if(ptr == NULL)											\
+	{														\
+		fprintf(stderr, "Unable to allocate "#ptr".\n");	\
+		Strings void_strs = {};								\
+		return void_strs;									\
 	}
 
+/**
+ * @brief Allocates memory for an array and checks if the allocation was successful.
+ *
+ * This macro allocates memory for an array of a specified type and size. If the
+ * allocation fails, an error message is printed, and an empty Strings structure
+ * is returned.
+ *
+ * @param ptr Pointer to the allocated memory.
+ * @param amount Number of elements to allocate.
+ * @param type Type of the elements.
+ */
 #define CALLOC(ptr, amount, type)				\
 	ptr = (type *)calloc(amount, sizeof(type));	\
 	ALLOCATION_CHECK(ptr);
 
+/**
+ * @brief Reads data from a file and checks if the expected amount of data was read.
+ *
+ * This macro reads a specified amount of elements from a file into a buffer. If the
+ * actual number of elements read does not match the expected amount, an error message
+ * is printed, and an empty Strings structure is returned.
+ *
+ * @param buf Pointer to the buffer where the data will be read.
+ * @param elem_size Size of each element to read.
+ * @param amount Expected number of elements to read.
+ * @param file_ptr Pointer to the input file.
+ */
 #define FREAD(buf, elem_size, amount, file_ptr)								\
 	size_t read_elems = fread(buf, elem_size, amount, file_ptr);			\
 	if(read_elems != amount)												\

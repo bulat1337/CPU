@@ -42,6 +42,15 @@ void ptr_arranger    (char * *str_ptrs, struct Buffer_w_info buf_n_len);
  */
 size_t get_file_length(FILE *file_ptr);
 
+/**
+ * @brief Parses a file and returns its content as an array of lines.
+ *
+ * This function reads the content of a file into a buffer, counts the number of lines,
+ * and rearranges pointers to the start of each line in the buffer.
+ *
+ * @param file_ptr Pointer to the input file.
+ * @return A Strings structure containing the parsed lines.
+ */
 Strings file_parse(FILE *file_ptr);
 
 

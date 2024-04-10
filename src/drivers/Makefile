@@ -28,6 +28,6 @@ $(PATH_LIB)libdrivers.a: $(DRIVE_OBJ)
 	@ ar rvs $@ $(DRIVE_OBJ)
 
 $(PATH_DRIVE_OBJ)%.o: $(PATH_DRIVE)%.cpp
-	@ $(CC) -c $< -o $@ $(FLAGS) -I../SPU/ -I../global/ -I../../stack_src
+	@ $(CC) -c $< -o $@ $(FLAGS) -I../SPU/ -I../global/ -I../../stack_src -I/opt/homebrew/Cellar/sfml/2.6.1/include/
 clean:
 	@rm $(PATH_DRIVE_OBJ)*.o
