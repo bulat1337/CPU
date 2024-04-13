@@ -9,6 +9,8 @@
 #include "assembler.h"
 #include "file_parse.h"
 
+#include "secondary.h"
+
 #define FREAD(buf, elem_size, amount, file_ptr)\
 	size_t read_elems = fread(buf, elem_size, amount, file_ptr);	\
 	if(read_elems != amount)										\

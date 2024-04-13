@@ -6,8 +6,6 @@
  * @brief Header file containing declarations for the assembler program.
  */
 
-#include "secondary.h"
-
 /**
  * @enum Asm_err_ID
  * @brief Enumeration of error codes for the assembler program.
