@@ -1,0 +1,5 @@
+#!/bin/bash
+make clean_spu
+make spu
+../executables/SPU.out fibonacci_algorithm.bin config
+open execution_result.txt

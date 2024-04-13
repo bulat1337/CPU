@@ -1,0 +1,4 @@
+#!/bin/bash
+make clean
+make asm
+../executables/assembler.out fibonacci_algorithm

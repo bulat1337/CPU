@@ -1,4 +1,0 @@
-#!/bin/bash
-make clean_spu
-make spu
-../executables/SPU.out draw_circle.bin config

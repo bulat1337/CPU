@@ -1,0 +1,2058 @@
+*Stack has been created*
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x106307d60] = BAD
+buf_right_canary[0x106307dc0] = BAD
+size = 0
+capacity = 10
+function: VM_ctor
+line: 155
+file: src/SPU_additional.cpp
+data addres = 0x106307d68
+[0] = 0.000000
+[1] = 0.000000
+[2] = 0.000000
+[3] = 0.000000
+[4] = 0.000000
+[5] = 0.000000
+[6] = 0.000000
+[7] = 0.000000
+[8] = 0.000000
+[9] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[76] == temp_hash_check_value[76]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x106307d60] = BAD
+buf_right_canary[0x106307dc0] = BAD
+size = 1
+capacity = 10
+function: process
+line: 34
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x106307d68
+[0] = 1.000000
+[1] = 0.000000
+[2] = 0.000000
+[3] = 0.000000
+[4] = 0.000000
+[5] = 0.000000
+[6] = 0.000000
+[7] = 0.000000
+[8] = 0.000000
+[9] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[168] == temp_hash_check_value[168]
+hash_data_check_value[47] == temp_hash_data_check_value[47]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x106307d60] = BAD
+buf_right_canary[0x106307dc0] = BAD
+size = 2
+capacity = 10
+function: process
+line: 34
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x106307d68
+[0] = 1.000000
+[1] = 1.000000
+[2] = 0.000000
+[3] = 0.000000
+[4] = 0.000000
+[5] = 0.000000
+[6] = 0.000000
+[7] = 0.000000
+[8] = 0.000000
+[9] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[169] == temp_hash_check_value[169]
+hash_data_check_value[47] == temp_hash_data_check_value[47]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x106307d60] = BAD
+buf_right_canary[0x106307dc0] = BAD
+size = 3
+capacity = 10
+function: process
+line: 34
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x106307d68
+[0] = 1.000000
+[1] = 1.000000
+[2] = 0.000000
+[3] = 0.000000
+[4] = 0.000000
+[5] = 0.000000
+[6] = 0.000000
+[7] = 0.000000
+[8] = 0.000000
+[9] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[170] == temp_hash_check_value[170]
+hash_data_check_value[47] == temp_hash_data_check_value[47]
+Here is why capacity is going to be shrinked:
+	 size[2] <= (capacity / 4)[2]
+new capacity: shrinked
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803ec0] = BAD
+buf_right_canary[0x105803ef8] = BAD
+size = 2
+capacity = 5
+function: process
+line: 73
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803ec8
+[0] = 1.000000
+[1] = 1.000000
+[2] = 0.000000
+[3] = 0.000000
+[4] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550835] == temp_hash_check_value[18446744073709550835]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803ec0] = BAD
+buf_right_canary[0x105803ef8] = BAD
+size = 3
+capacity = 5
+function: process
+line: 89
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803ec8
+[0] = 1.000000
+[1] = 1.000000
+[2] = 6.000000
+[3] = 0.000000
+[4] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550852] == temp_hash_check_value[18446744073709550852]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803ec0] = BAD
+buf_right_canary[0x105803ef8] = BAD
+size = 2
+capacity = 5
+function: process
+line: 73
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803ec8
+[0] = 1.000000
+[1] = 1.000000
+[2] = 6.000000
+[3] = 0.000000
+[4] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550835] == temp_hash_check_value[18446744073709550835]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803ec0] = BAD
+buf_right_canary[0x105803ef8] = BAD
+size = 3
+capacity = 5
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803ec8
+[0] = 1.000000
+[1] = 1.000000
+[2] = 6.000000
+[3] = 0.000000
+[4] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550802] == temp_hash_check_value[18446744073709550802]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803ec0] = BAD
+buf_right_canary[0x105803ef8] = BAD
+size = 4
+capacity = 5
+function: process
+line: 34
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803ec8
+[0] = 1.000000
+[1] = 1.000000
+[2] = 6.000000
+[3] = 2.000000
+[4] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550798] == temp_hash_check_value[18446744073709550798]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803ec0] = BAD
+buf_right_canary[0x105803ef8] = BAD
+size = 3
+capacity = 5
+function: process
+line: 110
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803ec8
+[0] = 1.000000
+[1] = 1.000000
+[2] = 6.000000
+[3] = 2.000000
+[4] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550873] == temp_hash_check_value[18446744073709550873]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803ec0] = BAD
+buf_right_canary[0x105803ef8] = BAD
+size = 2
+capacity = 5
+function: process
+line: 111
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803ec8
+[0] = 1.000000
+[1] = 1.000000
+[2] = 6.000000
+[3] = 2.000000
+[4] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550873] == temp_hash_check_value[18446744073709550873]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803ec0] = BAD
+buf_right_canary[0x105803ef8] = BAD
+size = 3
+capacity = 5
+function: process
+line: 113
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803ec8
+[0] = 1.000000
+[1] = 1.000000
+[2] = 4.000000
+[3] = 2.000000
+[4] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550876] == temp_hash_check_value[18446744073709550876]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803ec0] = BAD
+buf_right_canary[0x105803ef8] = BAD
+size = 2
+capacity = 5
+function: process
+line: 73
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803ec8
+[0] = 1.000000
+[1] = 1.000000
+[2] = 4.000000
+[3] = 2.000000
+[4] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550835] == temp_hash_check_value[18446744073709550835]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803ec0] = BAD
+buf_right_canary[0x105803ef8] = BAD
+size = 3
+capacity = 5
+function: process
+line: 34
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803ec8
+[0] = 1.000000
+[1] = 1.000000
+[2] = 1.000000
+[3] = 2.000000
+[4] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550797] == temp_hash_check_value[18446744073709550797]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803ec0] = BAD
+buf_right_canary[0x105803ef8] = BAD
+size = 4
+capacity = 5
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803ec8
+[0] = 1.000000
+[1] = 1.000000
+[2] = 1.000000
+[3] = 0.000000
+[4] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550803] == temp_hash_check_value[18446744073709550803]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803ec0] = BAD
+buf_right_canary[0x105803ef8] = BAD
+size = 3
+capacity = 5
+function: process
+line: 98
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803ec8
+[0] = 1.000000
+[1] = 1.000000
+[2] = 1.000000
+[3] = 0.000000
+[4] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550861] == temp_hash_check_value[18446744073709550861]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803ec0] = BAD
+buf_right_canary[0x105803ef8] = BAD
+size = 2
+capacity = 5
+function: process
+line: 99
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803ec8
+[0] = 1.000000
+[1] = 1.000000
+[2] = 1.000000
+[3] = 0.000000
+[4] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550861] == temp_hash_check_value[18446744073709550861]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803ec0] = BAD
+buf_right_canary[0x105803ef8] = BAD
+size = 3
+capacity = 5
+function: process
+line: 101
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803ec8
+[0] = 1.000000
+[1] = 1.000000
+[2] = 1.000000
+[3] = 0.000000
+[4] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550864] == temp_hash_check_value[18446744073709550864]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803ec0] = BAD
+buf_right_canary[0x105803ef8] = BAD
+size = 2
+capacity = 5
+function: process
+line: 73
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803ec8
+[0] = 1.000000
+[1] = 1.000000
+[2] = 1.000000
+[3] = 0.000000
+[4] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550835] == temp_hash_check_value[18446744073709550835]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+Here is why capacity is going to be shrinked:
+	 size[1] <= (capacity / 4)[1]
+new capacity: shrinked
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c05990] = BAD
+buf_right_canary[0x105c059b0] = BAD
+size = 1
+capacity = 2
+function: process
+line: 73
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c05998
+[0] = 1.000000
+[1] = 1.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550936] == temp_hash_check_value[18446744073709550936]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c05990] = BAD
+buf_right_canary[0x105c059b0] = BAD
+size = 2
+capacity = 2
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c05998
+[0] = 1.000000
+[1] = 1.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550903] == temp_hash_check_value[18446744073709550903]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c05990] = BAD
+buf_right_canary[0x105c059b0] = BAD
+size = 1
+capacity = 2
+function: process
+line: 98
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c05998
+[0] = 1.000000
+[1] = 1.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550961] == temp_hash_check_value[18446744073709550961]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+Here is why capacity is going to be shrinked:
+	 size[0] <= (capacity / 4)[0]
+new capacity: shrinked
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105a09c70] = BAD
+buf_right_canary[0x105a09c88] = BAD
+size = 0
+capacity = 1
+function: process
+line: 99
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105a09c78
+[0] = 1.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550705] == temp_hash_check_value[18446744073709550705]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105a09c70] = BAD
+buf_right_canary[0x105a09c88] = BAD
+size = 1
+capacity = 1
+function: process
+line: 101
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105a09c78
+[0] = 2.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550708] == temp_hash_check_value[18446744073709550708]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+new capacity: expanded
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c05950] = BAD
+buf_right_canary[0x105c05970] = BAD
+size = 2
+capacity = 2
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c05958
+[0] = 2.000000
+[1] = 1.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551479] == temp_hash_check_value[18446744073709551479]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c05950] = BAD
+buf_right_canary[0x105c05970] = BAD
+size = 1
+capacity = 2
+function: process
+line: 73
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c05958
+[0] = 2.000000
+[1] = 1.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551512] == temp_hash_check_value[18446744073709551512]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+Here is why capacity is going to be shrinked:
+	 size[0] <= (capacity / 4)[0]
+new capacity: shrinked
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105a09c40] = BAD
+buf_right_canary[0x105a09c58] = BAD
+size = 0
+capacity = 1
+function: process
+line: 73
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105a09c48
+[0] = 2.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550791] == temp_hash_check_value[18446744073709550791]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105a09c40] = BAD
+buf_right_canary[0x105a09c58] = BAD
+size = 1
+capacity = 1
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105a09c48
+[0] = 1.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550758] == temp_hash_check_value[18446744073709550758]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+new capacity: expanded
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c05910] = BAD
+buf_right_canary[0x105c05930] = BAD
+size = 2
+capacity = 2
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c05918
+[0] = 1.000000
+[1] = 2.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551287] == temp_hash_check_value[18446744073709551287]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+new capacity: expanded
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803e60] = BAD
+buf_right_canary[0x105803e90] = BAD
+size = 3
+capacity = 4
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803e68
+[0] = 1.000000
+[1] = 2.000000
+[2] = 1.000000
+[3] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551017] == temp_hash_check_value[18446744073709551017]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803e60] = BAD
+buf_right_canary[0x105803e90] = BAD
+size = 4
+capacity = 4
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803e68
+[0] = 1.000000
+[1] = 2.000000
+[2] = 1.000000
+[3] = 4.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551018] == temp_hash_check_value[18446744073709551018]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803e60] = BAD
+buf_right_canary[0x105803e90] = BAD
+size = 3
+capacity = 4
+function: process
+line: 228
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803e68
+[0] = 1.000000
+[1] = 2.000000
+[2] = 1.000000
+[3] = 4.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550950] == temp_hash_check_value[18446744073709550950]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803e60] = BAD
+buf_right_canary[0x105803e90] = BAD
+size = 2
+capacity = 4
+function: process
+line: 229
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803e68
+[0] = 1.000000
+[1] = 2.000000
+[2] = 1.000000
+[3] = 4.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550950] == temp_hash_check_value[18446744073709550950]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803e60] = BAD
+buf_right_canary[0x105803e90] = BAD
+size = 3
+capacity = 4
+function: process
+line: 34
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803e68
+[0] = 1.000000
+[1] = 2.000000
+[2] = 1.000000
+[3] = 4.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551012] == temp_hash_check_value[18446744073709551012]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803e60] = BAD
+buf_right_canary[0x105803e90] = BAD
+size = 4
+capacity = 4
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803e68
+[0] = 1.000000
+[1] = 2.000000
+[2] = 1.000000
+[3] = 1.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551018] == temp_hash_check_value[18446744073709551018]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803e60] = BAD
+buf_right_canary[0x105803e90] = BAD
+size = 3
+capacity = 4
+function: process
+line: 98
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803e68
+[0] = 1.000000
+[1] = 2.000000
+[2] = 1.000000
+[3] = 1.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551076] == temp_hash_check_value[18446744073709551076]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803e60] = BAD
+buf_right_canary[0x105803e90] = BAD
+size = 2
+capacity = 4
+function: process
+line: 99
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803e68
+[0] = 1.000000
+[1] = 2.000000
+[2] = 1.000000
+[3] = 1.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551076] == temp_hash_check_value[18446744073709551076]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803e60] = BAD
+buf_right_canary[0x105803e90] = BAD
+size = 3
+capacity = 4
+function: process
+line: 101
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803e68
+[0] = 1.000000
+[1] = 2.000000
+[2] = 2.000000
+[3] = 1.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551079] == temp_hash_check_value[18446744073709551079]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803e60] = BAD
+buf_right_canary[0x105803e90] = BAD
+size = 2
+capacity = 4
+function: process
+line: 73
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803e68
+[0] = 1.000000
+[1] = 2.000000
+[2] = 2.000000
+[3] = 1.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551050] == temp_hash_check_value[18446744073709551050]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+Here is why capacity is going to be shrinked:
+	 size[1] <= (capacity / 4)[1]
+new capacity: shrinked
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c057d0] = BAD
+buf_right_canary[0x105c057f0] = BAD
+size = 1
+capacity = 2
+function: process
+line: 73
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c057d8
+[0] = 1.000000
+[1] = 2.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551122] == temp_hash_check_value[18446744073709551122]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c057d0] = BAD
+buf_right_canary[0x105c057f0] = BAD
+size = 2
+capacity = 2
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c057d8
+[0] = 1.000000
+[1] = 2.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551089] == temp_hash_check_value[18446744073709551089]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c057d0] = BAD
+buf_right_canary[0x105c057f0] = BAD
+size = 1
+capacity = 2
+function: process
+line: 98
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c057d8
+[0] = 1.000000
+[1] = 2.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551147] == temp_hash_check_value[18446744073709551147]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+Here is why capacity is going to be shrinked:
+	 size[0] <= (capacity / 4)[0]
+new capacity: shrinked
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105a09be0] = BAD
+buf_right_canary[0x105a09bf8] = BAD
+size = 0
+capacity = 1
+function: process
+line: 99
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105a09be8
+[0] = 1.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550526] == temp_hash_check_value[18446744073709550526]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105a09be0] = BAD
+buf_right_canary[0x105a09bf8] = BAD
+size = 1
+capacity = 1
+function: process
+line: 101
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105a09be8
+[0] = 3.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550529] == temp_hash_check_value[18446744073709550529]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+new capacity: expanded
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c05790] = BAD
+buf_right_canary[0x105c057b0] = BAD
+size = 2
+capacity = 2
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c05798
+[0] = 3.000000
+[1] = 2.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550897] == temp_hash_check_value[18446744073709550897]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c05790] = BAD
+buf_right_canary[0x105c057b0] = BAD
+size = 1
+capacity = 2
+function: process
+line: 73
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c05798
+[0] = 3.000000
+[1] = 2.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550930] == temp_hash_check_value[18446744073709550930]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+Here is why capacity is going to be shrinked:
+	 size[0] <= (capacity / 4)[0]
+new capacity: shrinked
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105a09bb0] = BAD
+buf_right_canary[0x105a09bc8] = BAD
+size = 0
+capacity = 1
+function: process
+line: 73
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105a09bb8
+[0] = 3.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550356] == temp_hash_check_value[18446744073709550356]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105a09bb0] = BAD
+buf_right_canary[0x105a09bc8] = BAD
+size = 1
+capacity = 1
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105a09bb8
+[0] = 2.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550323] == temp_hash_check_value[18446744073709550323]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+new capacity: expanded
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c05750] = BAD
+buf_right_canary[0x105c05770] = BAD
+size = 2
+capacity = 2
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c05758
+[0] = 2.000000
+[1] = 3.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551473] == temp_hash_check_value[18446744073709551473]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+new capacity: expanded
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803d40] = BAD
+buf_right_canary[0x105803d70] = BAD
+size = 3
+capacity = 4
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803d48
+[0] = 2.000000
+[1] = 3.000000
+[2] = 2.000000
+[3] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551174] == temp_hash_check_value[18446744073709551174]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803d40] = BAD
+buf_right_canary[0x105803d70] = BAD
+size = 4
+capacity = 4
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803d48
+[0] = 2.000000
+[1] = 3.000000
+[2] = 2.000000
+[3] = 4.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551175] == temp_hash_check_value[18446744073709551175]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803d40] = BAD
+buf_right_canary[0x105803d70] = BAD
+size = 3
+capacity = 4
+function: process
+line: 228
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803d48
+[0] = 2.000000
+[1] = 3.000000
+[2] = 2.000000
+[3] = 4.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551107] == temp_hash_check_value[18446744073709551107]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803d40] = BAD
+buf_right_canary[0x105803d70] = BAD
+size = 2
+capacity = 4
+function: process
+line: 229
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803d48
+[0] = 2.000000
+[1] = 3.000000
+[2] = 2.000000
+[3] = 4.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551107] == temp_hash_check_value[18446744073709551107]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803d40] = BAD
+buf_right_canary[0x105803d70] = BAD
+size = 3
+capacity = 4
+function: process
+line: 34
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803d48
+[0] = 2.000000
+[1] = 3.000000
+[2] = 1.000000
+[3] = 4.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551169] == temp_hash_check_value[18446744073709551169]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803d40] = BAD
+buf_right_canary[0x105803d70] = BAD
+size = 4
+capacity = 4
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803d48
+[0] = 2.000000
+[1] = 3.000000
+[2] = 1.000000
+[3] = 2.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551175] == temp_hash_check_value[18446744073709551175]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803d40] = BAD
+buf_right_canary[0x105803d70] = BAD
+size = 3
+capacity = 4
+function: process
+line: 98
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803d48
+[0] = 2.000000
+[1] = 3.000000
+[2] = 1.000000
+[3] = 2.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551233] == temp_hash_check_value[18446744073709551233]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803d40] = BAD
+buf_right_canary[0x105803d70] = BAD
+size = 2
+capacity = 4
+function: process
+line: 99
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803d48
+[0] = 2.000000
+[1] = 3.000000
+[2] = 1.000000
+[3] = 2.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551233] == temp_hash_check_value[18446744073709551233]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803d40] = BAD
+buf_right_canary[0x105803d70] = BAD
+size = 3
+capacity = 4
+function: process
+line: 101
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803d48
+[0] = 2.000000
+[1] = 3.000000
+[2] = 3.000000
+[3] = 2.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551236] == temp_hash_check_value[18446744073709551236]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803d40] = BAD
+buf_right_canary[0x105803d70] = BAD
+size = 2
+capacity = 4
+function: process
+line: 73
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803d48
+[0] = 2.000000
+[1] = 3.000000
+[2] = 3.000000
+[3] = 2.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551207] == temp_hash_check_value[18446744073709551207]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+Here is why capacity is going to be shrinked:
+	 size[1] <= (capacity / 4)[1]
+new capacity: shrinked
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c05710] = BAD
+buf_right_canary[0x105c05730] = BAD
+size = 1
+capacity = 2
+function: process
+line: 73
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c05718
+[0] = 2.000000
+[1] = 3.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551314] == temp_hash_check_value[18446744073709551314]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c05710] = BAD
+buf_right_canary[0x105c05730] = BAD
+size = 2
+capacity = 2
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c05718
+[0] = 2.000000
+[1] = 3.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551281] == temp_hash_check_value[18446744073709551281]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c05710] = BAD
+buf_right_canary[0x105c05730] = BAD
+size = 1
+capacity = 2
+function: process
+line: 98
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c05718
+[0] = 2.000000
+[1] = 3.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551339] == temp_hash_check_value[18446744073709551339]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+Here is why capacity is going to be shrinked:
+	 size[0] <= (capacity / 4)[0]
+new capacity: shrinked
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105a09b50] = BAD
+buf_right_canary[0x105a09b68] = BAD
+size = 0
+capacity = 1
+function: process
+line: 99
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105a09b58
+[0] = 2.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550862] == temp_hash_check_value[18446744073709550862]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105a09b50] = BAD
+buf_right_canary[0x105a09b68] = BAD
+size = 1
+capacity = 1
+function: process
+line: 101
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105a09b58
+[0] = 5.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550865] == temp_hash_check_value[18446744073709550865]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+new capacity: expanded
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c056d0] = BAD
+buf_right_canary[0x105c056f0] = BAD
+size = 2
+capacity = 2
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c056d8
+[0] = 5.000000
+[1] = 3.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551086] == temp_hash_check_value[18446744073709551086]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c056d0] = BAD
+buf_right_canary[0x105c056f0] = BAD
+size = 1
+capacity = 2
+function: process
+line: 73
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c056d8
+[0] = 5.000000
+[1] = 3.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551119] == temp_hash_check_value[18446744073709551119]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+Here is why capacity is going to be shrinked:
+	 size[0] <= (capacity / 4)[0]
+new capacity: shrinked
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105a09b20] = BAD
+buf_right_canary[0x105a09b38] = BAD
+size = 0
+capacity = 1
+function: process
+line: 73
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105a09b28
+[0] = 5.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550692] == temp_hash_check_value[18446744073709550692]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105a09b20] = BAD
+buf_right_canary[0x105a09b38] = BAD
+size = 1
+capacity = 1
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105a09b28
+[0] = 3.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550659] == temp_hash_check_value[18446744073709550659]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+new capacity: expanded
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c05690] = BAD
+buf_right_canary[0x105c056b0] = BAD
+size = 2
+capacity = 2
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c05698
+[0] = 3.000000
+[1] = 5.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550894] == temp_hash_check_value[18446744073709550894]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+new capacity: expanded
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803c80] = BAD
+buf_right_canary[0x105803cb0] = BAD
+size = 3
+capacity = 4
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803c88
+[0] = 3.000000
+[1] = 5.000000
+[2] = 3.000000
+[3] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550595] == temp_hash_check_value[18446744073709550595]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803c80] = BAD
+buf_right_canary[0x105803cb0] = BAD
+size = 4
+capacity = 4
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803c88
+[0] = 3.000000
+[1] = 5.000000
+[2] = 3.000000
+[3] = 4.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550596] == temp_hash_check_value[18446744073709550596]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803c80] = BAD
+buf_right_canary[0x105803cb0] = BAD
+size = 3
+capacity = 4
+function: process
+line: 228
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803c88
+[0] = 3.000000
+[1] = 5.000000
+[2] = 3.000000
+[3] = 4.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550528] == temp_hash_check_value[18446744073709550528]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803c80] = BAD
+buf_right_canary[0x105803cb0] = BAD
+size = 2
+capacity = 4
+function: process
+line: 229
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803c88
+[0] = 3.000000
+[1] = 5.000000
+[2] = 3.000000
+[3] = 4.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550528] == temp_hash_check_value[18446744073709550528]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803c80] = BAD
+buf_right_canary[0x105803cb0] = BAD
+size = 3
+capacity = 4
+function: process
+line: 34
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803c88
+[0] = 3.000000
+[1] = 5.000000
+[2] = 1.000000
+[3] = 4.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550590] == temp_hash_check_value[18446744073709550590]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803c80] = BAD
+buf_right_canary[0x105803cb0] = BAD
+size = 4
+capacity = 4
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803c88
+[0] = 3.000000
+[1] = 5.000000
+[2] = 1.000000
+[3] = 3.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550596] == temp_hash_check_value[18446744073709550596]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803c80] = BAD
+buf_right_canary[0x105803cb0] = BAD
+size = 3
+capacity = 4
+function: process
+line: 98
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803c88
+[0] = 3.000000
+[1] = 5.000000
+[2] = 1.000000
+[3] = 3.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550654] == temp_hash_check_value[18446744073709550654]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803c80] = BAD
+buf_right_canary[0x105803cb0] = BAD
+size = 2
+capacity = 4
+function: process
+line: 99
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803c88
+[0] = 3.000000
+[1] = 5.000000
+[2] = 1.000000
+[3] = 3.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550654] == temp_hash_check_value[18446744073709550654]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803c80] = BAD
+buf_right_canary[0x105803cb0] = BAD
+size = 3
+capacity = 4
+function: process
+line: 101
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803c88
+[0] = 3.000000
+[1] = 5.000000
+[2] = 4.000000
+[3] = 3.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550657] == temp_hash_check_value[18446744073709550657]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803c80] = BAD
+buf_right_canary[0x105803cb0] = BAD
+size = 2
+capacity = 4
+function: process
+line: 73
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803c88
+[0] = 3.000000
+[1] = 5.000000
+[2] = 4.000000
+[3] = 3.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550628] == temp_hash_check_value[18446744073709550628]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+Here is why capacity is going to be shrinked:
+	 size[1] <= (capacity / 4)[1]
+new capacity: shrinked
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c05610] = BAD
+buf_right_canary[0x105c05630] = BAD
+size = 1
+capacity = 2
+function: process
+line: 73
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c05618
+[0] = 3.000000
+[1] = 5.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551311] == temp_hash_check_value[18446744073709551311]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c05610] = BAD
+buf_right_canary[0x105c05630] = BAD
+size = 2
+capacity = 2
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c05618
+[0] = 3.000000
+[1] = 5.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551278] == temp_hash_check_value[18446744073709551278]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c05610] = BAD
+buf_right_canary[0x105c05630] = BAD
+size = 1
+capacity = 2
+function: process
+line: 98
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c05618
+[0] = 3.000000
+[1] = 5.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551336] == temp_hash_check_value[18446744073709551336]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+Here is why capacity is going to be shrinked:
+	 size[0] <= (capacity / 4)[0]
+new capacity: shrinked
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105a09af0] = BAD
+buf_right_canary[0x105a09b08] = BAD
+size = 0
+capacity = 1
+function: process
+line: 99
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105a09af8
+[0] = 3.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550572] == temp_hash_check_value[18446744073709550572]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105a09af0] = BAD
+buf_right_canary[0x105a09b08] = BAD
+size = 1
+capacity = 1
+function: process
+line: 101
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105a09af8
+[0] = 8.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550575] == temp_hash_check_value[18446744073709550575]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+new capacity: expanded
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c055d0] = BAD
+buf_right_canary[0x105c055f0] = BAD
+size = 2
+capacity = 2
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c055d8
+[0] = 8.000000
+[1] = 5.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551083] == temp_hash_check_value[18446744073709551083]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c055d0] = BAD
+buf_right_canary[0x105c055f0] = BAD
+size = 1
+capacity = 2
+function: process
+line: 73
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c055d8
+[0] = 8.000000
+[1] = 5.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551116] == temp_hash_check_value[18446744073709551116]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+Here is why capacity is going to be shrinked:
+	 size[0] <= (capacity / 4)[0]
+new capacity: shrinked
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105a09ac0] = BAD
+buf_right_canary[0x105a09ad8] = BAD
+size = 0
+capacity = 1
+function: process
+line: 73
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105a09ac8
+[0] = 8.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550401] == temp_hash_check_value[18446744073709550401]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105a09ac0] = BAD
+buf_right_canary[0x105a09ad8] = BAD
+size = 1
+capacity = 1
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105a09ac8
+[0] = 5.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550368] == temp_hash_check_value[18446744073709550368]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+new capacity: expanded
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c05590] = BAD
+buf_right_canary[0x105c055b0] = BAD
+size = 2
+capacity = 2
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c05598
+[0] = 5.000000
+[1] = 8.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709550891] == temp_hash_check_value[18446744073709550891]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+new capacity: expanded
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803c20] = BAD
+buf_right_canary[0x105803c50] = BAD
+size = 3
+capacity = 4
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803c28
+[0] = 5.000000
+[1] = 8.000000
+[2] = 4.000000
+[3] = 0.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_push LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551075] == temp_hash_check_value[18446744073709551075]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803c20] = BAD
+buf_right_canary[0x105803c50] = BAD
+size = 4
+capacity = 4
+function: process
+line: 39
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803c28
+[0] = 5.000000
+[1] = 8.000000
+[2] = 4.000000
+[3] = 4.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551076] == temp_hash_check_value[18446744073709551076]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803c20] = BAD
+buf_right_canary[0x105803c50] = BAD
+size = 3
+capacity = 4
+function: process
+line: 228
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803c28
+[0] = 5.000000
+[1] = 8.000000
+[2] = 4.000000
+[3] = 4.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551008] == temp_hash_check_value[18446744073709551008]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105803c20] = BAD
+buf_right_canary[0x105803c50] = BAD
+size = 2
+capacity = 4
+function: process
+line: 229
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105803c28
+[0] = 5.000000
+[1] = 8.000000
+[2] = 4.000000
+[3] = 4.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
+
+stack_pop LOG:
+
+hash_check_n_count LOG:
+new_hash_check_value[18446744073709551008] == temp_hash_check_value[18446744073709551008]
+hash_data_check_value[0] == temp_hash_data_check_value[0]
+Here is why capacity is going to be shrinked:
+	 size[1] <= (capacity / 4)[1]
+new capacity: shrinked
+stk[0x16d1c1968] dump:
+left_canary[0x16d1c1968] = BADC0FFEE
+right_canary[0x16d1c19c8] = BADC0FFEE
+buf_left_canary[0x105c05550] = BAD
+buf_right_canary[0x105c05570] = BAD
+size = 1
+capacity = 2
+function: process
+line: 146
+file: ../../Global/include/cmd_definitions.h
+data addres = 0x105c05558
+[0] = 5.000000
+[1] = 8.000000
+error byte code: 0000 0000 0000 0000 0000 0000 0000 0000 
