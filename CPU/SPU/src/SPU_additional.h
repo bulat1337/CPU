@@ -7,6 +7,8 @@
  */
 
 #include "SPU.h"
+#include "secondary.h"
+#include "commands.h"
 
 /**
  * @def CHECK_ERROR(result)

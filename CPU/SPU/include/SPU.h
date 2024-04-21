@@ -8,8 +8,6 @@
  * @brief Header file containing function declarations for the SPU program.
  */
 
-#include "secondary.h"
-#include "commands.h"
 #include "stack.h"
 
 const size_t AMOUNT_OF_REGISTERS = 4; /**< Number of registers in the SPU VM. */

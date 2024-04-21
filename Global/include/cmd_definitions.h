@@ -105,6 +105,18 @@ DEF_CMD
 
 DEF_CMD
 (
+	"pow", POW, WRITE_CMD_W_NO_ARG,
+
+	value_B = STACK_POP(&(vm.user_stack)).deleted_element;
+	value_A = STACK_POP(&(vm.user_stack)).deleted_element;
+
+	STACK_PUSH(&(vm.user_stack), pow(value_A, value_B));
+
+	MOVE_CARRIAGE;
+)
+
+DEF_CMD
+(
 	"sub", SUB, WRITE_CMD_W_NO_ARG,
 
 	value_B = STACK_POP(&(vm.user_stack)).deleted_element;
@@ -311,6 +323,39 @@ DEF_CMD
 	value = STACK_POP(&(vm.user_stack)).deleted_element;
 
 	STACK_PUSH(&(vm.user_stack), sqrt(value));
+
+	MOVE_CARRIAGE;
+)
+
+DEF_CMD
+(
+	"ln", LN, WRITE_CMD_W_NO_ARG,
+
+	value = STACK_POP(&(vm.user_stack)).deleted_element;
+
+	STACK_PUSH(&(vm.user_stack), log(value));
+
+	MOVE_CARRIAGE;
+)
+
+DEF_CMD
+(
+	"sin", SIN, WRITE_CMD_W_NO_ARG,
+
+	value = STACK_POP(&(vm.user_stack)).deleted_element;
+
+	STACK_PUSH(&(vm.user_stack), sin(value));
+
+	MOVE_CARRIAGE;
+)
+
+DEF_CMD
+(
+	"cos", COS, WRITE_CMD_W_NO_ARG,
+
+	value = STACK_POP(&(vm.user_stack)).deleted_element;
+
+	STACK_PUSH(&(vm.user_stack), cos(value));
 
 	MOVE_CARRIAGE;
 )

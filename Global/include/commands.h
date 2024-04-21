@@ -32,6 +32,10 @@ enum Command
 	RET  = 17,
 	DRAW = 18,
 	SQRT = 19,
+	LN   = 20,
+	SIN  = 21,
+	COS  = 22,
+	POW  = 23,
 	HLT  = -1,
 };
 
