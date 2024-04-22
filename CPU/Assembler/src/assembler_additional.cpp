@@ -150,7 +150,7 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 	{																		\
 		cmd_type = (Command)num;											\
 		WRITE_BYTE(&cmd_type);												\
-		char *cmd_arg = COMMANDS[line_ID] + LEN(cmd_name);					\
+		char *cmd_arg = COMMANDS[line_ID] + LEN(cmd_name) + SPACE_SKIP;		\
 																			\
 		PROCESS_RAM_ARG(cmd_name)											\
 		else if(sscanf(cmd_arg, "%lf", &argument_value) == 0)				\
