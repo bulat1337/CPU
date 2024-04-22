@@ -122,7 +122,7 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
  			mask_buffer(&(manager->byte_code), RAM_MASK | REG_MASK);	\
  			ALIGN_BUF(TWO_BYTE_ALIGNMENT);								\
  																		\
- 			reg_type = GET_REG_TYPE(cmd_name);							\
+ 			reg_type = GET_REG_TYPE_RAM(cmd_name);						\
  			write_char_w_alignment(&BYTE_CODE, reg_type, ALIGN_TO_INT);	\
  		}																\
  		else															\
@@ -187,7 +187,7 @@ error_t parse_human_code(Compile_manager *manager, const char *file_name)
 	{																		\
 		cmd_type = (Command)num;											\
 		WRITE_BYTE(&cmd_type);												\
-		char *cmd_arg = COMMANDS[line_ID] + LEN(cmd_name);					\
+		char *cmd_arg = COMMANDS[line_ID] + LEN(cmd_name) + SPACE_SKIP;		\
 																			\
 		PROCESS_RAM_ARG(cmd_name)											\
 		else																\
@@ -327,6 +327,9 @@ error_t cmds_process(Compile_manager *manager)
 
 	#define GET_REG_TYPE(cmd)\
 		*(COMMANDS[line_ID] + LEN(cmd) + SPACE_SKIP + LETTER_SKIP) - 'a'
+
+	#define GET_REG_TYPE_RAM(cmd)\
+		*(COMMANDS[line_ID] + LEN(cmd) + SPACE_SKIP + 2 * LETTER_SKIP) - 'a'
 
 	#define IS_COMMAND(cmd)\
 		!strncmp(COMMANDS[line_ID], cmd, LEN(cmd))

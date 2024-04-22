@@ -40,7 +40,7 @@ add
 pop rax
 
 push 46
-pop[rax]
+pop [rax]
 
 push 1
 push rbx
@@ -117,7 +117,7 @@ add
 pop rax
 
 push 35
-pop[rax]
+pop [rax]
 
 :dont_fill
 
